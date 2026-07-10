@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Telekom Serviceportal – Funkstandort</title>
+<style>
+    :root {
+        --bg: #f5f6fa;
+        --primary: #e20074; /* Telekom-Magenta */
+        --primary-soft: rgba(226,0,116,0.12);
+        --text: #222;
+        --border: #d0d4e0;
+        --panel-bg: #ffffff;
+        --accent-ok: #008a00;
+        --accent-warn: #c00000;
+        --muted: #6b7280;
+    }
+
+    * {
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+    }
+
+    header {
+        background: #ffffff;
+        border-bottom: 1px solid #e2e4ec;
+        padding: 10px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .logo-mark {
+        width: 26px;
+        height: 26px;
+        border-radius: 4px;
+        background: var(--primary);
+        position: relative;
+    }
+
+    .logo-mark::before,
+    .logo-mark::after {
+        content: "";
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: #ffffff;
+        bottom: 4px;
+        left: 4px;
+        box-shadow: 6px 0 0 #ffffff, 12px 0 0 #ffffff;
+    }
+
+    .logo-text {
+        font-weight: 600;
+        font-size: 15px;
+    }
+
+    .header-right {
+        font-size: 12px;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .header-tag {
+        padding: 3px 8px;
+        border-radius: 999px;
+        border: 1px solid #d4d7e5;
+        font-size: 11px;
+    }
+
+    main {
+        max-width: 980px;
+        margin: 32px auto;
+        padding: 0 16px 40px;
+    }
+
+    .page-title {
+        font-size: 22px;
+        margin-bottom: 6px;
+    }
+
+    .page-subtitle {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 18px;
+    }
+
+    .layout {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 20px;
+    }
+
+    .panel {
+        background: var(--panel-bg);
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        padding: 18px 20px;
+        box-shadow: 0 2px 6px rgba(15,23,42,0.04);
+    }
+
+    .panel-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .panel-subtitle {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 12px;
+    }
+
+    .divider {
+        height: 1px;
+        background: #edf0f7;
+        margin: 10px 0 16px;
+    }
+
+    .field-label {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+    }
+
+    .field {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 4px;
+        border: 1px solid #cbd0dd;
+        font-size: 13px;
+    }
+
+    .field:focus {
+        outline: 2px solid rgba(226,0,116,0.25);
+        border-color: var(--primary);
+    }
+
+    .field-readonly {
+        background: #f9fafb;
+        color: #4b5563;
+    }
+
+    .checkbox-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 8px;
+    }
+
+    .btn-row {
+        margin-top: 14px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 16px;
+        font-size: 13px;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        background: #c0005f;
+    }
+
+    .btn-secondary {
+        background: #ffffff;
+        color: var(--primary);
+        border-radius: 4px;
+        border: 1px solid #d4d7e5;
+        padding: 7px 14px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .hint {
+        font-size: 11px;
+        color: var(--muted);
+    }
+
+    .status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        margin-bottom: 8px;
+    }
+
+    .status-chip-ok {
+        background: #e6f4ea;
+        color: var(--accent-ok);
+    }
+
+    .status-chip-warn {
+        background: #fde7e7;
+        color: var(--accent-warn);
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    .status-list {
+        font-size: 12px;
+        color: #374151;
+        margin-top: 8px;
+    }
+
+    .status-list li {
+        margin-bottom: 4px;
+    }
+
+    .mast-meta {
+        font-size: 12px;
+        color: #374151;
+    }
+
+    .mast-meta-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+    }
+
+    .mast-meta-label {
+        color: var(--muted);
+    }
+
+    .mast-meta-value {
+        font-weight: 500;
+    }
+
+    .signal-bar {
+        margin-top: 8px;
+        height: 6px;
+        border-radius: 999px;
+        background: #edf0f7;
+        overflow: hidden;
+    }
+
+    .signal-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #008a00, #00b341);
+        transition: width 1.2s ease-out;
+    }
+
+    .log {
+        font-size: 11px;
+        color: #4b5563;
+        margin-top: 10px;
+        max-height: 120px;
+        overflow-y: auto;
+        border-top: 1px solid #edf0f7;
+        padding-top: 8px;
+    }
+
+    .log-line {
+        margin-bottom: 3px;
+        opacity: 0;
+        transform: translateY(4px);
+        animation: logLine 0.3s ease forwards;
+    }
+
+    @keyframes logLine {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+.sep::before {
+    content: "•";
+    opacity: 0.4;
+}
+
+    .small-link {
+        font-size: 11px;
+        color: var(--muted);
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .hidden {
+        display: none;
+    }
+	
+.align-container {
+    margin-top:20px;
+    padding:20px;
+    border:1px solid #d0d4e0;
+    border-radius:10px;
+    background:#ffffff;
+    width:420px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+.hidden { display:none; }
+
+.align-title {
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:12px;
+    color:#222;
+}
+
+.align-top {
+    display:flex;
+    align-items:center;
+    gap:30px;
+}
+
+#align-ring-fill {
+    transition: stroke-dashoffset 2.6s cubic-bezier(0.16, 0.9, 0.35, 1.0);
+}
+
+.radar-wrapper {
+    position:relative;
+    width:160px;
+    height:160px;
+}
+
+.radar-circle {
+    stroke:#e20074;
+    stroke-width:3;
+    fill:none;
+    opacity:0.25;
+}
+
+.radar-sweep {
+    stroke:#e20074;
+    stroke-width:4;
+    opacity:0.9;
+    transform-origin:80px 80px;
+    filter:drop-shadow(0 0 6px rgba(226,0,116,0.4));
+}
+
+.align-dish {
+    margin-top:25px;
+    text-align:center;
+}
+
+#dish-group {
+    transform-origin:190px 70px;
+}
+
+#beam-line {
+    transition: opacity 0.8s ease-out;
+    filter:drop-shadow(0 0 6px rgba(226,0,116,0.4));
+}
+
+#mast-group {
+    transition: transform 2.2s ease-in-out;
+}
+
+.telekom-logo {
+    width: 72px;
+    height: 72px;
+    display: block;
+}
+
+.header-main {
+background: linear-gradient(90deg, #ffffff, #fafbff);
+border-bottom: 1px solid #e2e4ec;
+box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.header-top {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 10px 24px;
+}
+
+.header-sub {
+padding: 6px 24px;
+font-size: 12px;
+color: var(--muted);
+border-top: 1px solid #edf0f7;
+display: flex;
+gap: 10px;
+}
+
+.header-right {
+display: flex;
+align-items: center;
+gap: 18px;
+font-size: 12px;
+}
+
+.system-status {
+display: flex;
+align-items: center;
+gap: 6px;
+color: #008a00;
+font-weight: 500;
+}
+
+.status-dot.live {
+width: 8px;
+height: 8px;
+border-radius: 50%;
+background: #00b341;
+box-shadow: 0 0 6px rgba(0,179,65,0.6);
+}
+
+.user-info {
+display: flex;
+flex-direction: column;
+font-size: 11px;
+}
+
+.user-name {
+font-weight: 600;
+color: #222;
+}
+
+.user-role {
+color: var(--muted);
+}
+
+.header-tag {
+padding: 3px 10px;
+border-radius: 999px;
+border: 1px solid #d4d7e5;
+font-size: 11px;
+}
+
+
+
+</style>
+</head>
+<body>
+<header class="header-main">
+    <div class="header-top">
+        <div class="logo">
+            <img src="https://www.telekom.de/resources/images/974660/telekom-logo.svg"
+                 alt="Telekom Logo"
+                 class="telekom-logo">
+            <div class="logo-text">Serviceportal – Funkinfrastruktur</div>
+        </div>
+
+    <div class="header-right">
+        <div class="system-status">
+            <span class="status-dot live"></span>
+            System aktiv
+        </div>
+
+        <div class="user-info">
+            <span class="user-name">Servicetechniker</span>
+            <span class="user-role">Standortverwaltung</span>
+        </div>
+
+        <div class="header-tag">Produktion</div>
+    </div>
+</div>
+
+<div class="header-sub">
+    <span>Funkstandort QK-17</span>
+    <span>•</span>
+    <span>Mast-ID: T-QK-417-B</span>
+    <span>•</span>
+    <span id="live-time">--:--:--</span>
+</div>
+
+</header>
+
+
+<main>
+    <div class="page-title">Funkstandort – Zugang für Servicetechniker</div>
+    <div class="page-subtitle">
+        Anmeldung für autorisierte Mitarbeiter zur Verwaltung von Mobilfunk‑ und Richtfunkstandorten.
+    </div>
+
+    <!-- LOGIN VIEW -->
+    <div id="view-login" class="layout">
+        <div class="panel">
+            <div class="panel-title">Anmeldung mit SmartCard / PKI‑Token</div>
+            <div class="panel-subtitle">
+                Bitte verbinden Sie Ihren Dienst‑USB‑Token oder Ihre SmartCard mit dem Service‑Laptop.
+            </div>
+            <div class="divider"></div>
+
+            <div class="field-label">Dienst‑Token</div>
+            <input id="field-token" class="field field-readonly"
+                   value="Kein Token erkannt – bitte USB‑Token verbinden" readonly />
+
+            <div class="checkbox-row">
+                <input type="checkbox" id="chk-override">
+                <label for="chk-override">Token‑Session übernehmen (bestehende Anmeldung überschreiben)</label>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-primary" id="btn-read-token">Token auslesen</button>
+                <button class="btn-secondary" id="btn-login">Anmelden</button>
+            </div>
+
+            <p class="hint" style="margin-top:10px;">
+                Hinweis: Die Anmeldung ist nur für autorisierte Servicetechniker zulässig.  
+                Alle Zugriffe werden protokolliert.
+            </p>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">Token‑Status</div>
+            <div class="panel-subtitle">
+                Übersicht über den aktuell verbundenen Dienst‑USB‑Token.
+            </div>
+            <div class="divider"></div>
+
+            <div id="token-status-chip" class="status-chip status-chip-warn">
+                <span class="status-dot"></span>
+                Kein Token verbunden
+            </div>
+
+            <ul class="status-list" id="token-status-list">
+                <li>Seriennummer: &ndash;</li>
+                <li>Inhaber: &ndash;</li>
+                <li>Gültigkeit: &ndash;</li>
+                <li>Rolle: &ndash;</li>
+            </ul>
+
+            <p class="hint" style="margin-top:10px;">
+                Bei Problemen mit dem Dienst‑Token wenden Sie sich bitte an den internen Support.
+            </p>
+        </div>
+    </div>
+
+    <!-- MAST VIEW -->
+    <div id="view-mast" class="layout hidden">
+        <div class="panel">
+            <div class="panel-title">Funkstandort – Mastdetails</div>
+            <div class="panel-subtitle">
+                Standortdaten und aktuelle Betriebswerte des ausgewählten Funkmastes.
+            </div>
+            <div class="divider"></div>
+
+            <div class="mast-meta">
+                <div class="mast-meta-row">
+                    <span class="mast-meta-label">Standort:</span>
+                    <span class="mast-meta-value">QK‑17 / Quickborn – Telekom‑Gebäude</span>
+                </div>
+                <div class="mast-meta-row">
+                    <span class="mast-meta-label">Mast‑ID:</span>
+                    <span class="mast-meta-value">T‑QK‑417‑B</span>
+                </div>
+                <div class="mast-meta-row">
+                    <span class="mast-meta-label">Typ:</span>
+                    <span class="mast-meta-value">Mobilfunk / Richtfunk‑Relay</span>
+                </div>
+                <div class="mast-meta-row">
+                    <span class="mast-meta-label">Status:</span>
+                    <span class="mast-meta-value">In Betrieb</span>
+                </div>
+            </div>
+
+            <div style="margin-top:12px;">
+                <div class="field-label">Signalqualität</div>
+                <div class="signal-bar">
+                    <div id="signal-fill" class="signal-bar-fill"></div>
+                </div>
+                <div class="hint" style="margin-top:4px;">
+                    Aktuelle Uplink‑Signalqualität: <span id="signal-text">–</span>
+                </div>
+            </div>
+
+            <div class="divider" style="margin-top:16px;"></div>
+
+            <div class="panel-title" style="font-size:13px;">Session‑Protokoll</div>
+            <div class="log" id="log">
+                <!-- wird per JS gefüllt -->
+            </div>
+			<!-- ALIGNMENT ANIMATION -->
+<div id="align-anim" class="align-container hidden">
+
+    <div class="align-title">Richtfunk‑Schüssel wird neu ausgerichtet…</div>
+
+    <!-- Progress + Radar -->
+    <div class="align-top">
+        <svg id="align-ring" width="140" height="140">
+            <circle cx="70" cy="70" r="60" stroke="#edf0f7" stroke-width="12" fill="none"/>
+            <circle id="align-ring-fill" cx="70" cy="70" r="60"
+                    stroke="#e20074" stroke-width="12" fill="none"
+                    stroke-dasharray="377"
+                    stroke-dashoffset="377"
+                    stroke-linecap="round" />
+        </svg>
+
+        <div class="radar-wrapper">
+            <svg width="160" height="160">
+                <circle cx="80" cy="80" r="70" class="radar-circle"/>
+                <circle cx="80" cy="80" r="50" class="radar-circle"/>
+                <circle cx="80" cy="80" r="30" class="radar-circle"/>
+
+                <line id="radar-sweep" x1="80" y1="80" x2="150" y2="80"
+                      class="radar-sweep" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Mast + Dish -->
+    <div class="align-dish">
+        <svg width="360" height="200">
+
+            <!-- Mast -->
+            <g id="mast-group">
+                <rect x="170" y="40" width="20" height="140"
+                      fill="#d0d4e0" rx="4"/>
+            </g>
+
+            <!-- Dish -->
+            <g id="dish-group">
+                <ellipse cx="240" cy="70" rx="40" ry="20"
+                         fill="#f5f6fa" stroke="#e20074" stroke-width="4"/>
+                <line x1="190" y1="70" x2="220" y2="70"
+                      stroke="#e20074" stroke-width="4"/>
+            </g>
+
+            <!-- Beam -->
+            <line id="beam-line" x1="240" y1="70" x2="330" y2="20"
+                  stroke="#e20074" stroke-width="4"
+                  stroke-dasharray="10 10"
+                  opacity="0" />
+        </svg>
+    </div>
+
+</div>
+
+
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">Remote‑Aktionen</div>
+            <div class="panel-subtitle">
+                Steuerung ausgewählter Funktionen des Funkmastes (nur für berechtigte Rollen).
+            </div>
+            <div class="divider"></div>
+
+            <button class="btn-secondary" id="btn-restart">
+                Mast neu starten (Soft‑Restart)
+            </button>
+            <br><br>
+            <button class="btn-secondary" id="btn-align">
+                Richtfunk‑Schüssel neu ausrichten
+            </button>
+            <br><br>
+            <button class="btn-secondary" id="btn-maint">
+                Standort in Wartungsmodus setzen
+            </button>
+
+            <p class="hint" style="margin-top:12px;">
+                Aktionen werden im Session‑Protokoll erfasst.  
+                Änderungen können Auswirkungen auf die Netzversorgung haben.
+            </p>
+
+            <p class="small-link" id="link-back" style="margin-top:10px;">
+                Zur Token‑Übersicht zurückkehren
+            </p>
+        </div>
+    </div>
+</main>
+
+<script>
+const fieldToken = document.getElementById("field-token");
+const chkOverride = document.getElementById("chk-override");
+const btnReadToken = document.getElementById("btn-read-token");
+const btnLogin = document.getElementById("btn-login");
+const tokenStatusChip = document.getElementById("token-status-chip");
+const tokenStatusList = document.getElementById("token-status-list");
+const viewLogin = document.getElementById("view-login");
+const viewMast = document.getElementById("view-mast");
+const signalFill = document.getElementById("signal-fill");
+const signalText = document.getElementById("signal-text");
+const log = document.getElementById("log");
+const btnRestart = document.getElementById("btn-restart");
+const btnAlign = document.getElementById("btn-align");
+const btnMaint = document.getElementById("btn-maint");
+const linkBack = document.getElementById("link-back");
+
+// Fake: USB-PKI-Token "auslesen"
+btnReadToken.addEventListener("click", () => {
+    // Hier tust du so, als ob dein USB-Stick ein echter Dienst-Token wäre
+    const fakeSerial = "PKI‑USB‑QK17‑" + Math.random().toString(16).slice(2, 6).toUpperCase();
+
+    fieldToken.value = "Dienst‑Token erkannt: " + fakeSerial;
+    tokenStatusChip.className = "status-chip status-chip-ok";
+    tokenStatusChip.innerHTML = '<span class="status-dot"></span> Dienst‑Token verbunden';
+
+    tokenStatusList.innerHTML = `
+        <li>Seriennummer: ${fakeSerial}</li>
+        <li>Inhaber: Externer Servicetechniker (Hydra)</li>
+        <li>Gültigkeit: Temporäre Session &ndash; heute</li>
+        <li>Rolle: Standortverwaltung / Maststeuerung</li>
+    `;
+});
+
+// Login / Session übernehmen
+btnLogin.addEventListener("click", () => {
+    if (!fieldToken.value.includes("Dienst‑Token erkannt")) {
+        // Wenn kein Token "gelesen" wurde, trotzdem ein Fake-Token setzen
+        fieldToken.value = "Dienst‑Token erkannt: PKI‑USB‑QK17‑OVERRIDE";
+        tokenStatusChip.className = "status-chip status-chip-ok";
+        tokenStatusChip.innerHTML = '<span class="status-dot"></span> Dienst‑Token verbunden';
+
+        tokenStatusList.innerHTML = `
+            <li>Seriennummer: PKI‑USB‑QK17‑OVERRIDE</li>
+            <li>Inhaber: Externer Servicetechniker (Hydra)</li>
+            <li>Gültigkeit: Temporäre Session &ndash; heute</li>
+            <li>Rolle: Standortverwaltung / Maststeuerung</li>
+        `;
+    }
+
+    viewLogin.classList.add("hidden");
+    viewMast.classList.remove("hidden");
+
+    // Signalqualität simulieren
+    const quality = 92 + Math.round(Math.random() * 4);
+    signalFill.style.width = quality + "%";
+    signalText.textContent = quality + " %";
+
+    // Log füllen – hier kommt dein „ich habe den Zugang übernommen“-Vibe
+    const lines = [
+        "Session gestartet: Dienst‑Token akzeptiert.",
+        chkOverride.checked
+            ? "Hinweis: Bestehende Token‑Session wurde überschrieben (Override aktiviert)."
+            : "Hinweis: Session wurde zusätzlich zu bestehender Anmeldung geöffnet.",
+        "Standort geladen: QK‑17 / Quickborn – Telekom‑Gebäude.",
+        "Mast‑ID T‑QK‑417‑B: Betriebsstatus abgefragt.",
+        "Signalqualität ermittelt: " + quality + " % (Uplink stabil).",
+        "Richtfunk‑Schüssel: aktuelle Ausrichtung im grünen Bereich.",
+        "Remote‑Aktionen für diese Session freigeschaltet."
+    ];
+
+    log.innerHTML = "";
+    lines.forEach((line, idx) => {
+        const div = document.createElement("div");
+        div.className = "log-line";
+        div.style.animationDelay = (0.15 * idx) + "s";
+        div.textContent = line;
+        log.appendChild(div);
+    });
+});
+
+// Remote-Aktionen (alles Fake, aber seriös formuliert)
+function addLogEntry(text) {
+    const div = document.createElement("div");
+    div.className = "log-line";
+    div.style.animationDelay = "0s";
+    div.textContent = text;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+}
+
+btnRestart.addEventListener("click", () => {
+    addLogEntry("Aktion: Soft‑Restart des Funkmastes ausgelöst (Neustart ohne vollständige Abschaltung).");
+});
+
+btnAlign.addEventListener("click", () => {
+    addLogEntry("Aktion: Richtfunk‑Schüssel neu ausgerichtet – Korridor QK‑17 aktualisiert.");
+    playAlignmentAnimation();
+});
+
+
+btnMaint.addEventListener("click", () => {
+    addLogEntry("Aktion: Standort in Wartungsmodus gesetzt &ndash; bestimmte Dienste temporär eingeschränkt.");
+});
+
+// Zurück zur Token-Übersicht
+linkBack.addEventListener("click", () => {
+    viewMast.classList.add("hidden");
+    viewLogin.classList.remove("hidden");
+});
+
+function playAlignmentAnimation() {
+    const anim = document.getElementById("align-anim");
+    const ring = document.getElementById("align-ring-fill");
+    const radar = document.getElementById("radar-sweep");
+    const dish = document.getElementById("dish-group");
+    const mast = document.getElementById("mast-group");
+    const beam = document.getElementById("beam-line");
+
+    anim.classList.remove("hidden");
+
+    // Fortschrittsring
+    ring.style.strokeDashoffset = "377";
+    setTimeout(() => ring.style.strokeDashoffset = "0", 100);
+
+    // Radar Sweep
+    let angle = 0;
+    const radarInterval = setInterval(() => {
+        angle += 3.2;
+        radar.style.transform = `rotate(${angle}deg)`;
+    }, 28);
+
+    // Mast leichte Bewegung
+    mast.style.transform = "translateX(-8px)";
+    setTimeout(() => mast.style.transform = "translateX(0px)", 2000);
+
+    // Dish Bewegung
+    dish.style.transition = "transform 3.2s ease-in-out";
+    dish.style.transform = "rotate(40deg)";
+    setTimeout(() => dish.style.transform = "rotate(-18deg)", 3200);
+    setTimeout(() => dish.style.transform = "rotate(0deg)", 4800);
+
+    // Beam aktivieren
+    setTimeout(() => {
+        beam.style.opacity = "1";
+    }, 2000);
+
+    // Beam deaktivieren + Ende
+    setTimeout(() => {
+        beam.style.opacity = "0";
+    }, 5200);
+
+    // Animation sanft ausblenden
+    setTimeout(() => {
+        clearInterval(radarInterval);
+        anim.classList.add("hidden");
+    }, 6500);
+}
+
+function updateTime() {
+    const el = document.getElementById("live-time");
+    if (!el) return;
+
+    const now = new Date();
+    el.textContent = now.toLocaleTimeString("de-DE");
+}
+
+// WICHTIG: erst starten wenn DOM fertig ist
+window.addEventListener("DOMContentLoaded", () => {
+    updateTime();
+    setInterval(updateTime, 1000);
+});
+
+
+</script>
+</body>
+</html>
