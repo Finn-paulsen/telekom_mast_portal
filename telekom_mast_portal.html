@@ -5,39 +5,34 @@
 <title>Telekom Serviceportal – Funkstandort</title>
 <style>
     :root {
-        --bg: #0a0e27;
+        --bg: #f5f6fa;
         --primary: #e20074;
         --primary-soft: rgba(226,0,116,0.12);
-        --text: #e0e0e0;
-        --text-dark: #222;
-        --border: #2a2f4a;
-        --panel-bg: #1a1f3a;
-        --accent-ok: #00d966;
-        --accent-warn: #ff4444;
-        --accent-info: #00a8ff;
-        --muted: #888;
-        --terminal-bg: #0d0f1a;
-        --terminal-text: #00ff00;
+        --text: #222;
+        --border: #d0d4e0;
+        --panel-bg: #ffffff;
+        --accent-ok: #008a00;
+        --accent-warn: #c00000;
+        --muted: #6b7280;
     }
 
     * {
         box-sizing: border-box;
-        font-family: 'Courier New', 'Monaco', monospace;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body {
         margin: 0;
-        background: linear-gradient(135deg, #0a0e27 0%, #1a1528 100%);
+        background: var(--bg);
         color: var(--text);
-        overflow-x: hidden;
     }
 
     /* ===== HEADER ===== */
     header {
-        background: linear-gradient(180deg, #1a1f3a 0%, #131829 100%);
+        background: linear-gradient(90deg, #ffffff, #fafbff);
         border-bottom: 2px solid var(--primary);
-        padding: 16px 24px;
-        box-shadow: 0 0 20px rgba(226, 0, 116, 0.2);
+        padding: 14px 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
 
     .header-top {
@@ -51,16 +46,16 @@
     .logo {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 12px;
     }
 
     .logo-mark {
-        width: 40px;
-        height: 40px;
-        border-radius: 6px;
-        background: linear-gradient(135deg, var(--primary), #ff1493);
+        width: 34px;
+        height: 34px;
+        border-radius: 4px;
+        background: linear-gradient(135deg, var(--primary), #c0005f);
         position: relative;
-        box-shadow: 0 0 15px rgba(226, 0, 116, 0.6);
+        box-shadow: 0 2px 8px rgba(226, 0, 116, 0.2);
     }
 
     .logo-mark::before {
@@ -71,53 +66,48 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 800;
+        font-weight: 700;
         color: white;
-        font-size: 22px;
+        font-size: 18px;
     }
 
     .logo-text {
-        font-weight: 700;
-        font-size: 16px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        background: linear-gradient(90deg, var(--primary), #ff1493);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--text);
     }
 
     .header-right {
         display: flex;
         align-items: center;
-        gap: 24px;
+        gap: 20px;
     }
 
     .system-status {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         font-size: 12px;
-        font-weight: 600;
-        padding: 8px 14px;
+        font-weight: 500;
+        padding: 6px 12px;
         border-radius: 4px;
-        background: rgba(0, 217, 102, 0.15);
-        border: 1px solid var(--accent-ok);
+        background: #e6f4ea;
+        border: 1px solid #c0dcc0;
         color: var(--accent-ok);
     }
 
     .status-dot.live {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
         background: var(--accent-ok);
-        box-shadow: 0 0 8px var(--accent-ok), inset 0 0 4px rgba(0, 217, 102, 0.5);
+        box-shadow: 0 0 6px rgba(0, 137, 0, 0.4);
         animation: pulse 2s ease-in-out infinite;
     }
 
     @keyframes pulse {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.6; transform: scale(1.2); }
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
     }
 
     .user-info {
@@ -128,46 +118,43 @@
     }
 
     .user-name {
-        font-weight: 700;
+        font-weight: 600;
         font-size: 12px;
         color: var(--text);
     }
 
     .user-role {
-        color: var(--accent-info);
+        color: var(--muted);
         font-size: 10px;
         margin-top: 2px;
     }
 
     .header-tag {
-        padding: 6px 12px;
+        padding: 4px 10px;
         border-radius: 4px;
-        border: 1px solid var(--primary);
+        border: 1px solid var(--border);
         font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        background: rgba(226, 0, 116, 0.15);
-        color: var(--primary);
+        font-weight: 500;
+        background: #f9fafb;
+        color: var(--text);
     }
 
     .header-sub {
-        padding: 12px 24px;
-        font-size: 11px;
+        padding: 8px 24px;
+        font-size: 12px;
         color: var(--muted);
-        border-top: 1px solid rgba(226, 0, 116, 0.2);
+        border-top: 1px solid #edf0f7;
         display: flex;
-        gap: 16px;
+        gap: 14px;
         align-items: center;
         max-width: 1400px;
         margin: 0 auto;
-        background: rgba(0, 0, 0, 0.3);
     }
 
     .time-display {
         margin-left: auto;
-        font-weight: 600;
-        color: var(--accent-info);
-        font-family: 'Courier New', monospace;
+        font-weight: 500;
+        color: var(--text);
     }
 
     /* ===== MAIN CONTENT ===== */
@@ -178,11 +165,9 @@
     }
 
     .page-title {
-        font-size: 28px;
-        font-weight: 700;
-        margin-bottom: 8px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 6px;
     }
 
     .page-subtitle {
@@ -194,7 +179,7 @@
     .layout {
         display: grid;
         grid-template-columns: 1.4fr 1fr;
-        gap: 24px;
+        gap: 20px;
     }
 
     @media (max-width: 1200px) {
@@ -204,65 +189,58 @@
     }
 
     .panel {
-        background: linear-gradient(135deg, var(--panel-bg), rgba(26, 31, 58, 0.8));
+        background: var(--panel-bg);
         border-radius: 8px;
-        border: 1px solid rgba(226, 0, 116, 0.3);
-        padding: 20px 24px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(226, 0, 116, 0.1);
+        border: 1px solid var(--border);
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
     }
 
     .panel-title {
-        font-size: 15px;
-        font-weight: 700;
+        font-size: 14px;
+        font-weight: 600;
         margin-bottom: 4px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--primary);
     }
 
     .panel-subtitle {
         font-size: 12px;
         color: var(--muted);
-        margin-bottom: 14px;
+        margin-bottom: 12px;
     }
 
     .divider {
         height: 1px;
-        background: linear-gradient(90deg, rgba(226, 0, 116, 0.3), transparent);
+        background: #edf0f7;
         margin: 12px 0 16px;
     }
 
     .field-label {
-        font-size: 11px;
-        color: var(--accent-info);
+        font-size: 12px;
+        color: var(--muted);
         margin-bottom: 6px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 600;
+        font-weight: 500;
     }
 
     .field {
         width: 100%;
-        padding: 10px 12px;
+        padding: 9px 11px;
         border-radius: 4px;
-        border: 1px solid rgba(226, 0, 116, 0.4);
+        border: 1px solid #cbd0dd;
         font-size: 13px;
-        background: var(--terminal-bg);
-        color: var(--terminal-text);
-        font-family: 'Courier New', monospace;
-        transition: all 0.3s ease;
+        background: #ffffff;
+        color: var(--text);
+        transition: all 0.2s ease;
     }
 
     .field:focus {
         outline: none;
         border-color: var(--primary);
-        box-shadow: 0 0 12px rgba(226, 0, 116, 0.4);
-        background: rgba(0, 255, 0, 0.05);
+        box-shadow: 0 0 8px rgba(226, 0, 116, 0.15);
     }
 
     .field-readonly {
-        background: rgba(0, 0, 0, 0.6);
-        color: var(--accent-ok);
+        background: #f9fafb;
+        color: #4b5563;
     }
 
     .checkbox-row {
@@ -274,14 +252,10 @@
         margin-top: 10px;
     }
 
-    .checkbox-row input {
-        cursor: pointer;
-    }
-
     .btn-row {
-        margin-top: 16px;
+        margin-top: 14px;
         display: flex;
-        gap: 12px;
+        gap: 10px;
         align-items: center;
         flex-wrap: wrap;
     }
@@ -289,84 +263,72 @@
     .btn-primary, .btn-secondary, .btn-logout {
         border: none;
         border-radius: 4px;
-        padding: 10px 18px;
+        padding: 9px 16px;
         font-size: 12px;
         cursor: pointer;
         font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease;
-        font-family: 'Courier New', monospace;
+        transition: all 0.2s ease;
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, var(--primary), #ff1493);
+        background: var(--primary);
         color: white;
-        box-shadow: 0 0 15px rgba(226, 0, 116, 0.5);
     }
 
     .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 0 25px rgba(226, 0, 116, 0.8);
-    }
-
-    .btn-primary:active {
-        transform: translateY(0);
+        background: #c0005f;
     }
 
     .btn-secondary {
-        background: rgba(226, 0, 116, 0.15);
+        background: #ffffff;
         color: var(--primary);
-        border: 1px solid rgba(226, 0, 116, 0.4);
+        border: 1px solid #d4d7e5;
     }
 
     .btn-secondary:hover {
-        background: rgba(226, 0, 116, 0.25);
+        background: #fafbff;
         border-color: var(--primary);
-        transform: translateY(-2px);
     }
 
     .btn-logout {
-        background: rgba(255, 68, 68, 0.15);
+        background: #fde7e7;
         color: var(--accent-warn);
-        border: 1px solid rgba(255, 68, 68, 0.4);
+        border: 1px solid #f5c6c6;
         margin-left: auto;
     }
 
     .btn-logout:hover {
-        background: rgba(255, 68, 68, 0.25);
+        background: #fcd2d2;
     }
 
     .hint {
         font-size: 11px;
         color: var(--muted);
-        margin-top: 12px;
+        margin-top: 10px;
         line-height: 1.5;
     }
 
     .status-chip {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 6px 12px;
+        gap: 6px;
+        padding: 5px 10px;
         border-radius: 999px;
         font-size: 11px;
         margin-bottom: 10px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        font-weight: 500;
     }
 
     .status-chip-ok {
-        background: rgba(0, 217, 102, 0.2);
+        background: #e6f4ea;
         color: var(--accent-ok);
-        border: 1px solid rgba(0, 217, 102, 0.4);
+        border: 1px solid #c0dcc0;
     }
 
     .status-chip-warn {
-        background: rgba(255, 68, 68, 0.2);
+        background: #fde7e7;
         color: var(--accent-warn);
-        border: 1px solid rgba(255, 68, 68, 0.4);
+        border: 1px solid #f5c6c6;
     }
 
     .status-dot {
@@ -374,21 +336,20 @@
         height: 8px;
         border-radius: 50%;
         background: currentColor;
-        box-shadow: 0 0 4px currentColor;
     }
 
     .status-list {
         font-size: 12px;
-        color: var(--text);
+        color: #374151;
         margin-top: 8px;
         list-style: none;
         padding: 0;
     }
 
     .status-list li {
-        margin-bottom: 6px;
+        margin-bottom: 5px;
         padding: 4px 0;
-        border-bottom: 1px solid rgba(226, 0, 116, 0.1);
+        border-bottom: 1px solid #edf0f7;
     }
 
     .status-list li:last-child {
@@ -397,7 +358,7 @@
 
     .mast-meta {
         font-size: 12px;
-        color: var(--text);
+        color: #374151;
     }
 
     .mast-meta-row {
@@ -405,95 +366,71 @@
         justify-content: space-between;
         margin-bottom: 8px;
         padding: 6px 0;
-        border-bottom: 1px solid rgba(226, 0, 116, 0.1);
+        border-bottom: 1px solid #edf0f7;
     }
 
     .mast-meta-label {
-        color: var(--accent-info);
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 10px;
-        letter-spacing: 0.5px;
+        color: var(--muted);
+        font-weight: 500;
     }
 
     .mast-meta-value {
         font-weight: 600;
-        color: var(--accent-ok);
-        font-family: 'Courier New', monospace;
+        color: var(--text);
     }
 
     .signal-bar {
         margin-top: 8px;
-        height: 8px;
+        height: 6px;
         border-radius: 999px;
-        background: rgba(0, 0, 0, 0.5);
-        border: 1px solid rgba(226, 0, 116, 0.3);
+        background: #edf0f7;
+        border: 1px solid #d0d4e0;
         overflow: hidden;
     }
 
     .signal-bar-fill {
         height: 100%;
         width: 0%;
-        background: linear-gradient(90deg, var(--accent-ok), #00ff00);
-        box-shadow: 0 0 8px var(--accent-ok);
-        transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        background: linear-gradient(90deg, #008a00, #00b341);
+        transition: width 1.5s ease-out;
     }
 
     .log {
         font-size: 11px;
-        color: var(--terminal-text);
-        margin-top: 12px;
-        max-height: 200px;
+        color: #4b5563;
+        margin-top: 10px;
+        max-height: 160px;
         overflow-y: auto;
-        border-top: 1px solid rgba(226, 0, 116, 0.2);
-        border: 1px solid rgba(226, 0, 116, 0.2);
-        padding: 12px;
-        background: var(--terminal-bg);
+        border: 1px solid #edf0f7;
+        padding: 10px;
+        background: #f9fafb;
         border-radius: 4px;
-        font-family: 'Courier New', monospace;
     }
 
     .log::-webkit-scrollbar {
-        width: 8px;
+        width: 6px;
     }
 
     .log::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.3);
+        background: #edf0f7;
     }
 
     .log::-webkit-scrollbar-thumb {
-        background: var(--primary);
-        border-radius: 4px;
+        background: #cbd0dd;
+        border-radius: 3px;
     }
 
     .log-line {
-        margin-bottom: 6px;
+        margin-bottom: 4px;
         opacity: 0;
-        transform: translateX(-10px);
-        animation: logLine 0.4s ease forwards;
-        padding: 2px 0;
-        border-left: 2px solid transparent;
-        padding-left: 8px;
-    }
-
-    .log-line.success {
-        border-left-color: var(--accent-ok);
-    }
-
-    .log-line.error {
-        color: var(--accent-warn);
-        border-left-color: var(--accent-warn);
-    }
-
-    .log-line.info {
-        color: var(--accent-info);
-        border-left-color: var(--accent-info);
+        transform: translateY(2px);
+        animation: logLine 0.3s ease forwards;
     }
 
     @keyframes logLine {
         to {
             opacity: 1;
-            transform: translateX(0);
+            transform: translateY(0);
         }
     }
 
@@ -501,78 +438,15 @@
         display: none;
     }
 
-    /* ===== TERMINAL LOGIN ===== */
-    .terminal-container {
-        background: var(--terminal-bg);
-        border: 2px solid rgba(226, 0, 116, 0.5);
-        border-radius: 4px;
-        padding: 16px;
-        font-family: 'Courier New', monospace;
-        font-size: 13px;
-        color: var(--terminal-text);
-        margin-bottom: 16px;
-        box-shadow: inset 0 0 20px rgba(226, 0, 116, 0.1), 0 0 20px rgba(226, 0, 116, 0.2);
-        min-height: 120px;
-        overflow-y: auto;
-        max-height: 200px;
-    }
-
-    .terminal-line {
-        margin-bottom: 6px;
-        opacity: 0;
-        animation: terminalAppear 0.3s ease forwards;
-    }
-
-    @keyframes terminalAppear {
-        from {
-            opacity: 0;
-            transform: translateY(-5px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .terminal-prompt {
-        color: var(--accent-ok);
-    }
-
-    .terminal-error {
-        color: var(--accent-warn);
-    }
-
-    .terminal-success {
-        color: var(--accent-ok);
-    }
-
-    .terminal-info {
-        color: var(--accent-info);
-    }
-
-    .cursor {
-        display: inline-block;
-        width: 8px;
-        height: 14px;
-        background: var(--terminal-text);
-        margin-left: 2px;
-        animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-        0%, 49% { opacity: 1; }
-        50%, 100% { opacity: 0; }
-    }
-
     /* ===== USB CHECK ===== */
     .usb-status {
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 12px 14px;
+        padding: 12px;
         border-radius: 4px;
-        border: 1px solid rgba(226, 0, 116, 0.3);
-        background: rgba(226, 0, 116, 0.08);
+        border: 1px solid #d0d4e0;
+        background: #f9fafb;
         margin-bottom: 12px;
         font-size: 12px;
     }
@@ -585,9 +459,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
+        font-size: 11px;
         color: white;
-        animation: pulse 2s ease-in-out infinite;
+        font-weight: 600;
     }
 
     .usb-indicator.connected {
@@ -598,48 +472,85 @@
         flex: 1;
     }
 
+    /* ===== TERMINAL OUTPUT ===== */
+    .terminal-container {
+        background: #f9fafb;
+        border: 1px solid #edf0f7;
+        border-radius: 4px;
+        padding: 12px;
+        font-size: 12px;
+        color: #4b5563;
+        margin-bottom: 12px;
+        min-height: 80px;
+        overflow-y: auto;
+        max-height: 140px;
+    }
+
+    .terminal-line {
+        margin-bottom: 4px;
+        opacity: 0;
+        animation: terminalAppear 0.3s ease forwards;
+    }
+
+    @keyframes terminalAppear {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .terminal-prompt {
+        color: #008a00;
+        font-weight: 600;
+    }
+
+    .terminal-success {
+        color: var(--accent-ok);
+        font-weight: 500;
+    }
+
     /* ===== ALIGNMENT ANIMATION ===== */
     .align-container {
         margin-top: 20px;
         padding: 20px;
-        border: 1px solid rgba(226, 0, 116, 0.4);
+        border: 1px solid var(--border);
         border-radius: 6px;
-        background: rgba(0, 0, 0, 0.4);
+        background: #f9fafb;
         width: 100%;
-        box-shadow: 0 0 20px rgba(226, 0, 116, 0.2);
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
     }
 
     .align-title {
         font-size: 14px;
-        font-weight: 700;
+        font-weight: 600;
         margin-bottom: 14px;
-        color: var(--primary);
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        color: var(--text);
     }
 
     .align-top {
         display: flex;
         align-items: center;
-        gap: 40px;
+        gap: 30px;
         margin-bottom: 20px;
     }
 
     #align-ring-fill {
-        transition: stroke-dashoffset 3.2s cubic-bezier(0.16, 0.9, 0.35, 1.0);
+        transition: stroke-dashoffset 2.8s cubic-bezier(0.16, 0.9, 0.35, 1.0);
     }
 
     .radar-wrapper {
         position: relative;
-        width: 160px;
-        height: 160px;
-        border: 1px solid rgba(226, 0, 116, 0.3);
+        width: 150px;
+        height: 150px;
+        border: 1px solid #d0d4e0;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(226, 0, 116, 0.1), transparent);
+        background: #ffffff;
     }
 
     .radar-circle {
-        stroke: rgba(226, 0, 116, 0.2);
+        stroke: #e0e4ed;
         stroke-width: 1;
         fill: none;
     }
@@ -647,9 +558,9 @@
     .radar-sweep {
         stroke: var(--primary);
         stroke-width: 2;
-        opacity: 0.8;
-        transform-origin: 80px 80px;
-        filter: drop-shadow(0 0 8px rgba(226, 0, 116, 0.6));
+        opacity: 0.7;
+        transform-origin: 75px 75px;
+        filter: drop-shadow(0 1px 3px rgba(226, 0, 116, 0.2));
     }
 
     .align-dish {
@@ -659,38 +570,34 @@
 
     #dish-group {
         transform-origin: 180px 100px;
-        filter: drop-shadow(0 0 10px rgba(226, 0, 116, 0.4));
     }
 
     #beam-line {
-        transition: opacity 0.6s ease-out;
-        filter: drop-shadow(0 0 8px rgba(226, 0, 116, 0.6));
+        transition: opacity 0.8s ease-out;
+        filter: drop-shadow(0 1px 3px rgba(226, 0, 116, 0.15));
     }
 
     #mast-group {
-        transition: all 2.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        filter: drop-shadow(0 0 6px rgba(226, 0, 116, 0.3));
+        transition: transform 2.2s ease-in-out;
     }
 
     .progress-text {
         text-align: center;
         font-size: 12px;
-        color: var(--accent-info);
+        color: var(--muted);
         margin-top: 12px;
-        font-weight: 600;
     }
 
     .small-link {
         font-size: 11px;
-        color: var(--accent-info);
+        color: var(--muted);
         text-decoration: underline;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
     }
 
     .small-link:hover {
         color: var(--primary);
-        text-decoration: none;
     }
 
 </style>
@@ -701,42 +608,43 @@
     <div class="header-top">
         <div class="logo">
             <div class="logo-mark"></div>
-            <div class="logo-text">Telekom Funkmast Portal</div>
+            <div class="logo-text">Serviceportal – Funkinfrastruktur</div>
         </div>
         <div class="header-right">
             <div class="system-status">
                 <span class="status-dot live"></span>
-                Live
+                System aktiv
             </div>
             <div class="user-info" id="user-info">
-                <span class="user-name">–</span>
-                <span class="user-role">–</span>
+                <span class="user-name">Servicetechniker</span>
+                <span class="user-role">Standortverwaltung</span>
             </div>
-            <div class="header-tag" id="env-tag">DEV</div>
+            <div class="header-tag">Produktion</div>
         </div>
     </div>
 
     <div class="header-sub">
-        <span id="site-info">Funkstandort: –</span>
-        <span id="separator">•</span>
-        <span id="mast-info">Mast-ID: –</span>
-        <div class="time-display" id="live-time">--:--:--</div>
+        <span>Funkstandort QK-17</span>
+        <span>•</span>
+        <span>Mast-ID: T-QK-417-B</span>
+        <span>•</span>
+        <span class="time-display" id="live-time">--:--:--</span>
     </div>
 </header>
 
 <main>
     <!-- LOGIN VIEW -->
     <div id="view-login">
-        <div class="page-title">🔐 Servicetechniker-Portal</div>
+        <div class="page-title">Funkstandort – Zugang für Servicetechniker</div>
         <div class="page-subtitle">
-            Autorisierter Zugriff auf Funkmast-Infrastruktur. PKI/SmartCard erforderlich.
+            Anmeldung für autorisierte Mitarbeiter zur Verwaltung von Mobilfunk‑ und Richtfunkstandorten.
         </div>
 
         <div class="layout">
             <div class="panel">
-                <div class="panel-title">▶ Token-Authentifizierung</div>
+                <div class="panel-title">Anmeldung mit SmartCard / PKI‑Token</div>
                 <div class="panel-subtitle">
-                    USB-Token oder SmartCard erkennen
+                    Bitte verbinden Sie Ihren Dienst‑USB‑Token oder Ihre SmartCard mit dem Service‑Laptop.
                 </div>
                 <div class="divider"></div>
 
@@ -744,67 +652,62 @@
                 <div class="usb-status" id="usb-status">
                     <div class="usb-indicator" id="usb-indicator">⚠</div>
                     <div class="usb-text">
-                        <span id="usb-text">Kein USB-Gerät erkannt</span>
+                        <strong id="usb-text">Kein Token erkannt</strong>
                         <br>
-                        <span style="font-size: 10px; color: var(--muted);">Bitte USB-Token verbinden...</span>
+                        <span style="font-size: 11px; color: var(--muted);">Bitte USB-Token verbinden</span>
                     </div>
                 </div>
 
-                <!-- TERMINAL OUTPUT -->
-                <div class="field-label">⟡ Shell Output</div>
+                <!-- SHELL OUTPUT -->
+                <div class="field-label">Token‑Scan-Status</div>
                 <div class="terminal-container" id="terminal">
                     <div class="terminal-line">
-                        <span class="terminal-prompt">root@telekom:~#</span> ./check_usb_device.sh
-                    </div>
-                    <div class="terminal-line terminal-info">
-                        Scanning for USB security tokens...
+                        <span class="terminal-prompt">→</span> Warte auf USB-Gerät...
                     </div>
                 </div>
 
                 <!-- TOKEN FIELD -->
-                <div class="field-label">▶ Token Serial</div>
+                <div class="field-label">Dienst‑Token</div>
                 <input id="field-token" class="field field-readonly"
-                       value="[WAITING FOR DEVICE]" readonly />
+                       value="Kein Token erkannt – bitte USB‑Token verbinden" readonly />
 
                 <div class="checkbox-row">
                     <input type="checkbox" id="chk-override">
-                    <label for="chk-override">Override existing session (Force Connect)</label>
+                    <label for="chk-override">Token‑Session übernehmen (bestehende Anmeldung überschreiben)</label>
                 </div>
 
                 <!-- BUTTONS -->
                 <div class="btn-row">
-                    <button class="btn-primary" id="btn-read-token">▶ Device Scan</button>
-                    <button class="btn-secondary" id="btn-login">▶ Authenticate</button>
+                    <button class="btn-primary" id="btn-read-token">Token auslesen</button>
+                    <button class="btn-secondary" id="btn-login">Anmelden</button>
                 </div>
 
                 <p class="hint">
-                    ⚠ Alle Zugriffe werden protokolliert und überwacht. Unbefugter Zugriff wird gemeldet.
+                    Hinweis: Die Anmeldung ist nur für autorisierte Servicetechniker zulässig. Alle Zugriffe werden protokolliert.
                 </p>
             </div>
 
             <div class="panel">
-                <div class="panel-title">▶ Status-Info</div>
+                <div class="panel-title">Token‑Status</div>
                 <div class="panel-subtitle">
-                    USB-Token & PKI-Zertifikat
+                    Übersicht über den aktuell verbundenen Dienst‑USB‑Token.
                 </div>
                 <div class="divider"></div>
 
                 <div id="token-status-chip" class="status-chip status-chip-warn">
                     <span class="status-dot"></span>
-                    Disconnected
+                    Kein Token verbunden
                 </div>
 
                 <ul class="status-list" id="token-status-list">
-                    <li><strong>Serial:</strong> –</li>
-                    <li><strong>Holder:</strong> –</li>
-                    <li><strong>Valid:</strong> –</li>
-                    <li><strong>Role:</strong> –</li>
-                    <li><strong>CN:</strong> –</li>
-                    <li><strong>Issuer:</strong> –</li>
+                    <li>Seriennummer: –</li>
+                    <li>Inhaber: –</li>
+                    <li>Gültigkeit: –</li>
+                    <li>Rolle: –</li>
                 </ul>
 
-                <p class="hint" style="margin-top: 14px;">
-                    Bei technischen Problemen: Support-Hotline +49 228 181-81818
+                <p class="hint" style="margin-top: 12px;">
+                    Bei Problemen mit dem Dienst‑Token wenden Sie sich bitte an den internen Support.
                 </p>
             </div>
         </div>
@@ -812,85 +715,70 @@
 
     <!-- MAST CONTROL VIEW -->
     <div id="view-mast" class="hidden">
-        <div class="page-title">📡 Funkstandort Steuerung</div>
+        <div class="page-title">Funkstandort – Mastdetails</div>
         <div class="page-subtitle">
-            Live-Überwachung und Remote-Kontrolle des Funkmastes
+            Standortdaten und aktuelle Betriebswerte des ausgewählten Funkmastes.
         </div>
 
         <div class="layout">
             <div class="panel">
-                <div class="panel-title">▶ Standort-Info</div>
+                <div class="panel-title">Funkstandort – Mastdetails</div>
                 <div class="panel-subtitle">
-                    Betriebsdaten und Systemstatus
+                    Standortdaten und aktuelle Betriebswerte des ausgewählten Funkmastes.
                 </div>
                 <div class="divider"></div>
 
                 <div class="mast-meta">
                     <div class="mast-meta-row">
                         <span class="mast-meta-label">Standort:</span>
-                        <span class="mast-meta-value">QK-17 / Quickborn</span>
+                        <span class="mast-meta-value">QK‑17 / Quickborn – Telekom‑Gebäude</span>
                     </div>
                     <div class="mast-meta-row">
-                        <span class="mast-meta-label">Mast-ID:</span>
-                        <span class="mast-meta-value">T-QK-417-B</span>
+                        <span class="mast-meta-label">Mast‑ID:</span>
+                        <span class="mast-meta-value">T‑QK‑417‑B</span>
                     </div>
                     <div class="mast-meta-row">
                         <span class="mast-meta-label">Typ:</span>
-                        <span class="mast-meta-value">Mobile / Richtfunk</span>
+                        <span class="mast-meta-value">Mobilfunk / Richtfunk‑Relay</span>
                     </div>
                     <div class="mast-meta-row">
                         <span class="mast-meta-label">Status:</span>
-                        <span class="mast-meta-value">✓ Operational</span>
+                        <span class="mast-meta-value">In Betrieb</span>
                     </div>
                     <div class="mast-meta-row">
                         <span class="mast-meta-label">Höhe:</span>
-                        <span class="mast-meta-value">47.3 m</span>
+                        <span class="mast-meta-value">47,3 m</span>
                     </div>
                     <div class="mast-meta-row">
-                        <span class="mast-meta-label">Uptime:</span>
+                        <span class="mast-meta-label">Laufzeit:</span>
                         <span class="mast-meta-value" id="uptime">–</span>
                     </div>
                 </div>
 
-                <div class="divider"></div>
-
-                <!-- SIGNAL QUALITY -->
                 <div style="margin-top: 12px;">
-                    <div class="field-label">▶ Signal Quality</div>
+                    <div class="field-label">Signalqualität</div>
                     <div class="signal-bar">
                         <div id="signal-fill" class="signal-bar-fill"></div>
                     </div>
-                    <div class="hint" style="margin-top: 6px;">
-                        Uplink Quality: <span id="signal-text" style="color: var(--accent-ok);">–%</span>
+                    <div class="hint" style="margin-top: 4px;">
+                        Aktuelle Uplink‑Signalqualität: <span id="signal-text" style="color: var(--accent-ok);">–</span>
                     </div>
                 </div>
 
-                <!-- FREQUENCY INFO -->
-                <div style="margin-top: 12px;">
-                    <div class="field-label">▶ Frequenzbänder</div>
-                    <div class="status-list">
-                        <li>4G (B7): <span style="color: var(--accent-ok);">Active</span></li>
-                        <li>4G (B3): <span style="color: var(--accent-ok);">Active</span></li>
-                        <li>5G (n78): <span style="color: var(--accent-ok);">Active</span></li>
-                        <li>Microwave Link: <span style="color: var(--accent-ok);">Locked</span></li>
-                    </div>
-                </div>
+                <div class="divider" style="margin-top: 16px;"></div>
 
-                <div class="divider"></div>
-
-                <!-- LOG -->
-                <div class="panel-title" style="font-size: 13px;">▶ System-Log</div>
+                <div class="panel-title" style="font-size: 13px; margin-bottom: 10px;">Session‑Protokoll</div>
                 <div class="log" id="log">
-                    <!-- JS fills this -->
+                    <!-- wird per JS gefüllt -->
                 </div>
 
                 <!-- ALIGNMENT ANIMATION -->
                 <div id="align-anim" class="align-container hidden">
-                    <div class="align-title">⟡ Richtfunk-Schüssel wird neu ausgerichtet...</div>
+                    <div class="align-title">Richtfunk‑Schüssel wird neu ausgerichtet…</div>
 
                     <div class="align-top">
                         <svg id="align-ring" width="140" height="140">
-                            <circle cx="70" cy="70" r="60" stroke="rgba(226,0,116,0.2)" stroke-width="12" fill="none"/>
+                            <circle cx="70" cy="70" r="60" stroke="#edf0f7" stroke-width="12" fill="none"/>
                             <circle id="align-ring-fill" cx="70" cy="70" r="60"
                                     stroke="#e20074" stroke-width="12" fill="none"
                                     stroke-dasharray="377"
@@ -899,65 +787,32 @@
                         </svg>
 
                         <div class="radar-wrapper">
-                            <svg width="160" height="160">
-                                <circle cx="80" cy="80" r="70" class="radar-circle"/>
-                                <circle cx="80" cy="80" r="50" class="radar-circle"/>
-                                <circle cx="80" cy="80" r="30" class="radar-circle"/>
-                                <line id="radar-sweep" x1="80" y1="80" x2="150" y2="80" class="radar-sweep" />
+                            <svg width="150" height="150">
+                                <circle cx="75" cy="75" r="65" class="radar-circle"/>
+                                <circle cx="75" cy="75" r="45" class="radar-circle"/>
+                                <circle cx="75" cy="75" r="25" class="radar-circle"/>
+                                <line id="radar-sweep" x1="75" y1="75" x2="140" y2="75" class="radar-sweep" />
                             </svg>
                         </div>
                     </div>
 
                     <div class="align-dish">
-                        <svg width="420" height="240">
-                            <!-- Ground -->
-                            <line x1="0" y1="200" x2="420" y2="200" stroke="rgba(226,0,116,0.2)" stroke-width="2"/>
+                        <svg width="380" height="220">
+                            <line x1="10" y1="180" x2="370" y2="180" stroke="#d0d4e0" stroke-width="1"/>
                             
-                            <!-- Mast -->
                             <g id="mast-group">
-                                <rect x="200" y="60" width="20" height="140" fill="url(#mastGradient)" rx="2"/>
-                                <rect x="198" y="58" width="24" height="4" fill="rgba(226,0,116,0.5)" rx="1"/>
+                                <rect x="180" y="50" width="20" height="130" fill="#d0d4e0" rx="2"/>
                             </g>
 
-                            <!-- Dish assembly -->
                             <g id="dish-group">
-                                <!-- Support arm -->
-                                <line x1="210" y1="70" x2="260" y2="50" stroke="url(#armGradient)" stroke-width="3"/>
-                                <!-- Main dish -->
-                                <ellipse cx="275" cy="45" rx="45" ry="22" fill="url(#dishGradient)" stroke="#e20074" stroke-width="3"/>
-                                <!-- Focal point -->
-                                <circle cx="275" cy="45" r="4" fill="#e20074" opacity="0.8"/>
+                                <line x1="190" y1="60" x2="240" y2="45" stroke="#8b8f9f" stroke-width="2"/>
+                                <ellipse cx="255" cy="40" rx="38" ry="18" fill="#f5f6fa" stroke="#e20074" stroke-width="3"/>
+                                <circle cx="255" cy="40" r="3" fill="#e20074"/>
                             </g>
 
-                            <!-- Microwave beam -->
-                            <line id="beam-line" x1="275" y1="45" x2="380" y2="0"
-                                  stroke="#e20074" stroke-width="3" stroke-dasharray="15 8"
-                                  opacity="0" filter="url(#glow)"/>
-
-                            <!-- Gradients -->
-                            <defs>
-                                <linearGradient id="mastGradient" x1="0%" y1="0%" x2="100%">
-                                    <stop offset="0%" style="stop-color:#333;stop-opacity:1" />
-                                    <stop offset="50%" style="stop-color:#555;stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:#222;stop-opacity:1" />
-                                </linearGradient>
-                                <linearGradient id="armGradient" x1="0%" y1="0%" x2="100%">
-                                    <stop offset="0%" style="stop-color:#666;stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:#444;stop-opacity:1" />
-                                </linearGradient>
-                                <linearGradient id="dishGradient" x1="0%" y1="0%" x2="100%">
-                                    <stop offset="0%" style="stop-color:#f0f0f0;stop-opacity:1" />
-                                    <stop offset="50%" style="stop-color:#d0d0d0;stop-opacity:1" />
-                                    <stop offset="100%" style="stop-color:#a0a0a0;stop-opacity:1" />
-                                </linearGradient>
-                                <filter id="glow">
-                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                                    <feMerge>
-                                        <feMergeNode in="coloredBlur"/>
-                                        <feMergeNode in="SourceGraphic"/>
-                                    </feMerge>
-                                </filter>
-                            </defs>
+                            <line id="beam-line" x1="255" y1="40" x2="340" y2="5"
+                                  stroke="#e20074" stroke-width="2" stroke-dasharray="12 6"
+                                  opacity="0" />
                         </svg>
                     </div>
 
@@ -966,41 +821,41 @@
             </div>
 
             <div class="panel">
-                <div class="panel-title">▶ Remote Control</div>
+                <div class="panel-title">Remote‑Aktionen</div>
                 <div class="panel-subtitle">
-                    Funkmastensteuerung (nur autorisierte Rollen)
+                    Steuerung ausgewählter Funktionen des Funkmastes (nur für berechtigte Rollen).
                 </div>
                 <div class="divider"></div>
 
                 <button class="btn-secondary" id="btn-restart" style="width: 100%; margin-bottom: 10px;">
-                    ⟳ Soft-Restart durchführen
+                    Mast neu starten (Soft‑Restart)
                 </button>
 
                 <button class="btn-secondary" id="btn-align" style="width: 100%; margin-bottom: 10px;">
-                    ⟲ Richtschüssel neu ausrichten
+                    Richtfunk‑Schüssel neu ausrichten
                 </button>
 
                 <button class="btn-secondary" id="btn-recalibrate" style="width: 100%; margin-bottom: 10px;">
-                    ⚙ Kalibrierung durchführen
+                    Kalibrierung durchführen
                 </button>
 
                 <button class="btn-secondary" id="btn-maint" style="width: 100%; margin-bottom: 10px;">
-                    🔧 In Wartungsmodus
+                    Standort in Wartungsmodus setzen
                 </button>
 
                 <button class="btn-secondary" id="btn-diagnostics" style="width: 100%; margin-bottom: 10px;">
-                    🔍 Diagnose starten
+                    Systemdiagnose starten
                 </button>
 
                 <div class="divider"></div>
 
                 <p class="hint">
-                    ⚠ Alle Aktionen werden protokolliert. Änderungen können den Netzverkehr beeinflussen!
+                    Aktionen werden im Session‑Protokoll erfasst. Änderungen können Auswirkungen auf die Netzversorgung haben.
                 </p>
 
                 <div class="btn-row" style="margin-top: 14px;">
-                    <span class="small-link" id="link-back">← Zurück zum Token-Portal</span>
-                    <button class="btn-logout" id="btn-logout">⏻ Abmelden</button>
+                    <span class="small-link" id="link-back">Zur Token‑Übersicht zurückkehren</span>
+                    <button class="btn-logout" id="btn-logout">Abmelden</button>
                 </div>
             </div>
         </div>
@@ -1039,179 +894,130 @@
     let sessionStartTime = null;
 
     // ===== TERMINAL OUTPUT HELPER =====
-    function terminalLog(message, type = "info") {
+    function terminalLog(message) {
         const div = document.createElement("div");
-        div.className = `terminal-line terminal-${type}`;
-        div.innerHTML = `<span class="terminal-prompt">→</span> ${message}`;
-        terminal.appendChild(div);
-        terminal.scrollTop = terminal.scrollHeight;
-        setTimeout(() => div.style.animationDelay = "0s", 10);
-    }
-
-    function terminalCommand(cmd) {
-        const div = document.createElement("div");
-        div.className = "terminal-line";
-        div.innerHTML = `<span class="terminal-prompt">root@telekom:~#</span> ${cmd}`;
+        div.className = "terminal-line terminal-success";
+        div.innerHTML = `<span class="terminal-prompt">✓</span> ${message}`;
         terminal.appendChild(div);
         terminal.scrollTop = terminal.scrollHeight;
     }
 
     // ===== USB DEVICE CHECK =====
     btnReadToken.addEventListener("click", () => {
-        terminalCommand("./scan_pki_devices.sh --verbose");
-        terminalLog("Scanning USB interfaces...", "info");
+        terminal.innerHTML = '<div class="terminal-line"><span class="terminal-prompt">→</span> Scanne USB-Geräte...</div>';
         
-        setTimeout(() => terminalLog("Found 1 compatible security device", "success"), 300);
-        setTimeout(() => terminalLog("Reading certificate...", "info"), 600);
+        setTimeout(() => terminalLog("USB-Gerät erkannt"), 300);
+        setTimeout(() => terminalLog("PKI-Zertifikat wird validiert..."), 600);
         
-        const fakeSerial = "PKI-USB-QK17-" + Math.random().toString(16).slice(2, 6).toUpperCase();
+        const fakeSerial = "PKI‑USB‑QK17‑" + Math.random().toString(16).slice(2, 6).toUpperCase();
         
         setTimeout(() => {
-            terminalLog(`Serial: ${fakeSerial}`, "success");
-            terminalLog("CN=Servicetechniker Hydra,O=Telekom", "success");
+            terminalLog("✓ Zertifikat gültig");
+            terminalLog("Token bereit");
             
             fieldToken.value = fakeSerial;
             usbIndicator.classList.add("connected");
             usbIndicator.textContent = "✓";
-            usbText.innerHTML = `<strong>${fakeSerial}</strong><br><span style="font-size: 10px; color: var(--muted);">✓ Verbunden & authentifiziert</span>`;
+            usbText.innerHTML = `<strong>${fakeSerial}</strong><br><span style="font-size: 11px; color: var(--muted);">Verbunden & authentifiziert</span>`;
             
             tokenStatusChip.className = "status-chip status-chip-ok";
-            tokenStatusChip.innerHTML = '<span class="status-dot"></span> Token Verbunden';
+            tokenStatusChip.innerHTML = '<span class="status-dot"></span> Dienst‑Token verbunden';
             
             tokenStatusList.innerHTML = `
-                <li><strong>Serial:</strong> ${fakeSerial}</li>
-                <li><strong>Holder:</strong> Servicetechniker Hydra</li>
-                <li><strong>Valid:</strong> Valid (noch 85 Tage)</li>
-                <li><strong>Role:</strong> Admin / Standortverwaltung</li>
-                <li><strong>CN:</strong> CN=Service.Technician</li>
-                <li><strong>Issuer:</strong> Telekom PKI-Root v3</li>
+                <li>Seriennummer: ${fakeSerial}</li>
+                <li>Inhaber: Externer Servicetechniker (Hydra)</li>
+                <li>Gültigkeit: Temporäre Session – heute</li>
+                <li>Rolle: Standortverwaltung / Maststeuerung</li>
             `;
-        }, 1200);
+        }, 1000);
     });
 
-    // ===== LOGIN / SESSION OVERRIDE =====
+    // ===== LOGIN / SESSION =====
     btnLogin.addEventListener("click", () => {
         if (!fieldToken.value.includes("PKI")) {
-            terminalLog("Error: No valid PKI token detected!", "error");
+            alert("Kein gültiger Token erkannt. Bitte Token auslesen.");
             return;
         }
 
-        terminalCommand("./authenticate_pki.sh --override-session");
-        terminalLog("Verifying certificate chain...", "info");
+        terminal.innerHTML = '<div class="terminal-line"><span class="terminal-prompt">→</span> Authentifizierung läuft...</div>';
         
-        setTimeout(() => {
-            terminalLog("✓ Certificate validated", "success");
-            terminalLog("Establishing secure channel...", "info");
-        }, 400);
+        setTimeout(() => terminalLog("Zertifikat wird validiert..."), 300);
+        setTimeout(() => terminalLog("Sichere Verbindung wird hergestellt..."), 600);
+        setTimeout(() => terminalLog("Zugriff gewährt"), 900);
 
         setTimeout(() => {
-            terminalLog("✓ Secure tunnel established (TLS 1.3)", "success");
-            terminalLog("Initiating session takeover...", "info");
-        }, 800);
-
-        setTimeout(() => {
-            if (chkOverride.checked) {
-                terminalLog("Force-disconnecting existing session...", "info");
-                setTimeout(() => terminalLog("✓ Previous session terminated", "success"), 300);
-            }
-        }, 1200);
-
-        setTimeout(() => {
-            terminalLog("✓ Access granted! Welcome, Servicetechniker Hydra", "success");
-            
             viewLogin.classList.add("hidden");
             viewMast.classList.remove("hidden");
             isLoggedIn = true;
             sessionStartTime = Date.now();
 
-            // Update user info
-            const userName = fieldToken.value.includes("QK17") ? "Hydra / Servicetechniker" : "Admin User";
             userInfo.innerHTML = `
-                <span class="user-name">${userName}</span>
-                <span class="user-role">▶ Full Access</span>
+                <span class="user-name">Servicetechniker Hydra</span>
+                <span class="user-role">Standortverwaltung</span>
             `;
 
-            // Signal quality
             const quality = 92 + Math.round(Math.random() * 4);
             signalFill.style.width = quality + "%";
             signalText.textContent = quality + "%";
 
-            // Session log
             const lines = [
-                "SESSION_START: PKI authentication successful",
-                "SITE_LOADED: QK-17 / Quickborn",
-                "MAST_ID: T-QK-417-B",
-                "STATUS: OPERATIONAL",
-                "SIGNAL_QUALITY: " + quality + "%",
-                "REMOTE_ACTIONS: ENABLED",
-                "MONITORING: ACTIVE"
+                "Session gestartet: Dienst‑Token akzeptiert.",
+                chkOverride.checked
+                    ? "Hinweis: Bestehende Token‑Session wurde überschrieben (Override aktiviert)."
+                    : "Hinweis: Session wurde zusätzlich zu bestehender Anmeldung geöffnet.",
+                "Standort geladen: QK‑17 / Quickborn – Telekom‑Gebäude.",
+                "Mast‑ID T‑QK‑417‑B: Betriebsstatus abgefragt.",
+                "Signalqualität ermittelt: " + quality + " % (Uplink stabil).",
+                "Richtfunk‑Schüssel: aktuelle Ausrichtung im grünen Bereich.",
+                "Remote‑Aktionen für diese Session freigeschaltet."
             ];
 
             log.innerHTML = "";
             lines.forEach((line, idx) => {
                 const div = document.createElement("div");
-                div.className = "log-line success";
-                div.style.animationDelay = (0.1 * idx) + "s";
-                div.textContent = "[" + new Date().toLocaleTimeString("de-DE") + "] " + line;
+                div.className = "log-line";
+                div.style.animationDelay = (0.15 * idx) + "s";
+                div.textContent = line;
                 log.appendChild(div);
             });
-        }, 1600);
+        }, 1200);
     });
 
     // ===== REMOTE ACTIONS =====
-    function addLogEntry(text, type = "info") {
+    function addLogEntry(text) {
         const div = document.createElement("div");
-        div.className = `log-line ${type === "error" ? "error" : type === "success" ? "success" : "info"}`;
+        div.className = "log-line";
         div.style.animationDelay = "0s";
-        div.textContent = "[" + new Date().toLocaleTimeString("de-DE") + "] " + text;
+        div.textContent = text;
         log.appendChild(div);
         log.scrollTop = log.scrollHeight;
     }
 
     btnRestart.addEventListener("click", () => {
-        addLogEntry("ACTION: Soft-Restart initiated (no service interruption)", "success");
-        terminalCommand("mast_control --soft-restart --quiet");
-        setTimeout(() => terminalLog("Restart sequence complete", "success"), 800);
-        addLogEntry("STATUS: Mast restarted successfully", "success");
+        addLogEntry("Aktion: Soft‑Restart des Funkmastes ausgelöst (Neustart ohne vollständige Abschaltung).");
     });
 
     btnAlign.addEventListener("click", () => {
-        addLogEntry("ACTION: Directional dish realignment initiated", "success");
+        addLogEntry("Aktion: Richtfunk‑Schüssel neu ausgerichtet – Korridor QK‑17 aktualisiert.");
         playAlignmentAnimation();
     });
 
     btnRecalibrate.addEventListener("click", () => {
-        addLogEntry("ACTION: Full system recalibration started", "success");
-        terminalCommand("mast_control --calibrate --beam-optimization");
-        setTimeout(() => terminalLog("Calibration phase 1: Motor control test", "info"), 300);
-        setTimeout(() => terminalLog("Calibration phase 2: Signal strength measurement", "info"), 900);
-        setTimeout(() => terminalLog("✓ Calibration complete", "success"), 1500);
-        addLogEntry("STATUS: System calibration completed", "success");
+        addLogEntry("Aktion: Systemkalibrierung eingeleitet – Motortest und Signalmessung läuft.");
     });
 
     btnMaint.addEventListener("click", () => {
-        addLogEntry("ACTION: Entering maintenance mode", "success");
-        terminalCommand("mast_control --maintenance-mode ON");
-        setTimeout(() => terminalLog("Maintenance mode activated", "success"), 500);
-        addLogEntry("STATUS: Selective services restricted (maintenance)", "success");
+        addLogEntry("Aktion: Standort in Wartungsmodus gesetzt – bestimmte Dienste temporär eingeschränkt.");
     });
 
     btnDiagnostics.addEventListener("click", () => {
-        addLogEntry("ACTION: Full system diagnostics initiated", "success");
-        terminalCommand("mast_control --diagnostic-suite --verbose");
-        setTimeout(() => terminalLog("Running motor diagnostics...", "info"), 300);
-        setTimeout(() => terminalLog("✓ Motor response: NORMAL", "success"), 600);
-        setTimeout(() => terminalLog("Running signal strength test...", "info"), 900);
-        setTimeout(() => terminalLog("✓ Signal quality: 94%", "success"), 1200);
-        setTimeout(() => terminalLog("✓ Diagnostics complete - All systems OK", "success"), 1500);
-        addLogEntry("STATUS: Diagnostics completed - No anomalies detected", "success");
+        addLogEntry("Aktion: Systemdiagnose gestartet – Motordiagnose und Signalprüfung läuft.");
     });
 
     // ===== LOGOUT =====
     btnLogout.addEventListener("click", () => {
-        terminalCommand("./logout.sh");
-        terminalLog("Closing secure channel...", "info");
-        setTimeout(() => terminalLog("✓ Session terminated", "success"), 400);
+        terminal.innerHTML = '<div class="terminal-line"><span class="terminal-prompt">→</span> Session wird beendet...</div>';
+        setTimeout(() => terminalLog("Sichere Verbindung wird geschlossen"), 300);
         
         setTimeout(() => {
             isLoggedIn = false;
@@ -1219,13 +1025,13 @@
             viewMast.classList.add("hidden");
             viewLogin.classList.remove("hidden");
             userInfo.innerHTML = `
-                <span class="user-name">–</span>
-                <span class="user-role">–</span>
+                <span class="user-name">Servicetechniker</span>
+                <span class="user-role">Standortverwaltung</span>
             `;
-            fieldToken.value = "[WAITING FOR DEVICE]";
+            fieldToken.value = "Kein Token erkannt – bitte USB‑Token verbinden";
             usbIndicator.classList.remove("connected");
             usbIndicator.textContent = "⚠";
-            usbText.innerHTML = `<span style="font-size: 11px;">Logged out - Session closed</span>`;
+            usbText.innerHTML = `<strong>Kein Token erkannt</strong><br><span style="font-size: 11px; color: var(--muted);">Bitte USB-Token verbinden</span>`;
             log.innerHTML = "";
         }, 800);
     });
@@ -1237,7 +1043,7 @@
         isLoggedIn = false;
     });
 
-    // ===== ALIGNMENT ANIMATION (IMPROVED) =====
+    // ===== ALIGNMENT ANIMATION ===== 
     function playAlignmentAnimation() {
         const anim = document.getElementById("align-anim");
         const ring = document.getElementById("align-ring-fill");
@@ -1247,80 +1053,44 @@
         const beam = document.getElementById("beam-line");
 
         anim.classList.remove("hidden");
-        progressText.textContent = "0% - Initialization...";
+        progressText.textContent = "0% – Initialisierung…";
 
-        // Progress ring
         ring.style.strokeDashoffset = "377";
         setTimeout(() => ring.style.strokeDashoffset = "0", 100);
 
-        // Radar sweep animation
         let angle = 0;
-        let progress = 0;
         const radarInterval = setInterval(() => {
-            angle += 2.8;
+            angle += 3.2;
             radar.style.transform = `rotate(${angle}deg)`;
-        }, 25);
+        }, 28);
 
-        // Multi-phase animation with realistic physics
-        const animationPhases = [
-            { duration: 400, label: "20% - Motor initialization" },
-            { duration: 800, label: "45% - Positioning calculations" },
-            { duration: 1200, label: "70% - Beam alignment" },
-            { duration: 1600, label: "90% - Fine-tuning" },
-            { duration: 2000, label: "100% - Complete" }
-        ];
+        // Mast subtle movement
+        mast.style.transform = "translateX(-4px)";
+        setTimeout(() => mast.style.transform = "translateX(0px)", 2000);
 
-        let currentPhase = 0;
+        // Dish rotation (improved)
+        dish.style.transition = "transform 3.2s ease-in-out";
+        setTimeout(() => dish.style.transform = "rotate(50deg)", 200);
+        setTimeout(() => dish.style.transform = "rotate(-25deg)", 1800);
+        setTimeout(() => dish.style.transform = "rotate(8deg)", 2600);
+        setTimeout(() => dish.style.transform = "rotate(0deg)", 3200);
 
-        // Mast subtle oscillation
-        mast.style.transform = "translateX(0px)";
-        setTimeout(() => mast.style.transform = "translateX(-4px)", 300);
-        setTimeout(() => mast.style.transform = "translateX(2px)", 700);
-        setTimeout(() => mast.style.transform = "translateX(-1px)", 1100);
-        setTimeout(() => mast.style.transform = "translateX(0px)", 1400);
-
-        // Dish complex rotation (3D-like effect)
-        dish.style.transition = "transform 3.5s cubic-bezier(0.34, 1.56, 0.64, 1)";
-        setTimeout(() => dish.style.transform = "rotateY(35deg) rotateZ(45deg)", 200);
-        setTimeout(() => dish.style.transform = "rotateY(-15deg) rotateZ(-25deg)", 1800);
-        setTimeout(() => dish.style.transform = "rotateY(8deg) rotateZ(5deg)", 2600);
-        setTimeout(() => dish.style.transform = "rotateY(0deg) rotateZ(0deg)", 3200);
-
-        // Beam visualization
+        // Beam activation
         setTimeout(() => {
             beam.style.opacity = "1";
+            progressText.textContent = "60% – Schüssel wird ausgerichtet…";
         }, 1500);
 
-        beam.style.transition = "opacity 0.4s ease, stroke-dashoffset 3s linear";
-        let dashOffset = 0;
-        const beamInterval = setInterval(() => {
-            dashOffset += 0.5;
-            if (beam.style.opacity === "1") {
-                beam.style.strokeDashoffset = dashOffset;
-            }
-        }, 30);
+        setTimeout(() => {
+            beam.style.opacity = "0";
+            progressText.textContent = "90% – Feineinstellung…";
+        }, 4500);
 
-        // Progress updates
-        const progressInterval = setInterval(() => {
-            currentPhase++;
-            if (currentPhase < animationPhases.length) {
-                progressText.textContent = animationPhases[currentPhase].label;
-            }
-        }, 500);
-
-        // End animation
         setTimeout(() => {
             clearInterval(radarInterval);
-            clearInterval(beamInterval);
-            clearInterval(progressInterval);
-            beam.style.opacity = "0";
-            progressText.textContent = "100% - Richtfunk ausgerichtet";
-            
-            setTimeout(() => {
-                anim.classList.add("hidden");
-                addLogEntry("RESULT: Dish realignment successful", "success");
-            }, 1000);
-        }, 3500);
+            anim.classList.add("hidden");
+            progressText.textContent = "100% – Ausrichtung abgeschlossen";
+        }, 5500);
     }
 
     // ===== CLOCK & UPTIME =====
@@ -1342,9 +1112,6 @@
     window.addEventListener("DOMContentLoaded", () => {
         updateTime();
         setInterval(updateTime, 1000);
-        
-        // Initial terminal greeting
-        setTimeout(() => terminalLog("System ready for authentication", "success"), 500);
     });
 
 </script>
