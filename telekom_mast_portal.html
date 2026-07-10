@@ -252,6 +252,12 @@
         margin-top: 10px;
     }
 
+    .checkbox-row input {
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+    }
+
     .btn-row {
         margin-top: 14px;
         display: flex;
@@ -275,8 +281,15 @@
         color: white;
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover:not(:disabled) {
         background: #c0005f;
+    }
+
+    .btn-primary:disabled {
+        background: #ddd;
+        color: #888;
+        cursor: not-allowed;
+        opacity: 0.6;
     }
 
     .btn-secondary {
@@ -285,9 +298,17 @@
         border: 1px solid #d4d7e5;
     }
 
-    .btn-secondary:hover {
+    .btn-secondary:hover:not(:disabled) {
         background: #fafbff;
         border-color: var(--primary);
+    }
+
+    .btn-secondary:disabled {
+        background: #f5f5f5;
+        color: #bbb;
+        border-color: #ddd;
+        cursor: not-allowed;
+        opacity: 0.6;
     }
 
     .btn-logout {
@@ -468,47 +489,61 @@
         background: var(--accent-ok);
     }
 
+    .usb-indicator.error {
+        background: #ff6b6b;
+    }
+
     .usb-text {
         flex: 1;
     }
 
-    /* ===== TERMINAL OUTPUT ===== */
-    .terminal-container {
-        background: #f9fafb;
-        border: 1px solid #edf0f7;
-        border-radius: 4px;
-        padding: 12px;
-        font-size: 12px;
-        color: #4b5563;
-        margin-bottom: 12px;
-        min-height: 80px;
-        overflow-y: auto;
-        max-height: 140px;
-    }
-
-    .terminal-line {
-        margin-bottom: 4px;
-        opacity: 0;
-        animation: terminalAppear 0.3s ease forwards;
-    }
-
-    @keyframes terminalAppear {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-
-    .terminal-prompt {
-        color: #008a00;
+    .usb-text-main {
         font-weight: 600;
     }
 
-    .terminal-success {
+    .usb-text-sub {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+    }
+
+    /* ===== SCAN OUTPUT ===== */
+    .scan-output {
+        background: #f9fafb;
+        border: 1px solid #edf0f7;
+        border-radius: 4px;
+        padding: 10px;
+        font-size: 11px;
+        color: #4b5563;
+        margin-bottom: 12px;
+        min-height: 60px;
+        max-height: 100px;
+        overflow-y: auto;
+    }
+
+    .scan-line {
+        margin-bottom: 3px;
+        opacity: 0;
+        animation: scanAppear 0.3s ease forwards;
+    }
+
+    @keyframes scanAppear {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .scan-success {
         color: var(--accent-ok);
         font-weight: 500;
+    }
+
+    .scan-error {
+        color: var(--accent-warn);
+        font-weight: 500;
+    }
+
+    .scan-info {
+        color: #6b7280;
     }
 
     /* ===== ALIGNMENT ANIMATION ===== */
@@ -642,44 +677,53 @@
 
         <div class="layout">
             <div class="panel">
-                <div class="panel-title">Anmeldung mit SmartCard / PKI‑Token</div>
+                <div class="panel-title">Anmeldung mit PKI‑Token</div>
                 <div class="panel-subtitle">
-                    Bitte verbinden Sie Ihren Dienst‑USB‑Token oder Ihre SmartCard mit dem Service‑Laptop.
+                    Verbinden Sie Ihren Dienst‑USB‑Token mit dem Service‑Laptop.
                 </div>
                 <div class="divider"></div>
 
-                <!-- USB STATUS -->
+                <!-- STEP 1: USB CONNECTION -->
+                <div class="field-label">Schritt 1: USB-Token verbinden</div>
                 <div class="usb-status" id="usb-status">
                     <div class="usb-indicator" id="usb-indicator">⚠</div>
                     <div class="usb-text">
-                        <strong id="usb-text">Kein Token erkannt</strong>
-                        <br>
-                        <span style="font-size: 11px; color: var(--muted);">Bitte USB-Token verbinden</span>
+                        <div class="usb-text-main" id="usb-text-main">Kein Token erkannt</div>
+                        <div class="usb-text-sub">Bitte USB-Token in den Slot einstecken</div>
                     </div>
                 </div>
 
-                <!-- SHELL OUTPUT -->
-                <div class="field-label">Token‑Scan-Status</div>
-                <div class="terminal-container" id="terminal">
-                    <div class="terminal-line">
-                        <span class="terminal-prompt">→</span> Warte auf USB-Gerät...
-                    </div>
+                <div class="checkbox-row">
+                    <input type="checkbox" id="chk-usb-connected">
+                    <label for="chk-usb-connected">USB-Token in den Slot einstecken</label>
                 </div>
 
-                <!-- TOKEN FIELD -->
-                <div class="field-label">Dienst‑Token</div>
+                <div class="divider"></div>
+
+                <!-- STEP 2: SCAN FOR CERTIFICATE -->
+                <div class="field-label">Schritt 2: Token-Dateien scannen</div>
+                <div class="scan-output" id="scan-output">
+                    <div class="scan-line scan-info">Bereit zum Scannen...</div>
+                </div>
+
+                <button class="btn-primary" id="btn-read-token" disabled>
+                    Token auslesen (service.cert suchen)
+                </button>
+
+                <div class="divider"></div>
+
+                <!-- STEP 3: LOGIN -->
+                <div class="field-label">Schritt 3: Mit Token anmelden</div>
                 <input id="field-token" class="field field-readonly"
-                       value="Kein Token erkannt – bitte USB‑Token verbinden" readonly />
+                       value="Kein Token ausgelesen" readonly />
 
                 <div class="checkbox-row">
                     <input type="checkbox" id="chk-override">
                     <label for="chk-override">Token‑Session übernehmen (bestehende Anmeldung überschreiben)</label>
                 </div>
 
-                <!-- BUTTONS -->
                 <div class="btn-row">
-                    <button class="btn-primary" id="btn-read-token">Token auslesen</button>
-                    <button class="btn-secondary" id="btn-login">Anmelden</button>
+                    <button class="btn-secondary" id="btn-login" disabled>Anmelden</button>
                 </div>
 
                 <p class="hint">
@@ -702,6 +746,7 @@
                 <ul class="status-list" id="token-status-list">
                     <li>Seriennummer: –</li>
                     <li>Inhaber: –</li>
+                    <li>Zertifikat: –</li>
                     <li>Gültigkeit: –</li>
                     <li>Rolle: –</li>
                 </ul>
@@ -864,16 +909,17 @@
 
 <script>
     // ===== DOM ELEMENTS =====
+    const chkUsbConnected = document.getElementById("chk-usb-connected");
+    const usbStatus = document.getElementById("usb-status");
+    const usbIndicator = document.getElementById("usb-indicator");
+    const usbTextMain = document.getElementById("usb-text-main");
+    const scanOutput = document.getElementById("scan-output");
+    const btnReadToken = document.getElementById("btn-read-token");
     const fieldToken = document.getElementById("field-token");
     const chkOverride = document.getElementById("chk-override");
-    const btnReadToken = document.getElementById("btn-read-token");
     const btnLogin = document.getElementById("btn-login");
     const tokenStatusChip = document.getElementById("token-status-chip");
     const tokenStatusList = document.getElementById("token-status-list");
-    const usbStatus = document.getElementById("usb-status");
-    const usbIndicator = document.getElementById("usb-indicator");
-    const usbText = document.getElementById("usb-text");
-    const terminal = document.getElementById("terminal");
     const viewLogin = document.getElementById("view-login");
     const viewMast = document.getElementById("view-mast");
     const signalFill = document.getElementById("signal-fill");
@@ -892,95 +938,193 @@
 
     let isLoggedIn = false;
     let sessionStartTime = null;
+    let tokenReadSuccessfully = false;
 
-    // ===== TERMINAL OUTPUT HELPER =====
-    function terminalLog(message) {
-        const div = document.createElement("div");
-        div.className = "terminal-line terminal-success";
-        div.innerHTML = `<span class="terminal-prompt">✓</span> ${message}`;
-        terminal.appendChild(div);
-        terminal.scrollTop = terminal.scrollHeight;
-    }
-
-    // ===== USB DEVICE CHECK =====
-    btnReadToken.addEventListener("click", () => {
-        terminal.innerHTML = '<div class="terminal-line"><span class="terminal-prompt">→</span> Scanne USB-Geräte...</div>';
-        
-        setTimeout(() => terminalLog("USB-Gerät erkannt"), 300);
-        setTimeout(() => terminalLog("PKI-Zertifikat wird validiert..."), 600);
-        
-        const fakeSerial = "PKI‑USB‑QK17‑" + Math.random().toString(16).slice(2, 6).toUpperCase();
-        
-        setTimeout(() => {
-            terminalLog("✓ Zertifikat gültig");
-            terminalLog("Token bereit");
-            
-            fieldToken.value = fakeSerial;
-            usbIndicator.classList.add("connected");
+    // ===== USB CONNECTION HANDLER =====
+    chkUsbConnected.addEventListener("change", (e) => {
+        if (e.target.checked) {
+            // USB connected
             usbIndicator.textContent = "✓";
-            usbText.innerHTML = `<strong>${fakeSerial}</strong><br><span style="font-size: 11px; color: var(--muted);">Verbunden & authentifiziert</span>`;
+            usbIndicator.classList.add("connected");
+            usbIndicator.classList.remove("error");
+            usbTextMain.textContent = "USB-Token verbunden";
+            document.querySelector(".usb-text-sub").textContent = "Token erkannt - bereit zum Auslesen";
             
-            tokenStatusChip.className = "status-chip status-chip-ok";
-            tokenStatusChip.innerHTML = '<span class="status-dot"></span> Dienst‑Token verbunden';
+            // Enable token read button
+            btnReadToken.disabled = false;
             
-            tokenStatusList.innerHTML = `
-                <li>Seriennummer: ${fakeSerial}</li>
-                <li>Inhaber: Externer Servicetechniker (Hydra)</li>
-                <li>Gültigkeit: Temporäre Session – heute</li>
-                <li>Rolle: Standortverwaltung / Maststeuerung</li>
-            `;
-        }, 1000);
+            // Clear previous scan
+            scanOutput.innerHTML = '<div class="scan-line scan-info">Bereit zum Scannen...</div>';
+            tokenReadSuccessfully = false;
+            
+            // Reset login button
+            btnLogin.disabled = true;
+            fieldToken.value = "Kein Token ausgelesen";
+            
+        } else {
+            // USB disconnected
+            usbIndicator.textContent = "⚠";
+            usbIndicator.classList.remove("connected", "error");
+            usbTextMain.textContent = "Kein Token erkannt";
+            document.querySelector(".usb-text-sub").textContent = "Bitte USB-Token in den Slot einstecken";
+            
+            // Disable token read button
+            btnReadToken.disabled = true;
+            btnLogin.disabled = true;
+            
+            // Reset scan output
+            scanOutput.innerHTML = '<div class="scan-line scan-info">USB-Token nicht verbunden</div>';
+            tokenReadSuccessfully = false;
+            fieldToken.value = "Kein Token ausgelesen";
+        }
     });
 
-    // ===== LOGIN / SESSION =====
-    btnLogin.addEventListener("click", () => {
-        if (!fieldToken.value.includes("PKI")) {
-            alert("Kein gültiger Token erkannt. Bitte Token auslesen.");
+    // ===== SCAN FOR CERTIFICATE =====
+    btnReadToken.addEventListener("click", () => {
+        if (!chkUsbConnected.checked) {
+            scanOutput.innerHTML = '<div class="scan-line scan-error">✗ Fehler: USB-Token nicht verbunden</div>';
             return;
         }
 
-        terminal.innerHTML = '<div class="terminal-line"><span class="terminal-prompt">→</span> Authentifizierung läuft...</div>';
+        // Clear previous output
+        scanOutput.innerHTML = '';
         
-        setTimeout(() => terminalLog("Zertifikat wird validiert..."), 300);
-        setTimeout(() => terminalLog("Sichere Verbindung wird hergestellt..."), 600);
-        setTimeout(() => terminalLog("Zugriff gewährt"), 900);
+        // Scan animation
+        setTimeout(() => {
+            addScanLine("Scanne USB-Gerät /dev/ttyUSB0...", "info");
+        }, 100);
 
         setTimeout(() => {
-            viewLogin.classList.add("hidden");
-            viewMast.classList.remove("hidden");
-            isLoggedIn = true;
-            sessionStartTime = Date.now();
+            addScanLine("Lese Verzeichnis...", "info");
+        }, 300);
 
-            userInfo.innerHTML = `
-                <span class="user-name">Servicetechniker Hydra</span>
-                <span class="user-role">Standortverwaltung</span>
-            `;
+        setTimeout(() => {
+            addScanLine("Suche nach service.cert...", "info");
+        }, 600);
 
-            const quality = 92 + Math.round(Math.random() * 4);
-            signalFill.style.width = quality + "%";
-            signalText.textContent = quality + "%";
+        // Check if certificate found (random for simulation)
+        const hasCertificate = Math.random() > 0.2; // 80% chance of success
 
-            const lines = [
-                "Session gestartet: Dienst‑Token akzeptiert.",
-                chkOverride.checked
-                    ? "Hinweis: Bestehende Token‑Session wurde überschrieben (Override aktiviert)."
-                    : "Hinweis: Session wurde zusätzlich zu bestehender Anmeldung geöffnet.",
-                "Standort geladen: QK‑17 / Quickborn – Telekom‑Gebäude.",
-                "Mast‑ID T‑QK‑417‑B: Betriebsstatus abgefragt.",
-                "Signalqualität ermittelt: " + quality + " % (Uplink stabil).",
-                "Richtfunk‑Schüssel: aktuelle Ausrichtung im grünen Bereich.",
-                "Remote‑Aktionen für diese Session freigeschaltet."
-            ];
+        if (hasCertificate) {
+            setTimeout(() => {
+                addScanLine("✓ service.cert gefunden", "success");
+                addScanLine("✓ Zertifikat wird validiert...", "info");
+            }, 900);
 
-            log.innerHTML = "";
-            lines.forEach((line, idx) => {
-                const div = document.createElement("div");
-                div.className = "log-line";
-                div.style.animationDelay = (0.15 * idx) + "s";
-                div.textContent = line;
-                log.appendChild(div);
-            });
-        }, 1200);
+            setTimeout(() => {
+                addScanLine("✓ Zertifikat gültig (CN=Servicetechniker)", "success");
+                addScanLine("✓ Token erfolgreich ausgelesen", "success");
+                
+                // Generate fake serial
+                const fakeSerial = "PKI‑USB‑QK17‑" + Math.random().toString(16).slice(2, 6).toUpperCase();
+                fieldToken.value = fakeSerial;
+                
+                // Update USB status
+                usbIndicator.textContent = "✓";
+                usbIndicator.classList.add("connected");
+                usbTextMain.textContent = "Token erfolgreich authentifiziert";
+                document.querySelector(".usb-text-sub").textContent = "Bereit zur Anmeldung";
+
+                // Update token status chip
+                tokenStatusChip.className = "status-chip status-chip-ok";
+                tokenStatusChip.innerHTML = '<span class="status-dot"></span> Dienst‑Token verbunden';
+                
+                tokenStatusList.innerHTML = `
+                    <li>Seriennummer: ${fakeSerial}</li>
+                    <li>Inhaber: Externer Servicetechniker (Hydra)</li>
+                    <li>Zertifikat: service.cert (valide)</li>
+                    <li>Gültigkeit: Temporäre Session – heute</li>
+                    <li>Rolle: Standortverwaltung / Maststeuerung</li>
+                `;
+
+                // Enable login button
+                btnLogin.disabled = false;
+                tokenReadSuccessfully = true;
+                btnReadToken.disabled = true; // Prevent reading again
+
+            }, 1400);
+        } else {
+            setTimeout(() => {
+                addScanLine("✗ service.cert NICHT gefunden", "error");
+                addScanLine("✗ Ungültiger USB-Stick", "error");
+                addScanLine("✗ Authentifizierung fehlgeschlagen", "error");
+                
+                // Update USB status
+                usbIndicator.textContent = "✗";
+                usbIndicator.classList.add("error");
+                usbIndicator.classList.remove("connected");
+                usbTextMain.textContent = "Authentifizierung fehlgeschlagen";
+                document.querySelector(".usb-text-sub").textContent = "USB-Stick hat keine gültigen Zertifikate";
+
+                // Update token status
+                tokenStatusChip.className = "status-chip status-chip-warn";
+                tokenStatusChip.innerHTML = '<span class="status-dot"></span> Token ungültig';
+                
+                tokenStatusList.innerHTML = `
+                    <li>Seriennummer: –</li>
+                    <li>Inhaber: –</li>
+                    <li>Zertifikat: Nicht gefunden</li>
+                    <li>Gültigkeit: –</li>
+                    <li>Rolle: –</li>
+                `;
+
+                // Disable login
+                btnLogin.disabled = true;
+                tokenReadSuccessfully = false;
+
+            }, 1200);
+        }
+    });
+
+    function addScanLine(text, type = "info") {
+        const div = document.createElement("div");
+        div.className = `scan-line scan-${type}`;
+        div.textContent = text;
+        scanOutput.appendChild(div);
+        scanOutput.scrollTop = scanOutput.scrollHeight;
+    }
+
+    // ===== LOGIN =====
+    btnLogin.addEventListener("click", () => {
+        if (!tokenReadSuccessfully) {
+            alert("Token muss zuerst erfolgreich ausgelesen werden.");
+            return;
+        }
+
+        viewLogin.classList.add("hidden");
+        viewMast.classList.remove("hidden");
+        isLoggedIn = true;
+        sessionStartTime = Date.now();
+
+        userInfo.innerHTML = `
+            <span class="user-name">Servicetechniker Hydra</span>
+            <span class="user-role">Standortverwaltung</span>
+        `;
+
+        const quality = 92 + Math.round(Math.random() * 4);
+        signalFill.style.width = quality + "%";
+        signalText.textContent = quality + "%";
+
+        const lines = [
+            "Session gestartet: Dienst‑Token akzeptiert.",
+            chkOverride.checked
+                ? "Hinweis: Bestehende Token‑Session wurde überschrieben (Override aktiviert)."
+                : "Hinweis: Session wurde zusätzlich zu bestehender Anmeldung geöffnet.",
+            "Standort geladen: QK‑17 / Quickborn – Telekom‑Gebäude.",
+            "Mast‑ID T‑QK‑417‑B: Betriebsstatus abgefragt.",
+            "Signalqualität ermittelt: " + quality + " % (Uplink stabil).",
+            "Richtfunk‑Schüssel: aktuelle Ausrichtung im grünen Bereich.",
+            "Remote‑Aktionen für diese Session freigeschaltet."
+        ];
+
+        log.innerHTML = "";
+        lines.forEach((line, idx) => {
+            const div = document.createElement("div");
+            div.className = "log-line";
+            div.style.animationDelay = (0.15 * idx) + "s";
+            div.textContent = line;
+            log.appendChild(div);
+        });
     });
 
     // ===== REMOTE ACTIONS =====
@@ -1016,24 +1160,21 @@
 
     // ===== LOGOUT =====
     btnLogout.addEventListener("click", () => {
-        terminal.innerHTML = '<div class="terminal-line"><span class="terminal-prompt">→</span> Session wird beendet...</div>';
-        setTimeout(() => terminalLog("Sichere Verbindung wird geschlossen"), 300);
+        isLoggedIn = false;
+        sessionStartTime = null;
+        viewMast.classList.add("hidden");
+        viewLogin.classList.remove("hidden");
         
-        setTimeout(() => {
-            isLoggedIn = false;
-            sessionStartTime = null;
-            viewMast.classList.add("hidden");
-            viewLogin.classList.remove("hidden");
-            userInfo.innerHTML = `
-                <span class="user-name">Servicetechniker</span>
-                <span class="user-role">Standortverwaltung</span>
-            `;
-            fieldToken.value = "Kein Token erkannt – bitte USB‑Token verbinden";
-            usbIndicator.classList.remove("connected");
-            usbIndicator.textContent = "⚠";
-            usbText.innerHTML = `<strong>Kein Token erkannt</strong><br><span style="font-size: 11px; color: var(--muted);">Bitte USB-Token verbinden</span>`;
-            log.innerHTML = "";
-        }, 800);
+        // Reset login form
+        chkUsbConnected.checked = false;
+        chkUsbConnected.dispatchEvent(new Event("change"));
+        
+        userInfo.innerHTML = `
+            <span class="user-name">Servicetechniker</span>
+            <span class="user-role">Standortverwaltung</span>
+        `;
+        
+        log.innerHTML = "";
     });
 
     // ===== BACK LINK =====
@@ -1064,18 +1205,15 @@
             radar.style.transform = `rotate(${angle}deg)`;
         }, 28);
 
-        // Mast subtle movement
         mast.style.transform = "translateX(-4px)";
         setTimeout(() => mast.style.transform = "translateX(0px)", 2000);
 
-        // Dish rotation (improved)
         dish.style.transition = "transform 3.2s ease-in-out";
         setTimeout(() => dish.style.transform = "rotate(50deg)", 200);
         setTimeout(() => dish.style.transform = "rotate(-25deg)", 1800);
         setTimeout(() => dish.style.transform = "rotate(8deg)", 2600);
         setTimeout(() => dish.style.transform = "rotate(0deg)", 3200);
 
-        // Beam activation
         setTimeout(() => {
             beam.style.opacity = "1";
             progressText.textContent = "60% – Schüssel wird ausgerichtet…";
