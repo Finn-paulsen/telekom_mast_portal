@@ -49,26 +49,18 @@
         gap: 12px;
     }
 
-    .logo-mark {
-        width: 34px;
-        height: 34px;
-        border-radius: 4px;
-        background: linear-gradient(135deg, var(--primary), #c0005f);
-        position: relative;
-        box-shadow: 0 2px 8px rgba(226, 0, 116, 0.2);
-    }
-
-    .logo-mark::before {
-        content: "T";
-        position: absolute;
-        width: 100%;
-        height: 100%;
+    .logo-img {
+        width: 36px;
+        height: 36px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: 700;
-        color: white;
-        font-size: 18px;
+    }
+
+    .logo-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
     }
 
     .logo-text {
@@ -243,6 +235,37 @@
         color: #4b5563;
     }
 
+    #file-input {
+        display: none;
+    }
+
+    .file-picker-button {
+        display: inline-block;
+        padding: 9px 16px;
+        border-radius: 4px;
+        border: 1px solid #d4d7e5;
+        background: #ffffff;
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-bottom: 10px;
+    }
+
+    .file-picker-button:hover {
+        background: #fafbff;
+        border-color: var(--primary);
+    }
+
+    .file-picker-button:disabled {
+        background: #f5f5f5;
+        color: #bbb;
+        border-color: #ddd;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
     .checkbox-row {
         display: flex;
         align-items: center;
@@ -256,6 +279,11 @@
         cursor: pointer;
         width: 16px;
         height: 16px;
+    }
+
+    .checkbox-row input:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
     }
 
     .btn-row {
@@ -642,7 +670,10 @@
 <header>
     <div class="header-top">
         <div class="logo">
-            <div class="logo-mark"></div>
+            <div class="logo-img">
+                <img src="https://www.telekom.de/resources/images/974660/telekom-logo.svg" 
+                     alt="Telekom" loading="lazy">
+            </div>
             <div class="logo-text">Serviceportal – Funkinfrastruktur</div>
         </div>
         <div class="header-right">
@@ -679,23 +710,23 @@
             <div class="panel">
                 <div class="panel-title">Anmeldung mit PKI‑Token</div>
                 <div class="panel-subtitle">
-                    Verbinden Sie Ihren Dienst‑USB‑Token mit dem Service‑Laptop.
+                    Wählen Sie die Dateien von Ihrem Dienst‑USB‑Token aus.
                 </div>
                 <div class="divider"></div>
 
-                <!-- STEP 1: USB CONNECTION -->
-                <div class="field-label">Schritt 1: USB-Token verbinden</div>
+                <!-- STEP 1: SELECT USB FILES -->
+                <div class="field-label">Schritt 1: USB-Token-Dateien auswählen</div>
+                <input type="file" id="file-input" multiple />
+                <button class="file-picker-button" id="btn-browse">
+                    📁 Dateien vom USB-Token auswählen
+                </button>
+
                 <div class="usb-status" id="usb-status">
                     <div class="usb-indicator" id="usb-indicator">⚠</div>
                     <div class="usb-text">
-                        <div class="usb-text-main" id="usb-text-main">Kein Token erkannt</div>
-                        <div class="usb-text-sub">Bitte USB-Token in den Slot einstecken</div>
+                        <div class="usb-text-main" id="usb-text-main">Keine Dateien ausgewählt</div>
+                        <div class="usb-text-sub">Wählen Sie Dateien vom USB-Token aus</div>
                     </div>
-                </div>
-
-                <div class="checkbox-row">
-                    <input type="checkbox" id="chk-usb-connected">
-                    <label for="chk-usb-connected">USB-Token in den Slot einstecken</label>
                 </div>
 
                 <div class="divider"></div>
@@ -909,7 +940,8 @@
 
 <script>
     // ===== DOM ELEMENTS =====
-    const chkUsbConnected = document.getElementById("chk-usb-connected");
+    const fileInput = document.getElementById("file-input");
+    const btnBrowse = document.getElementById("btn-browse");
     const usbStatus = document.getElementById("usb-status");
     const usbIndicator = document.getElementById("usb-indicator");
     const usbTextMain = document.getElementById("usb-text-main");
@@ -939,16 +971,23 @@
     let isLoggedIn = false;
     let sessionStartTime = null;
     let tokenReadSuccessfully = false;
+    let selectedFiles = [];
 
-    // ===== USB CONNECTION HANDLER =====
-    chkUsbConnected.addEventListener("change", (e) => {
-        if (e.target.checked) {
-            // USB connected
+    // ===== FILE PICKER HANDLER =====
+    btnBrowse.addEventListener("click", () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener("change", (e) => {
+        selectedFiles = Array.from(e.target.files);
+        
+        if (selectedFiles.length > 0) {
+            // Files selected
             usbIndicator.textContent = "✓";
             usbIndicator.classList.add("connected");
             usbIndicator.classList.remove("error");
-            usbTextMain.textContent = "USB-Token verbunden";
-            document.querySelector(".usb-text-sub").textContent = "Token erkannt - bereit zum Auslesen";
+            usbTextMain.textContent = "USB-Token erkannt";
+            document.querySelector(".usb-text-sub").textContent = `${selectedFiles.length} Datei(en) ausgewählt`;
             
             // Enable token read button
             btnReadToken.disabled = false;
@@ -962,18 +1001,18 @@
             fieldToken.value = "Kein Token ausgelesen";
             
         } else {
-            // USB disconnected
+            // No files selected
             usbIndicator.textContent = "⚠";
             usbIndicator.classList.remove("connected", "error");
-            usbTextMain.textContent = "Kein Token erkannt";
-            document.querySelector(".usb-text-sub").textContent = "Bitte USB-Token in den Slot einstecken";
+            usbTextMain.textContent = "Keine Dateien ausgewählt";
+            document.querySelector(".usb-text-sub").textContent = "Wählen Sie Dateien vom USB-Token aus";
             
             // Disable token read button
             btnReadToken.disabled = true;
             btnLogin.disabled = true;
             
-            // Reset scan output
-            scanOutput.innerHTML = '<div class="scan-line scan-info">USB-Token nicht verbunden</div>';
+            // Reset
+            scanOutput.innerHTML = '<div class="scan-line scan-info">Keine Dateien ausgewählt</div>';
             tokenReadSuccessfully = false;
             fieldToken.value = "Kein Token ausgelesen";
         }
@@ -981,8 +1020,8 @@
 
     // ===== SCAN FOR CERTIFICATE =====
     btnReadToken.addEventListener("click", () => {
-        if (!chkUsbConnected.checked) {
-            scanOutput.innerHTML = '<div class="scan-line scan-error">✗ Fehler: USB-Token nicht verbunden</div>';
+        if (selectedFiles.length === 0) {
+            scanOutput.innerHTML = '<div class="scan-line scan-error">✗ Fehler: Keine Dateien ausgewählt</div>';
             return;
         }
 
@@ -991,19 +1030,24 @@
         
         // Scan animation
         setTimeout(() => {
-            addScanLine("Scanne USB-Gerät /dev/ttyUSB0...", "info");
+            addScanLine("Scanne ausgewählte Dateien...", "info");
         }, 100);
 
         setTimeout(() => {
-            addScanLine("Lese Verzeichnis...", "info");
+            addScanLine(`Gefundene Dateien: ${selectedFiles.length}`, "info");
+            let fileList = "";
+            selectedFiles.forEach(file => {
+                fileList += file.name + ", ";
+            });
+            addScanLine("Dateien: " + fileList.slice(0, -2), "info");
         }, 300);
 
         setTimeout(() => {
             addScanLine("Suche nach service.cert...", "info");
         }, 600);
 
-        // Check if certificate found (random for simulation)
-        const hasCertificate = Math.random() > 0.2; // 80% chance of success
+        // Check if service.cert exists in the files
+        const hasCertificate = selectedFiles.some(file => file.name === "service.cert");
 
         if (hasCertificate) {
             setTimeout(() => {
@@ -1013,7 +1057,7 @@
 
             setTimeout(() => {
                 addScanLine("✓ Zertifikat gültig (CN=Servicetechniker)", "success");
-                addScanLine("✓ Token erfolgreich ausgelesen", "success");
+                addScanLine("✓ Token erfolgreich authentifiziert", "success");
                 
                 // Generate fake serial
                 const fakeSerial = "PKI‑USB‑QK17‑" + Math.random().toString(16).slice(2, 6).toUpperCase();
@@ -1022,7 +1066,7 @@
                 // Update USB status
                 usbIndicator.textContent = "✓";
                 usbIndicator.classList.add("connected");
-                usbTextMain.textContent = "Token erfolgreich authentifiziert";
+                usbTextMain.textContent = "Token authentifiziert";
                 document.querySelector(".usb-text-sub").textContent = "Bereit zur Anmeldung";
 
                 // Update token status chip
@@ -1040,13 +1084,13 @@
                 // Enable login button
                 btnLogin.disabled = false;
                 tokenReadSuccessfully = true;
-                btnReadToken.disabled = true; // Prevent reading again
+                btnReadToken.disabled = true;
 
             }, 1400);
         } else {
             setTimeout(() => {
                 addScanLine("✗ service.cert NICHT gefunden", "error");
-                addScanLine("✗ Ungültiger USB-Stick", "error");
+                addScanLine("✗ Ungültiger USB-Stick oder fehlerhafte Dateien", "error");
                 addScanLine("✗ Authentifizierung fehlgeschlagen", "error");
                 
                 // Update USB status
@@ -1054,7 +1098,7 @@
                 usbIndicator.classList.add("error");
                 usbIndicator.classList.remove("connected");
                 usbTextMain.textContent = "Authentifizierung fehlgeschlagen";
-                document.querySelector(".usb-text-sub").textContent = "USB-Stick hat keine gültigen Zertifikate";
+                document.querySelector(".usb-text-sub").textContent = "service.cert nicht gefunden";
 
                 // Update token status
                 tokenStatusChip.className = "status-chip status-chip-warn";
@@ -1087,7 +1131,7 @@
     // ===== LOGIN =====
     btnLogin.addEventListener("click", () => {
         if (!tokenReadSuccessfully) {
-            alert("Token muss zuerst erfolgreich ausgelesen werden.");
+            alert("Token muss zuerst erfolgreich authentifiziert werden.");
             return;
         }
 
@@ -1166,8 +1210,16 @@
         viewLogin.classList.remove("hidden");
         
         // Reset login form
-        chkUsbConnected.checked = false;
-        chkUsbConnected.dispatchEvent(new Event("change"));
+        fileInput.value = "";
+        selectedFiles = [];
+        usbIndicator.classList.remove("connected", "error");
+        usbIndicator.textContent = "⚠";
+        usbTextMain.textContent = "Keine Dateien ausgewählt";
+        document.querySelector(".usb-text-sub").textContent = "Wählen Sie Dateien vom USB-Token aus";
+        btnReadToken.disabled = true;
+        btnLogin.disabled = true;
+        fieldToken.value = "Kein Token ausgelesen";
+        scanOutput.innerHTML = '<div class="scan-line scan-info">Bereit zum Scannen...</div>';
         
         userInfo.innerHTML = `
             <span class="user-name">Servicetechniker</span>
