@@ -1,1112 +1,749 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-<meta charset="UTF-8">
-<title>Telekom Serviceportal – Funkstandort</title>
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" color="#e20074">
-
-<style>
-    :root {
-        --bg: #f5f6fa;
-        --primary: #e20074;
-        --primary-soft: rgba(226,0,116,0.12);
-        --text: #222;
-        --border: #d0d4e0;
-        --panel-bg: #ffffff;
-        --accent-ok: #008a00;
-        --accent-warn: #c00000;
-        --muted: #6b7280;
-    }
-
-    * {
-        box-sizing: border-box;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    body {
-        margin: 0;
-        background: var(--bg);
-        color: var(--text);
-    }
-
-    /* ===== HEADER ===== */
-    header {
-        background: linear-gradient(90deg, #ffffff, #fafbff);
-        border-bottom: 2px solid var(--primary);
-        padding: 14px 24px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-
-    .header-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        max-width: 1400px;
-        margin: 0 auto;
-    }
-
-    .logo {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .logo-img {
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .logo-img img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-
-    .logo-text {
-        font-weight: 600;
-        font-size: 15px;
-        color: var(--text);
-    }
-
-    .header-right {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .system-status {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 12px;
-        font-weight: 500;
-        padding: 6px 12px;
-        border-radius: 4px;
-        background: #e6f4ea;
-        border: 1px solid #c0dcc0;
-        color: var(--accent-ok);
-    }
-
-    .status-dot.live {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--accent-ok);
-        box-shadow: 0 0 6px rgba(0, 137, 0, 0.4);
-        animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.6; }
-    }
-
-    .user-info {
-        display: flex;
-        flex-direction: column;
-        font-size: 11px;
-        text-align: right;
-    }
-
-    .user-name {
-        font-weight: 600;
-        font-size: 12px;
-        color: var(--text);
-    }
-
-    .user-role {
-        color: var(--muted);
-        font-size: 10px;
-        margin-top: 2px;
-    }
-
-    .header-tag {
-        padding: 4px 10px;
-        border-radius: 4px;
-        border: 1px solid var(--border);
-        font-size: 11px;
-        font-weight: 500;
-        background: #f9fafb;
-        color: var(--text);
-    }
-
-    .header-sub {
-        padding: 8px 24px;
-        font-size: 12px;
-        color: var(--muted);
-        border-top: 1px solid #edf0f7;
-        display: flex;
-        gap: 14px;
-        align-items: center;
-        max-width: 1400px;
-        margin: 0 auto;
-    }
-
-    .time-display {
-        margin-left: auto;
-        font-weight: 500;
-        color: var(--text);
-    }
-
-    /* ===== MAIN CONTENT ===== */
-    main {
-        max-width: 1400px;
-        margin: 32px auto;
-        padding: 0 16px 40px;
-    }
-
-    .page-title {
-        font-size: 24px;
-        font-weight: 600;
-        margin-bottom: 6px;
-    }
-
-    .page-subtitle {
-        font-size: 13px;
-        color: var(--muted);
-        margin-bottom: 24px;
-    }
-
-    .layout {
-        display: grid;
-        grid-template-columns: 1.4fr 1fr;
-        gap: 20px;
-    }
-
-    @media (max-width: 1200px) {
-        .layout {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .panel {
-        background: var(--panel-bg);
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        padding: 20px;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
-    }
-
-    .panel-title {
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 4px;
-    }
-
-    .panel-subtitle {
-        font-size: 12px;
-        color: var(--muted);
-        margin-bottom: 12px;
-    }
-
-    .divider {
-        height: 1px;
-        background: #edf0f7;
-        margin: 12px 0 16px;
-    }
-
-    .field-label {
-        font-size: 12px;
-        color: var(--muted);
-        margin-bottom: 6px;
-        font-weight: 500;
-    }
-
-    .field {
-        width: 100%;
-        padding: 9px 11px;
-        border-radius: 4px;
-        border: 1px solid #cbd0dd;
-        font-size: 13px;
-        background: #ffffff;
-        color: var(--text);
-        transition: all 0.2s ease;
-    }
-
-    .field:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 8px rgba(226, 0, 116, 0.15);
-    }
-
-    .field-readonly {
-        background: #f9fafb;
-        color: #4b5563;
-    }
-
-    #file-input {
-        display: none;
-    }
-
-    .file-picker-button {
-        display: inline-block;
-        padding: 9px 16px;
-        border-radius: 4px;
-        border: 1px solid #d4d7e5;
-        background: #ffffff;
-        color: var(--primary);
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        margin-bottom: 10px;
-    }
-
-    .file-picker-button:hover {
-        background: #fafbff;
-        border-color: var(--primary);
-    }
-
-    .file-picker-button:disabled {
-        background: #f5f5f5;
-        color: #bbb;
-        border-color: #ddd;
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
-
-    .checkbox-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 12px;
-        color: var(--text);
-        margin-top: 10px;
-    }
-
-    .checkbox-row input {
-        cursor: pointer;
-        width: 16px;
-        height: 16px;
-    }
-
-    .checkbox-row input:disabled {
-        cursor: not-allowed;
-        opacity: 0.5;
-    }
-
-    .btn-row {
-        margin-top: 14px;
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-
-    .btn-primary, .btn-secondary, .btn-logout {
-        border: none;
-        border-radius: 4px;
-        padding: 9px 16px;
-        font-size: 12px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.2s ease;
-    }
-
-    .btn-primary {
-        background: var(--primary);
-        color: white;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-        background: #c0005f;
-    }
-
-    .btn-primary:disabled {
-        background: #ddd;
-        color: #888;
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
-
-    .btn-secondary {
-        background: #ffffff;
-        color: var(--primary);
-        border: 1px solid #d4d7e5;
-    }
-
-    .btn-secondary:hover:not(:disabled) {
-        background: #fafbff;
-        border-color: var(--primary);
-    }
-
-    .btn-secondary:disabled {
-        background: #f5f5f5;
-        color: #bbb;
-        border-color: #ddd;
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
-
-    .btn-logout {
-        background: #fde7e7;
-        color: var(--accent-warn);
-        border: 1px solid #f5c6c6;
-        margin-left: auto;
-    }
-
-    .btn-logout:hover {
-        background: #fcd2d2;
-    }
-
-    .hint {
-        font-size: 11px;
-        color: var(--muted);
-        margin-top: 10px;
-        line-height: 1.5;
-    }
-
-    .status-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 5px 10px;
-        border-radius: 999px;
-        font-size: 11px;
-        margin-bottom: 10px;
-        font-weight: 500;
-    }
-
-    .status-chip-ok {
-        background: #e6f4ea;
-        color: var(--accent-ok);
-        border: 1px solid #c0dcc0;
-    }
-
-    .status-chip-warn {
-        background: #fde7e7;
-        color: var(--accent-warn);
-        border: 1px solid #f5c6c6;
-    }
-
-    .status-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: currentColor;
-    }
-
-    .status-list {
-        font-size: 12px;
-        color: #374151;
-        margin-top: 8px;
-        list-style: none;
-        padding: 0;
-    }
-
-    .status-list li {
-        margin-bottom: 5px;
-        padding: 4px 0;
-        border-bottom: 1px solid #edf0f7;
-    }
-
-    .status-list li:last-child {
-        border-bottom: none;
-    }
-
-    .mast-meta {
-        font-size: 12px;
-        color: #374151;
-    }
-
-    .mast-meta-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 8px;
-        padding: 6px 0;
-        border-bottom: 1px solid #edf0f7;
-    }
-
-    .mast-meta-label {
-        color: var(--muted);
-        font-weight: 500;
-    }
-
-    .mast-meta-value {
-        font-weight: 600;
-        color: var(--text);
-    }
-
-    .signal-bar {
-        margin-top: 8px;
-        height: 6px;
-        border-radius: 999px;
-        background: #edf0f7;
-        border: 1px solid #d0d4e0;
-        overflow: hidden;
-    }
-
-    .signal-bar-fill {
-        height: 100%;
-        width: 0%;
-        background: linear-gradient(90deg, #008a00, #00b341);
-        transition: width 1.5s ease-out;
-    }
-
-    .log {
-        font-size: 11px;
-        color: #4b5563;
-        margin-top: 10px;
-        max-height: 160px;
-        overflow-y: auto;
-        border: 1px solid #edf0f7;
-        padding: 10px;
-        background: #f9fafb;
-        border-radius: 4px;
-    }
-
-    .log::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .log::-webkit-scrollbar-track {
-        background: #edf0f7;
-    }
-
-    .log::-webkit-scrollbar-thumb {
-        background: #cbd0dd;
-        border-radius: 3px;
-    }
-
-    .log-line {
-        margin-bottom: 4px;
-        opacity: 0;
-        transform: translateY(2px);
-        animation: logLine 0.3s ease forwards;
-    }
-
-    @keyframes logLine {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    /* ===== USB CHECK ===== */
-    .usb-status {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px;
-        border-radius: 4px;
-        border: 1px solid #d0d4e0;
-        background: #f9fafb;
-        margin-bottom: 12px;
-        font-size: 12px;
-    }
-
-    .usb-indicator {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: var(--accent-warn);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 11px;
-        color: white;
-        font-weight: 600;
-    }
-
-    .usb-indicator.connected {
-        background: var(--accent-ok);
-    }
-
-    .usb-indicator.error {
-        background: #ff6b6b;
-    }
-
-    .usb-text {
-        flex: 1;
-    }
-
-    .usb-text-main {
-        font-weight: 600;
-    }
-
-    .usb-text-sub {
-        font-size: 11px;
-        color: var(--muted);
-        margin-top: 2px;
-    }
-
-    /* ===== SCAN OUTPUT ===== */
-    .scan-output {
-        background: #f9fafb;
-        border: 1px solid #edf0f7;
-        border-radius: 4px;
-        padding: 10px;
-        font-size: 11px;
-        color: #4b5563;
-        margin-bottom: 12px;
-        min-height: 60px;
-        max-height: 100px;
-        overflow-y: auto;
-    }
-
-    .scan-line {
-        margin-bottom: 3px;
-        opacity: 0;
-        animation: scanAppear 0.3s ease forwards;
-    }
-
-    @keyframes scanAppear {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    .scan-success {
-        color: var(--accent-ok);
-        font-weight: 500;
-    }
-
-    .scan-error {
-        color: var(--accent-warn);
-        font-weight: 500;
-    }
-
-    .scan-info {
-        color: #6b7280;
-    }
-
-    /* ===== ALIGNMENT ANIMATION ===== */
-    .align-container {
-        margin-top: 20px;
-        padding: 20px;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        background: #f9fafb;
-        width: 100%;
-        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
-    }
-
-    .align-title {
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 14px;
-        color: var(--text);
-    }
-
-    .align-top {
-        display: flex;
-        align-items: center;
-        gap: 30px;
-        margin-bottom: 20px;
-    }
-
-    #align-ring-fill {
-        transition: stroke-dashoffset 2.8s cubic-bezier(0.16, 0.9, 0.35, 1.0);
-    }
-
-    .radar-wrapper {
-        position: relative;
-        width: 150px;
-        height: 150px;
-        border: 1px solid #d0d4e0;
-        border-radius: 50%;
-        background: #ffffff;
-    }
-
-    .radar-circle {
-        stroke: #e0e4ed;
-        stroke-width: 1;
-        fill: none;
-    }
-
-    .radar-sweep {
-        stroke: var(--primary);
-        stroke-width: 2;
-        opacity: 0.7;
-        transform-origin: 75px 75px;
-        filter: drop-shadow(0 1px 3px rgba(226, 0, 116, 0.2));
-    }
-
-    .align-dish {
-        margin-top: 20px;
-        text-align: center;
-    }
-
-    #dish-group {
-        transform-origin: 180px 100px;
-    }
-
-    #beam-line {
-        transition: opacity 0.8s ease-out;
-        filter: drop-shadow(0 1px 3px rgba(226, 0, 116, 0.15));
-    }
-
-    #mast-group {
-        transition: transform 2.2s ease-in-out;
-    }
-
-    .progress-text {
-        text-align: center;
-        font-size: 12px;
-        color: var(--muted);
-        margin-top: 12px;
-    }
-
-    .small-link {
-        font-size: 11px;
-        color: var(--muted);
-        text-decoration: underline;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .small-link:hover {
-        color: var(--primary);
-    }
-
-</style>
-</head>
-<body>
-
-<header>
-    <div class="header-top">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Telekom Serviceportal</title>
+    <link rel="icon" href="dl-telekom-logo-02.jpg" type="image/jpeg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="mask-icon" href="dl-telekom-logo-02.jpg" color="#e20074" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-top">
         <div class="logo">
-            <div class="logo-img">
-                <img src="https://www.telekom.de/resources/images/974660/telekom-logo.svg" 
-                     alt="Telekom" loading="lazy">
-            </div>
-            <div class="logo-text">Serviceportal – Funkinfrastruktur</div>
+          <div class="logo-img">
+            <img
+              src="https://www.telekom.de/resources/images/974660/telekom-logo.svg"
+              alt="Telekom"
+              loading="lazy"
+            />
+          </div>
+          <div class="logo-text">Serviceportal – Funkinfrastruktur</div>
         </div>
         <div class="header-right">
-            <div class="system-status">
-                <span class="status-dot live"></span>
-                System aktiv
-            </div>
-            <div class="user-info" id="user-info">
-                <span class="user-name">Servicetechniker</span>
-                <span class="user-role">Standortverwaltung</span>
-            </div>
-            <div class="header-tag">Produktion</div>
+          <div class="system-status">
+            <span class="status-dot live"></span>
+            System aktiv
+          </div>
+          <div class="user-info" id="user-info">
+            <span class="user-name">Servicetechniker</span>
+            <span class="user-role">Standortverwaltung</span>
+          </div>
+          <div class="header-tag">Produktion</div>
         </div>
-    </div>
+      </div>
 
-    <div class="header-sub">
+      <div class="header-sub">
         <span>Funkstandort QK-17</span>
         <span>•</span>
         <span>Mast-ID: T-QK-417-B</span>
         <span>•</span>
         <span class="time-display" id="live-time">--:--:--</span>
-    </div>
-</header>
+      </div>
+    </header>
 
-<main>
-    <!-- LOGIN VIEW -->
-    <div id="view-login">
+    <main>
+      <!-- LOGIN VIEW -->
+      <div id="view-login">
         <div class="page-title">Funkstandort – Zugang für Servicetechniker</div>
         <div class="page-subtitle">
-            Anmeldung für autorisierte Mitarbeiter zur Verwaltung von Mobilfunk‑ und Richtfunkstandorten.
+          Anmeldung für autorisierte Mitarbeiter zur Verwaltung von Mobilfunk‑
+          und Richtfunkstandorten.
         </div>
 
         <div class="layout">
-            <div class="panel">
-                <div class="panel-title">Anmeldung mit PKI‑Token</div>
-                <div class="panel-subtitle">
-                    Wählen Sie die Dateien von Ihrem Dienst‑USB‑Token aus.
+          <div class="panel">
+            <div class="panel-title">Anmeldung mit PKI‑Token</div>
+            <div class="panel-subtitle">
+              Wählen Sie die Dateien von Ihrem Dienst‑USB‑Token aus.
+            </div>
+            <div class="divider"></div>
+
+            <!-- STEP 1: SELECT USB FOLDER -->
+            <div class="field-label">Schritt 1: USB-Token-Ordner auswählen</div>
+            <input
+              type="file"
+              id="file-input"
+              webkitdirectory
+              directory
+              multiple
+            />
+            <button class="file-picker-button" id="btn-browse">
+              📁 USB-Token-Ordner auswählen
+            </button>
+
+            <div class="usb-status" id="usb-status">
+              <div class="usb-indicator" id="usb-indicator">⚠</div>
+              <div class="usb-text">
+                <div class="usb-text-main" id="usb-text-main">
+                  Keine Dateien ausgewählt
                 </div>
-                <div class="divider"></div>
-
-                <!-- STEP 1: SELECT USB FILES -->
-                <div class="field-label">Schritt 1: USB-Token-Dateien auswählen</div>
-                <input type="file" id="file-input" multiple />
-                <button class="file-picker-button" id="btn-browse">
-                    📁 Dateien vom USB-Token auswählen
-                </button>
-
-                <div class="usb-status" id="usb-status">
-                    <div class="usb-indicator" id="usb-indicator">⚠</div>
-                    <div class="usb-text">
-                        <div class="usb-text-main" id="usb-text-main">Keine Dateien ausgewählt</div>
-                        <div class="usb-text-sub">Wählen Sie Dateien vom USB-Token aus</div>
-                    </div>
+                <div class="usb-text-sub">
+                  Wählen Sie Dateien vom USB-Token aus
                 </div>
-
-                <div class="divider"></div>
-
-                <!-- STEP 2: SCAN FOR CERTIFICATE -->
-                <div class="field-label">Schritt 2: Token-Dateien scannen</div>
-                <div class="scan-output" id="scan-output">
-                    <div class="scan-line scan-info">Bereit zum Scannen...</div>
-                </div>
-
-                <button class="btn-primary" id="btn-read-token" disabled>
-                    Token auslesen (service.cert suchen)
-                </button>
-
-                <div class="divider"></div>
-
-                <!-- STEP 3: LOGIN -->
-                <div class="field-label">Schritt 3: Mit Token anmelden</div>
-                <input id="field-token" class="field field-readonly"
-                       value="Kein Token ausgelesen" readonly />
-
-                <div class="checkbox-row">
-                    <input type="checkbox" id="chk-override">
-                    <label for="chk-override">Token‑Session übernehmen (bestehende Anmeldung überschreiben)</label>
-                </div>
-
-                <div class="btn-row">
-                    <button class="btn-secondary" id="btn-login" disabled>Anmelden</button>
-                </div>
-
-                <p class="hint">
-                    Hinweis: Die Anmeldung ist nur für autorisierte Servicetechniker zulässig. Alle Zugriffe werden protokolliert.
-                </p>
+              </div>
             </div>
 
-            <div class="panel">
-                <div class="panel-title">Token‑Status</div>
-                <div class="panel-subtitle">
-                    Übersicht über den aktuell verbundenen Dienst‑USB‑Token.
-                </div>
-                <div class="divider"></div>
+            <div class="divider"></div>
 
-                <div id="token-status-chip" class="status-chip status-chip-warn">
-                    <span class="status-dot"></span>
-                    Kein Token verbunden
-                </div>
-
-                <ul class="status-list" id="token-status-list">
-                    <li>Seriennummer: –</li>
-                    <li>Inhaber: –</li>
-                    <li>Zertifikat: –</li>
-                    <li>Gültigkeit: –</li>
-                    <li>Rolle: –</li>
-                </ul>
-
-                <p class="hint" style="margin-top: 12px;">
-                    Bei Problemen mit dem Dienst‑Token wenden Sie sich bitte an den internen Support.
-                </p>
+            <!-- STEP 2: SCAN FOR CERTIFICATE -->
+            <div class="field-label">Schritt 2: Token-Dateien scannen</div>
+            <div class="scan-output" id="scan-output">
+              <div class="scan-line scan-info">Bereit zum Scannen...</div>
             </div>
+
+            <div id="payload-panel" class="payload-panel hidden">
+              <div class="payload-header">
+                <span class="payload-badge">hydra-pki</span>
+                <div>
+                  <div class="payload-title">Hydra PKI Payload-Check</div>
+                  <div class="payload-subtitle">
+                    Token-Daten und Update-Metadaten werden vorbereitet.
+                  </div>
+                </div>
+              </div>
+              <div class="payload-steps" id="payload-steps">
+                <div class="payload-step">Warte auf USB-Token-Auswahl...</div>
+              </div>
+            </div>
+
+            <button class="btn-secondary" id="btn-read-token" disabled>
+              Ordner scannen (service.cert & ad-demo.json prüfen)
+            </button>
+
+            <div id="auth-warning" class="warning-box hidden">
+              <span class="alert-badge">!</span>
+              <div>
+                <strong>Token-Scan erforderlich.</strong> Ohne erfolgreichen
+                USB-Token-Scan kann keine Anmeldung erfolgen.
+                <div class="field-note">
+                  Versuche einer Anmeldung ohne Scan werden als potenzieller
+                  Sicherheitsvorfall protokolliert und an die
+                  Telekom-Sicherheitszentrale gemeldet.
+                </div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- STEP 3: LOGIN -->
+            <div class="field-label">Schritt 3: Benutzeranmeldung</div>
+            <div class="field-group">
+              <label class="field-label" for="field-user">Benutzername</label>
+              <input
+                id="field-user"
+                class="field"
+                type="text"
+                placeholder="Benutzername eingeben"
+                autocomplete="username"
+              />
+
+              <label class="field-label" for="field-password">Passwort</label>
+              <input
+                id="field-password"
+                class="field"
+                type="password"
+                placeholder="Passwort eingeben"
+                autocomplete="current-password"
+              />
+
+              <label class="field-label" for="field-employeenumber"
+                >Dienstnummer / Mitarbeiter-ID</label
+              >
+              <input
+                id="field-employeenumber"
+                class="field"
+                type="text"
+                placeholder="z. B. T123456"
+              />
+
+              <label class="field-label" for="field-token"
+                >Token-Bezeichner</label
+              >
+              <input
+                id="field-token"
+                class="field field-readonly"
+                value="Kein Token ausgelesen"
+                readonly
+              />
+            </div>
+
+            <div class="checkbox-row">
+              <input type="checkbox" id="chk-override" />
+              <label for="chk-override"
+                >Token‑Session übernehmen (bestehende Anmeldung
+                überschreiben)</label
+              >
+            </div>
+
+            <div id="incident-report" class="incident-box hidden">
+              <span class="alert-badge">!</span>
+              <div>
+                <strong>Unzulässiger Zugriffsversuch</strong>
+                <div id="incident-text">
+                  Ein Login-Versuch ohne vorherigen Token-Scan wurde erkannt.
+                  Sicherheitsbericht wird erstellt.
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn-primary" id="btn-login" disabled>
+                Anmelden
+              </button>
+            </div>
+
+            <p class="hint">
+              Hinweis: Die Anmeldung ist nur für autorisierte Servicetechniker
+              zulässig. Alle Zugriffe werden protokolliert.
+            </p>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">Token‑Status</div>
+            <div class="panel-subtitle">
+              Übersicht über den aktuell verbundenen Dienst‑USB‑Token.
+            </div>
+            <div class="divider"></div>
+
+            <div id="token-status-chip" class="status-chip status-chip-warn">
+              <span class="status-dot"></span>
+              Kein Token verbunden
+            </div>
+
+            <ul class="status-list" id="token-status-list">
+              <li>Seriennummer: –</li>
+              <li>Inhaber: –</li>
+              <li>Zertifikat: –</li>
+              <li>Gültigkeit: –</li>
+              <li>Rolle: –</li>
+            </ul>
+
+            <p class="hint hint--spaced">
+              Bei Problemen mit dem Dienst‑Token wenden Sie sich bitte an den
+              internen Support.
+            </p>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- MAST CONTROL VIEW -->
-    <div id="view-mast" class="hidden">
+      <!-- MAST CONTROL VIEW -->
+      <div id="view-mast" class="hidden">
         <div class="page-title">Funkstandort – Mastdetails</div>
         <div class="page-subtitle">
-            Standortdaten und aktuelle Betriebswerte des ausgewählten Funkmastes.
+          Standortdaten und aktuelle Betriebswerte des ausgewählten Funkmastes.
         </div>
 
         <div class="layout">
-            <div class="panel">
-                <div class="panel-title">Funkstandort – Mastdetails</div>
-                <div class="panel-subtitle">
-                    Standortdaten und aktuelle Betriebswerte des ausgewählten Funkmastes.
-                </div>
-                <div class="divider"></div>
+          <div class="panel">
+            <div class="panel-title">Funkstandort – Mastdetails</div>
+            <div class="panel-subtitle">
+              Standortdaten und aktuelle Betriebswerte des ausgewählten
+              Funkmastes.
+            </div>
+            <div class="divider"></div>
 
-                <div class="mast-meta">
-                    <div class="mast-meta-row">
-                        <span class="mast-meta-label">Standort:</span>
-                        <span class="mast-meta-value">QK‑17 / Quickborn – Telekom‑Gebäude</span>
-                    </div>
-                    <div class="mast-meta-row">
-                        <span class="mast-meta-label">Mast‑ID:</span>
-                        <span class="mast-meta-value">T‑QK‑417‑B</span>
-                    </div>
-                    <div class="mast-meta-row">
-                        <span class="mast-meta-label">Typ:</span>
-                        <span class="mast-meta-value">Mobilfunk / Richtfunk‑Relay</span>
-                    </div>
-                    <div class="mast-meta-row">
-                        <span class="mast-meta-label">Status:</span>
-                        <span class="mast-meta-value">In Betrieb</span>
-                    </div>
-                    <div class="mast-meta-row">
-                        <span class="mast-meta-label">Höhe:</span>
-                        <span class="mast-meta-value">47,3 m</span>
-                    </div>
-                    <div class="mast-meta-row">
-                        <span class="mast-meta-label">Laufzeit:</span>
-                        <span class="mast-meta-value" id="uptime">–</span>
-                    </div>
-                </div>
-
-                <div style="margin-top: 12px;">
-                    <div class="field-label">Signalqualität</div>
-                    <div class="signal-bar">
-                        <div id="signal-fill" class="signal-bar-fill"></div>
-                    </div>
-                    <div class="hint" style="margin-top: 4px;">
-                        Aktuelle Uplink‑Signalqualität: <span id="signal-text" style="color: var(--accent-ok);">–</span>
-                    </div>
-                </div>
-
-                <div class="divider" style="margin-top: 16px;"></div>
-
-                <div class="panel-title" style="font-size: 13px; margin-bottom: 10px;">Session‑Protokoll</div>
-                <div class="log" id="log">
-                    <!-- wird per JS gefüllt -->
-                </div>
-
-                <!-- ALIGNMENT ANIMATION -->
-                <div id="align-anim" class="align-container hidden">
-                    <div class="align-title">Richtfunk‑Schüssel wird neu ausgerichtet…</div>
-
-                    <div class="align-top">
-                        <svg id="align-ring" width="140" height="140">
-                            <circle cx="70" cy="70" r="60" stroke="#edf0f7" stroke-width="12" fill="none"/>
-                            <circle id="align-ring-fill" cx="70" cy="70" r="60"
-                                    stroke="#e20074" stroke-width="12" fill="none"
-                                    stroke-dasharray="377"
-                                    stroke-dashoffset="377"
-                                    stroke-linecap="round" />
-                        </svg>
-
-                        <div class="radar-wrapper">
-                            <svg width="150" height="150">
-                                <circle cx="75" cy="75" r="65" class="radar-circle"/>
-                                <circle cx="75" cy="75" r="45" class="radar-circle"/>
-                                <circle cx="75" cy="75" r="25" class="radar-circle"/>
-                                <line id="radar-sweep" x1="75" y1="75" x2="140" y2="75" class="radar-sweep" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div class="align-dish">
-                        <svg width="380" height="220">
-                            <line x1="10" y1="180" x2="370" y2="180" stroke="#d0d4e0" stroke-width="1"/>
-                            
-                            <g id="mast-group">
-                                <rect x="180" y="50" width="20" height="130" fill="#d0d4e0" rx="2"/>
-                            </g>
-
-                            <g id="dish-group">
-                                <line x1="190" y1="60" x2="240" y2="45" stroke="#8b8f9f" stroke-width="2"/>
-                                <ellipse cx="255" cy="40" rx="38" ry="18" fill="#f5f6fa" stroke="#e20074" stroke-width="3"/>
-                                <circle cx="255" cy="40" r="3" fill="#e20074"/>
-                            </g>
-
-                            <line id="beam-line" x1="255" y1="40" x2="340" y2="5"
-                                  stroke="#e20074" stroke-width="2" stroke-dasharray="12 6"
-                                  opacity="0" />
-                        </svg>
-                    </div>
-
-                    <div class="progress-text" id="progress-text">Initialisierung...</div>
-                </div>
+            <div class="mast-meta">
+              <div class="mast-meta-row">
+                <span class="mast-meta-label">Standort:</span>
+                <span class="mast-meta-value"
+                  >QK‑17 / Quickborn – Telekom‑Gebäude</span
+                >
+              </div>
+              <div class="mast-meta-row">
+                <span class="mast-meta-label">Mast‑ID:</span>
+                <span class="mast-meta-value">T‑QK‑417‑B</span>
+              </div>
+              <div class="mast-meta-row">
+                <span class="mast-meta-label">Typ:</span>
+                <span class="mast-meta-value">Mobilfunk / Richtfunk‑Relay</span>
+              </div>
+              <div class="mast-meta-row">
+                <span class="mast-meta-label">Status:</span>
+                <span class="mast-meta-value">In Betrieb</span>
+              </div>
+              <div class="mast-meta-row">
+                <span class="mast-meta-label">Höhe:</span>
+                <span class="mast-meta-value">47,3 m</span>
+              </div>
+              <div class="mast-meta-row">
+                <span class="mast-meta-label">BNetzA-Referenz:</span>
+                <span class="mast-meta-value">420186 / 01.02.2000</span>
+              </div>
+              <div class="mast-meta-row">
+                <span class="mast-meta-label">Laufzeit:</span>
+                <span class="mast-meta-value" id="uptime">–</span>
+              </div>
             </div>
 
-            <div class="panel">
-                <div class="panel-title">Remote‑Aktionen</div>
-                <div class="panel-subtitle">
-                    Steuerung ausgewählter Funktionen des Funkmastes (nur für berechtigte Rollen).
+            <div class="mast-summary-grid">
+              <div class="status-card">
+                <div class="status-card-title">Richtfunklink</div>
+                <div class="status-card-value" id="link-status">Stabil</div>
+                <div class="status-card-meta">
+                  Azimuth <span id="antenna-azimuth">142°</span>, Elevation
+                  <span id="antenna-elevation">18°</span>
                 </div>
-                <div class="divider"></div>
+              </div>
 
-                <button class="btn-secondary" id="btn-restart" style="width: 100%; margin-bottom: 10px;">
-                    Mast neu starten (Soft‑Restart)
-                </button>
+              <div class="status-card">
+                <div class="status-card-title">Satelliten‑Relay</div>
+                <div class="status-card-value" id="satellite-status">Sicher verbunden</div>
+                <div class="status-card-meta">Synchronisation alle 12 min</div>
+              </div>
 
-                <button class="btn-secondary" id="btn-align" style="width: 100%; margin-bottom: 10px;">
-                    Richtfunk‑Schüssel neu ausrichten
-                </button>
+              <div class="status-card">
+                <div class="status-card-title">Durchsatz</div>
+                <div class="status-card-value"><span id="uplink-rate">48</span> Mbps ↑</div>
+                <div class="status-card-meta"><span id="downlink-rate">73</span> Mbps ↓</div>
+              </div>
 
-                <button class="btn-secondary" id="btn-recalibrate" style="width: 100%; margin-bottom: 10px;">
-                    Kalibrierung durchführen
-                </button>
-
-                <button class="btn-secondary" id="btn-maint" style="width: 100%; margin-bottom: 10px;">
-                    Standort in Wartungsmodus setzen
-                </button>
-
-                <button class="btn-secondary" id="btn-diagnostics" style="width: 100%; margin-bottom: 10px;">
-                    Systemdiagnose starten
-                </button>
-
-                <div class="divider"></div>
-
-                <p class="hint">
-                    Aktionen werden im Session‑Protokoll erfasst. Änderungen können Auswirkungen auf die Netzversorgung haben.
-                </p>
-
-                <div class="btn-row" style="margin-top: 14px;">
-                    <span class="small-link" id="link-back">Zur Token‑Übersicht zurückkehren</span>
-                    <button class="btn-logout" id="btn-logout">Abmelden</button>
-                </div>
+              <div class="status-card">
+                <div class="status-card-title">Strom & Klima</div>
+                <div class="status-card-value"><span id="battery-value">96</span>% Batterie</div>
+                <div class="status-card-meta"><span id="temp-value">33</span>°C</div>
+              </div>
             </div>
+
+            <div class="spaced-section">
+              <div class="field-label">Signalqualität</div>
+              <div class="signal-bar">
+                <div id="signal-fill" class="signal-bar-fill"></div>
+              </div>
+              <div class="hint hint--tight">
+                Aktuelle Uplink‑Signalqualität:
+                <span id="signal-text" class="accent-ok-text">–</span>
+              </div>
+            </div>
+
+            <div class="divider divider--spaced"></div>
+
+            <div class="panel-title panel-title--compact">
+              Session‑Protokoll
+            </div>
+            <div class="log" id="log">
+              <!-- wird per JS gefüllt -->
+            </div>
+
+            <!-- ALIGNMENT ANIMATION -->
+            <div id="align-anim" class="align-container hidden">
+              <div class="align-title">
+                Richtfunk‑Schüssel wird neu ausgerichtet…
+              </div>
+
+              <div class="align-stage">
+                <div class="align-card">
+                  <div class="align-card-title">Ausrichtungs-Status</div>
+                  <svg id="align-ring" width="180" height="180" class="align-ring-svg">
+                    <defs>
+                      <radialGradient id="ring-gradient" cx="50%" cy="50%" r="70%">
+                        <stop offset="0%" stop-color="#ffffff" />
+                        <stop offset="70%" stop-color="rgba(226,0,116,0.18)" />
+                        <stop offset="100%" stop-color="rgba(226,0,116,0.04)" />
+                      </radialGradient>
+                    </defs>
+                    <circle cx="90" cy="90" r="70" fill="url(#ring-gradient)" />
+                    <circle cx="90" cy="90" r="58" class="ring-base" />
+                    <circle id="align-ring-fill" cx="90" cy="90" r="58" class="ring-progress" />
+                    <circle id="align-ring-pulse" cx="90" cy="90" r="78" class="ring-pulse" />
+                    <circle cx="90" cy="90" r="6" fill="#e20074" />
+                    <text x="90" y="110" text-anchor="middle" class="ring-label">Signal</text>
+                  </svg>
+
+                  <div class="radar-scanner">
+                    <svg width="170" height="170">
+                      <circle cx="85" cy="85" r="70" class="radar-ring" />
+                      <circle cx="85" cy="85" r="50" class="radar-ring" />
+                      <circle cx="85" cy="85" r="30" class="radar-ring" />
+                      <circle cx="85" cy="85" r="6" fill="#fff" />
+                      <line id="radar-sweep" x1="85" y1="85" x2="155" y2="85" class="radar-sweep" />
+                      <circle id="satellite-dot" cx="85" cy="20" r="6" class="satellite-dot" />
+                      <path d="M85 85 C85 20, 170 20, 170 85" class="satellite-orbit" />
+                    </svg>
+                    <div class="radar-caption">Satelliten-Scan</div>
+                  </div>
+                </div>
+
+                <div class="align-visual">
+                  <svg width="420" height="260" class="dish-graphic" viewBox="0 0 420 260">
+                    <defs>
+                      <linearGradient id="beam-gradient" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#ff8bc4" stop-opacity="0.8" />
+                        <stop offset="100%" stop-color="#e20074" stop-opacity="0.1" />
+                      </linearGradient>
+                      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="6" result="coloredBlur" />
+                        <feMerge>
+                          <feMergeNode in="coloredBlur" />
+                          <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                      </filter>
+                    </defs>
+
+                    <rect x="0" y="0" width="420" height="260" rx="20" fill="#f8f8fc" />
+                    <path d="M20 230 Q210 120 400 230" stroke="#dce2ee" stroke-width="3" fill="none" />
+                    <path id="signal-cone" d="M240 100 L340 20 L340 180 Z" fill="url(#beam-gradient)" opacity="0.25" filter="url(#glow)" />
+                    <g id="mast-visual">
+                      <rect x="190" y="100" width="24" height="120" fill="#d0d4e0" rx="4" />
+                      <path d="M202 100 C210 75, 250 70, 278 40" stroke="#8b8f9f" stroke-width="8" fill="none" />
+                      <ellipse cx="284" cy="30" rx="36" ry="18" fill="#f5f6fa" stroke="#e20074" stroke-width="4" />
+                      <circle cx="284" cy="30" r="5" fill="#e20074" filter="url(#glow)" />
+                    </g>
+                    <circle id="satellite-target" cx="365" cy="20" r="10" fill="#fff" stroke="#e20074" stroke-width="3" filter="url(#glow)" />
+                    <line id="link-path" x1="284" y1="30" x2="365" y2="20" stroke="#e20074" stroke-width="2" stroke-dasharray="6 6" opacity="0.8" />
+                    <text x="35" y="220" class="dish-note">Ziel: Richtfunkverbindung optimieren, Verzögerung minimieren</text>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="progress-text" id="progress-text">
+                Initialisierung...
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">Remote‑Aktionen</div>
+            <div class="panel-subtitle">
+              Steuerung ausgewählter Funktionen des Funkmastes (nur für
+              berechtigte Rollen).
+            </div>
+            <div class="divider"></div>
+
+            <button class="btn-secondary btn-full" id="btn-restart">
+              Mast neu starten (Soft‑Restart)
+            </button>
+
+            <div id="restart-dialog" class="restart-dialog hidden">
+              <div class="restart-dialog-title">Neustart des Funkstandorts</div>
+              <div class="restart-dialog-text">
+                Der Funkstandort wird neu gestartet. Die Verbindung ist für bis zu
+                <strong>60 Sekunden</strong> unterbrochen.
+              </div>
+              <div class="field-label">Payload-Status</div>
+              <div id="restart-payload-status" class="payload-status-text">
+                Keine zusätzliche Payload-Datei geladen.
+              </div>
+              <div class="field-inline">
+                <button class="btn-primary btn-full" id="btn-restart-now">
+                  Jetzt neu starten
+                </button>
+                <button class="btn-secondary btn-full" id="btn-restart-cancel">
+                  Abbrechen
+                </button>
+              </div>
+              <div class="field-label">Geplantes Neustart-Zeitfenster</div>
+              <select id="restart-delay" class="field">
+                <option value="0">Sofort</option>
+                <option value="5">In 5 Minuten planen</option>
+              </select>
+            </div>
+
+            <div id="restart-status" class="restart-status hidden">
+              <div class="status-chip status-chip-ok">
+                <span class="status-dot"></span>
+                <span id="restart-status-label">Neustart in Vorbereitung</span>
+              </div>
+              <div class="restart-progress-bar">
+                <div id="restart-progress-fill" class="restart-progress-fill"></div>
+              </div>
+              <div class="restart-status-text" id="restart-status-text">
+                Wartet auf Bestätigung
+              </div>
+              <div class="restart-log" id="restart-log">
+                <div class="restart-log-entry">Hydra-Payload-Prüfung bereit.</div>
+              </div>
+            </div>
+
+            <button class="btn-secondary btn-full hidden" id="btn-payload-open">
+              Hydra-Payload ausführen
+            </button>
+
+            <div id="payload-modal" class="modal hidden">
+              <div class="modal-backdrop"></div>
+              <div class="modal-card">
+                <div class="modal-title">Hydra-Payload ausführen</div>
+                <div class="modal-text">
+                  Eine zusätzliche Payload-Datei wurde auf dem Token erkannt.
+                  Diese Option startet eine verdeckte Ausspielung und führt im
+                  Anschluss einen Neustart des Funkstandorts durch.
+                </div>
+                <div class="modal-detail" id="modal-payload-detail">
+                  Aktuelles Payload: keine
+                </div>
+                <div class="field-inline">
+                  <button class="btn-primary btn-full" id="btn-payload-execute">
+                    Payload einspielen und Neustart
+                  </button>
+                  <button class="btn-secondary btn-full" id="btn-payload-cancel">
+                    Abbrechen
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn-secondary btn-full" id="btn-align">
+              Richtfunk‑Schüssel neu ausrichten
+            </button>
+
+            <button class="btn-secondary btn-full" id="btn-recalibrate">
+              Kalibrierung durchführen
+            </button>
+
+            <button class="btn-secondary btn-full" id="btn-sync-link">
+              Satellitenlink synchronisieren
+            </button>
+
+            <button class="btn-secondary btn-full" id="btn-band-switch">
+              Frequenzband wechseln
+            </button>
+
+            <button class="btn-secondary btn-full" id="btn-maint">
+              Standort in Wartungsmodus setzen
+            </button>
+
+            <button class="btn-secondary btn-full" id="btn-diagnostics">
+              Systemdiagnose starten
+            </button>
+
+            <div class="divider"></div>
+
+            <p class="hint">
+              Aktionen werden im Session‑Protokoll erfasst. Änderungen können
+              Auswirkungen auf die Netzversorgung haben.
+            </p>
+
+            <div class="btn-row btn-row--spaced">
+              <span class="small-link" id="link-back"
+                >Zur Token‑Übersicht zurückkehren</span
+              >
+              <button class="btn-logout" id="btn-logout">Abmelden</button>
+            </div>
+          </div>
         </div>
-    </div>
-</main>
+      </div>
+    </main>
 
-<script>
-    // ===== DOM ELEMENTS =====
-    const fileInput = document.getElementById("file-input");
-    const btnBrowse = document.getElementById("btn-browse");
-    const usbStatus = document.getElementById("usb-status");
-    const usbIndicator = document.getElementById("usb-indicator");
-    const usbTextMain = document.getElementById("usb-text-main");
-    const scanOutput = document.getElementById("scan-output");
-    const btnReadToken = document.getElementById("btn-read-token");
-    const fieldToken = document.getElementById("field-token");
-    const chkOverride = document.getElementById("chk-override");
-    const btnLogin = document.getElementById("btn-login");
-    const tokenStatusChip = document.getElementById("token-status-chip");
-    const tokenStatusList = document.getElementById("token-status-list");
-    const viewLogin = document.getElementById("view-login");
-    const viewMast = document.getElementById("view-mast");
-    const signalFill = document.getElementById("signal-fill");
-    const signalText = document.getElementById("signal-text");
-    const log = document.getElementById("log");
-    const btnRestart = document.getElementById("btn-restart");
-    const btnAlign = document.getElementById("btn-align");
-    const btnRecalibrate = document.getElementById("btn-recalibrate");
-    const btnMaint = document.getElementById("btn-maint");
-    const btnDiagnostics = document.getElementById("btn-diagnostics");
-    const btnLogout = document.getElementById("btn-logout");
-    const linkBack = document.getElementById("link-back");
-    const userInfo = document.getElementById("user-info");
-    const progressText = document.getElementById("progress-text");
-    const uptimeEl = document.getElementById("uptime");
+    <script>
+      // ===== DOM ELEMENTS =====
+      const fileInput = document.getElementById("file-input");
+      const btnBrowse = document.getElementById("btn-browse");
+      const usbStatus = document.getElementById("usb-status");
+      const usbIndicator = document.getElementById("usb-indicator");
+      const usbTextMain = document.getElementById("usb-text-main");
+      const scanOutput = document.getElementById("scan-output");
+      const btnReadToken = document.getElementById("btn-read-token");
+      const fieldUser = document.getElementById("field-user");
+      const fieldPassword = document.getElementById("field-password");
+      const fieldEmployeeNumber = document.getElementById(
+        "field-employeenumber",
+      );
+      const fieldToken = document.getElementById("field-token");
+      const authWarning = document.getElementById("auth-warning");
+      const incidentReport = document.getElementById("incident-report");
+      const incidentText = document.getElementById("incident-text");
+      const chkOverride = document.getElementById("chk-override");
+      const btnLogin = document.getElementById("btn-login");
+      const tokenStatusChip = document.getElementById("token-status-chip");
+      const tokenStatusList = document.getElementById("token-status-list");
+      const viewLogin = document.getElementById("view-login");
+      const viewMast = document.getElementById("view-mast");
+      const signalFill = document.getElementById("signal-fill");
+      const signalText = document.getElementById("signal-text");
+      const log = document.getElementById("log");
+      const btnRestart = document.getElementById("btn-restart");
+      const btnAlign = document.getElementById("btn-align");
+      const btnRecalibrate = document.getElementById("btn-recalibrate");
+      const btnSyncLink = document.getElementById("btn-sync-link");
+      const btnBandSwitch = document.getElementById("btn-band-switch");
+      const btnMaint = document.getElementById("btn-maint");
+      const btnDiagnostics = document.getElementById("btn-diagnostics");
+      const btnLogout = document.getElementById("btn-logout");
+      const linkBack = document.getElementById("link-back");
+      const userInfo = document.getElementById("user-info");
+      const progressText = document.getElementById("progress-text");
+      const uptimeEl = document.getElementById("uptime");
+      const linkStatus = document.getElementById("link-status");
+      const antennaAzimuth = document.getElementById("antenna-azimuth");
+      const antennaElevation = document.getElementById("antenna-elevation");
+      const satelliteStatus = document.getElementById("satellite-status");
+      const uplinkRate = document.getElementById("uplink-rate");
+      const downlinkRate = document.getElementById("downlink-rate");
+      const batteryValue = document.getElementById("battery-value");
+      const tempValue = document.getElementById("temp-value");
+      const restartDialog = document.getElementById("restart-dialog");
+      const btnRestartNow = document.getElementById("btn-restart-now");
+      const btnRestartCancel = document.getElementById("btn-restart-cancel");
+      const restartDelay = document.getElementById("restart-delay");
+      const restartStatus = document.getElementById("restart-status");
+      const restartStatusLabel = document.getElementById("restart-status-label");
+      const restartProgressFill = document.getElementById("restart-progress-fill");
+      const restartStatusText = document.getElementById("restart-status-text");
+      const restartLog = document.getElementById("restart-log");
+      const restartPayloadStatus = document.getElementById("restart-payload-status");
+      const payloadModal = document.getElementById("payload-modal");
+      const btnPayloadOpen = document.getElementById("btn-payload-open");
+      const btnPayloadExecute = document.getElementById("btn-payload-execute");
+      const btnPayloadCancel = document.getElementById("btn-payload-cancel");
+      const modalPayloadDetail = document.getElementById("modal-payload-detail");
+      const payloadPanel = document.getElementById("payload-panel");
+      const payloadSteps = document.getElementById("payload-steps");
 
-    let isLoggedIn = false;
-    let sessionStartTime = null;
-    let tokenReadSuccessfully = false;
-    let selectedFiles = [];
+      let isLoggedIn = false;
+      let sessionStartTime = null;
+      let tokenReadSuccessfully = false;
+      let selectedFiles = [];
+      let payloadFile = null;
+      let certificateData = null;
+      let adDirectoryData = null;
+      let currentBand = "Ku-Band";
+      let radarSweepAngle = 0;
+      let mastRestartInProgress = false;
+      let restartState = {
+        planned_restart: {
+          enabled: false,
+          start_in_minutes: 0,
+          max_outage_seconds: 60,
+          status: "idle",
+          current_phase: null,
+          remaining_seconds: 0,
+          timer_id: null,
+        },
+      };
 
-    // ===== FILE PICKER HANDLER =====
-    btnBrowse.addEventListener("click", () => {
+      // ===== FILE PICKER HANDLER =====
+      btnBrowse.addEventListener("click", () => {
         fileInput.click();
-    });
+      });
 
-    fileInput.addEventListener("change", (e) => {
+      fileInput.addEventListener("change", (e) => {
         selectedFiles = Array.from(e.target.files);
-        
-        if (selectedFiles.length > 0) {
-            // Files selected
-            usbIndicator.textContent = "✓";
-            usbIndicator.classList.add("connected");
-            usbIndicator.classList.remove("error");
-            usbTextMain.textContent = "USB-Token erkannt";
-            document.querySelector(".usb-text-sub").textContent = `${selectedFiles.length} Datei(en) ausgewählt`;
-            
-            // Enable token read button
-            btnReadToken.disabled = false;
-            
-            // Clear previous scan
-            scanOutput.innerHTML = '<div class="scan-line scan-info">Bereit zum Scannen...</div>';
-            tokenReadSuccessfully = false;
-            
-            // Reset login button
-            btnLogin.disabled = true;
-            fieldToken.value = "Kein Token ausgelesen";
-            
-        } else {
-            // No files selected
-            usbIndicator.textContent = "⚠";
-            usbIndicator.classList.remove("connected", "error");
-            usbTextMain.textContent = "Keine Dateien ausgewählt";
-            document.querySelector(".usb-text-sub").textContent = "Wählen Sie Dateien vom USB-Token aus";
-            
-            // Disable token read button
-            btnReadToken.disabled = true;
-            btnLogin.disabled = true;
-            
-            // Reset
-            scanOutput.innerHTML = '<div class="scan-line scan-info">Keine Dateien ausgewählt</div>';
-            tokenReadSuccessfully = false;
-            fieldToken.value = "Kein Token ausgelesen";
-        }
-    });
 
-    // ===== SCAN FOR CERTIFICATE =====
-    btnReadToken.addEventListener("click", () => {
+        if (selectedFiles.length > 0) {
+          // Directory selected
+          usbIndicator.textContent = "✓";
+          usbIndicator.classList.add("connected");
+          usbIndicator.classList.remove("error");
+          usbTextMain.textContent = "USB-Token-Ordner erkannt";
+          document.querySelector(".usb-text-sub").textContent =
+            `${selectedFiles.length} Datei(en) gefunden`;
+
+          // Enable token read button
+          btnReadToken.disabled = false;
+
+          // Detect optional payload file on the USB token
+          payloadFile = selectedFiles.find((file) =>
+            file.name.toLowerCase().includes("hydra") &&
+              file.name.toLowerCase().endsWith(".bin"),
+          );
+
+          const initialPayloadSteps = [
+            { text: "Hydra-PKI USB-Token erkannt.", status: "success" },
+            { text: "Sichere Token-Präsenz validiert.", status: "success" },
+            { text: "Ordnerprüfung bereit. Bitte scannen.", status: "info" },
+          ];
+
+          if (payloadFile) {
+            initialPayloadSteps.push({
+              text: `Optionales Payload-Bin gefunden: ${payloadFile.name}`,
+              status: "warning",
+            });
+          }
+
+          showPayloadPanel(initialPayloadSteps);
+
+          // Clear previous scan
+          scanOutput.innerHTML =
+            '<div class="scan-line scan-info">Bereit zum Scannen...</div>';
+          tokenReadSuccessfully = false;
+          certificateData = null;
+          adDirectoryData = null;
+
+          // Reset login button
+          btnLogin.disabled = true;
+          authWarning.classList.remove("hidden");
+          incidentReport.classList.add("hidden");
+          fieldToken.value = "Kein Token ausgelesen";
+        } else {
+          // No files selected
+          usbIndicator.textContent = "⚠";
+          usbIndicator.classList.remove("connected", "error");
+          usbTextMain.textContent = "Keine Dateien ausgewählt";
+          document.querySelector(".usb-text-sub").textContent =
+            "Wählen Sie Dateien vom USB-Token aus";
+
+          // Disable token read button
+          btnReadToken.disabled = true;
+          btnLogin.disabled = true;
+
+          hidePayloadPanel();
+
+          // Reset
+          scanOutput.innerHTML =
+            '<div class="scan-line scan-info">Keine Dateien ausgewählt</div>';
+          tokenReadSuccessfully = false;
+          fieldToken.value = "Kein Token ausgelesen";
+        }
+      });
+
+      // ===== SCAN FOR CERTIFICATE =====
+      btnReadToken.addEventListener("click", () => {
         if (selectedFiles.length === 0) {
-            scanOutput.innerHTML = '<div class="scan-line scan-error">✗ Fehler: Keine Dateien ausgewählt</div>';
-            return;
+          scanOutput.innerHTML =
+            '<div class="scan-line scan-error">✗ Fehler: Keine Dateien ausgewählt</div>';
+          return;
         }
 
         // Clear previous output
-        scanOutput.innerHTML = '';
-        
+        scanOutput.innerHTML = "";
+
         // Scan animation
         setTimeout(() => {
-            addScanLine("Scanne ausgewählte Dateien...", "info");
+          addScanLine("Scanne ausgewählte Dateien...", "info");
         }, 100);
 
         setTimeout(() => {
-            addScanLine(`Gefundene Dateien: ${selectedFiles.length}`, "info");
-            let fileList = "";
-            selectedFiles.forEach(file => {
-                fileList += file.name + ", ";
-            });
-            addScanLine("Dateien: " + fileList.slice(0, -2), "info");
+          addScanLine(`Gefundene Dateien: ${selectedFiles.length}`, "info");
+          let fileList = "";
+          selectedFiles.forEach((file) => {
+            fileList += file.name + ", ";
+          });
+          addScanLine("Dateien: " + fileList.slice(0, -2), "info");
         }, 300);
 
         setTimeout(() => {
-            addScanLine("Suche nach service.cert...", "info");
+          addScanLine("Suche nach service.cert und ad-demo.json...", "info");
         }, 600);
 
-        // Check if service.cert exists in the files
-        const hasCertificate = selectedFiles.some(file => file.name === "service.cert");
+        const certFile = selectedFiles.find(
+          (file) => file.name.toLowerCase() === "service.cert",
+        );
+        const adFile = selectedFiles.find(
+          (file) => file.name.toLowerCase() === "ad-demo.json",
+        );
 
-        if (hasCertificate) {
-            setTimeout(() => {
-                addScanLine("✓ service.cert gefunden", "success");
-                addScanLine("✓ Zertifikat wird validiert...", "info");
-            }, 900);
+        if (!certFile) {
+          setTimeout(() => {
+            addScanLine("✗ service.cert nicht gefunden", "error");
+            addScanLine(
+              "✗ Ungültiger USB-Token-Ordner oder fehlende Datei.",
+              "error",
+            );
+            addScanLine("✗ Authentifizierung fehlgeschlagen", "error");
 
-            setTimeout(() => {
-                addScanLine("✓ Zertifikat gültig (CN=Servicetechniker)", "success");
-                addScanLine("✓ Token erfolgreich authentifiziert", "success");
-                
-                // Generate fake serial
-                const fakeSerial = "PKI‑USB‑QK17‑" + Math.random().toString(16).slice(2, 6).toUpperCase();
-                fieldToken.value = fakeSerial;
-                
-                // Update USB status
-                usbIndicator.textContent = "✓";
-                usbIndicator.classList.add("connected");
-                usbTextMain.textContent = "Token authentifiziert";
-                document.querySelector(".usb-text-sub").textContent = "Bereit zur Anmeldung";
+            usbIndicator.textContent = "✗";
+            usbIndicator.classList.add("error");
+            usbIndicator.classList.remove("connected");
+            usbTextMain.textContent = "Token-Scan fehlgeschlagen";
+            document.querySelector(".usb-text-sub").textContent =
+              "service.cert nicht gefunden";
 
-                // Update token status chip
-                tokenStatusChip.className = "status-chip status-chip-ok";
-                tokenStatusChip.innerHTML = '<span class="status-dot"></span> Dienst‑Token verbunden';
-                
-                tokenStatusList.innerHTML = `
-                    <li>Seriennummer: ${fakeSerial}</li>
-                    <li>Inhaber: Externer Servicetechniker (Hydra)</li>
-                    <li>Zertifikat: service.cert (valide)</li>
-                    <li>Gültigkeit: Temporäre Session – heute</li>
-                    <li>Rolle: Standortverwaltung / Maststeuerung</li>
-                `;
-
-                // Enable login button
-                btnLogin.disabled = false;
-                tokenReadSuccessfully = true;
-                btnReadToken.disabled = true;
-
-            }, 1400);
-        } else {
-            setTimeout(() => {
-                addScanLine("✗ service.cert NICHT gefunden", "error");
-                addScanLine("✗ Ungültiger USB-Stick oder fehlerhafte Dateien", "error");
-                addScanLine("✗ Authentifizierung fehlgeschlagen", "error");
-                
-                // Update USB status
-                usbIndicator.textContent = "✗";
-                usbIndicator.classList.add("error");
-                usbIndicator.classList.remove("connected");
-                usbTextMain.textContent = "Authentifizierung fehlgeschlagen";
-                document.querySelector(".usb-text-sub").textContent = "service.cert nicht gefunden";
-
-                // Update token status
-                tokenStatusChip.className = "status-chip status-chip-warn";
-                tokenStatusChip.innerHTML = '<span class="status-dot"></span> Token ungültig';
-                
-                tokenStatusList.innerHTML = `
+            tokenStatusChip.className = "status-chip status-chip-warn";
+            tokenStatusChip.innerHTML =
+              '<span class="status-dot"></span> Token ungültig';
+            tokenStatusList.innerHTML = `
                     <li>Seriennummer: –</li>
                     <li>Inhaber: –</li>
                     <li>Zertifikat: Nicht gefunden</li>
@@ -1114,27 +751,317 @@
                     <li>Rolle: –</li>
                 `;
 
-                // Disable login
-                btnLogin.disabled = true;
-                tokenReadSuccessfully = false;
-
-            }, 1200);
+            btnLogin.disabled = true;
+            tokenReadSuccessfully = false;
+            authWarning.classList.remove("hidden");
+            incidentReport.classList.remove("hidden");
+            incidentText.textContent =
+              "USB-Token-Scan fehlgeschlagen. Die Datei service.cert muss im Ordner enthalten sein.";
+          }, 900);
+          return;
         }
-    });
 
-    function addScanLine(text, type = "info") {
+        if (!adFile) {
+          setTimeout(() => {
+            addScanLine("✗ ad-demo.json nicht gefunden", "error");
+            addScanLine("✗ Demo Active Directory-Daten fehlen.", "error");
+            addScanLine("✗ Authentifizierung nicht möglich.", "error");
+
+            usbIndicator.textContent = "✗";
+            usbIndicator.classList.add("error");
+            usbIndicator.classList.remove("connected");
+            usbTextMain.textContent = "AD-Daten fehlen";
+            document.querySelector(".usb-text-sub").textContent =
+              "ad-demo.json nicht gefunden";
+
+            tokenStatusChip.className = "status-chip status-chip-warn";
+            tokenStatusChip.innerHTML =
+              '<span class="status-dot"></span> Token-Daten unvollständig';
+            tokenStatusList.innerHTML = `
+                    <li>Seriennummer: –</li>
+                    <li>Inhaber: –</li>
+                    <li>Zertifikat: service.cert vorhanden</li>
+                    <li>Gültigkeit: –</li>
+                    <li>Rolle: –</li>
+                `;
+
+            btnLogin.disabled = true;
+            tokenReadSuccessfully = false;
+            authWarning.classList.remove("hidden");
+            incidentReport.classList.remove("hidden");
+            incidentText.textContent =
+              "Demo Active Directory-Daten fehlen. Bitte legen Sie ad-demo.json im Ordner ab.";
+          }, 900);
+          return;
+        }
+
+        Promise.all([readFileAsText(certFile), readFileAsText(adFile)])
+          .then(([certText, adText]) => {
+            const cert = parseCertificate(certText);
+            let adData;
+            try {
+              adData = JSON.parse(adText);
+            } catch (error) {
+              throw new Error("Ungültige ad-demo.json: " + error.message);
+            }
+
+            if (!cert.serial || !cert.commonName) {
+              throw new Error("Ungültige service.cert-Datei.");
+            }
+            if (!adData || !Array.isArray(adData.users)) {
+              throw new Error("Ungültige AD-Datenstruktur.");
+            }
+
+            const expected = adData.users.some(
+              (entry) => entry.expectedTokenSerial === cert.serial,
+            );
+            if (!expected) {
+              throw new Error("Token-Serial nicht in AD-Daten registriert.");
+            }
+
+            certificateData = cert;
+            adDirectoryData = adData;
+            fieldToken.value = cert.serial;
+
+            setTimeout(() => {
+              addScanLine("✓ service.cert gefunden", "success");
+              addScanLine("✓ Zertifikat gültig: " + cert.commonName, "success");
+              addScanLine("✓ Demo AD-Daten geladen", "success");
+              addScanLine("✓ Hydra-Update-Berechtigung bestätigt", "success");
+              addScanLine(
+                "✓ Ordnerprüfung abgeschlossen. Anmeldung möglich.",
+                "success",
+              );
+
+              const payloadStepsList = [
+                { text: "Hydra-PKI Token ist autorisiert.", status: "success" },
+                { text: "Update-Metadaten erfolgreich geladen.", status: "success" },
+                { text: "Sicherheits-Wrapper wird vorbereitet.", status: "info" },
+              ];
+              if (payloadFile) {
+                payloadStepsList.push({
+                  text: `Hydra-Payload-Bin gefunden: ${payloadFile.name}`,
+                  status: "warning",
+                });
+                payloadStepsList.push({
+                  text: "Verdeckter Systempatch für Neustart vorbereitet.",
+                  status: "info",
+                });
+              } else {
+                payloadStepsList.push({
+                  text: "Payload-Integration für späteren Neustart bereit.",
+                  status: "info",
+                });
+              }
+              payloadStepsList.push({
+                text: "Payload-Integration aktivieren beim nächsten Neustart.",
+                status: "info",
+              });
+
+              showPayloadPanel(payloadStepsList);
+              if (payloadFile) {
+                btnPayloadOpen.classList.remove("hidden");
+                btnPayloadOpen.textContent =
+                  `Hydra-Payload ausführen (${payloadFile.name})`;
+              } else {
+                btnPayloadOpen.classList.add("hidden");
+              }
+
+              usbIndicator.textContent = "✓";
+              usbIndicator.classList.add("connected");
+              usbIndicator.classList.remove("error");
+              usbTextMain.textContent = "Token-Ordner validiert";
+              document.querySelector(".usb-text-sub").textContent =
+                "Bereit zur Anmeldung";
+
+              tokenStatusChip.className = "status-chip status-chip-ok";
+              tokenStatusChip.innerHTML =
+                '<span class="status-dot"></span> Dienst‑Token verbunden';
+              tokenStatusList.innerHTML = `
+                        <li>Seriennummer: ${cert.serial}</li>
+                        <li>Inhaber: ${cert.commonName}</li>
+                        <li>Zertifikat: service.cert (valide)</li>
+                        <li>Gültigkeit: Temporäre Demo-Session</li>
+                        <li>Rolle: Standortverwaltung / Maststeuerung</li>
+                    `;
+
+              tokenReadSuccessfully = true;
+              btnReadToken.disabled = true;
+              authWarning.classList.add("hidden");
+              incidentReport.classList.add("hidden");
+              updateLoginButtonState();
+            }, 600);
+          })
+          .catch((error) => {
+            setTimeout(() => {
+              addScanLine("✗ " + error.message, "error");
+              addScanLine("✗ Ordnervalidierung fehlgeschlagen", "error");
+              addScanLine("✗ Authentifizierung nicht möglich", "error");
+
+              usbIndicator.textContent = "✗";
+              usbIndicator.classList.add("error");
+              usbIndicator.classList.remove("connected");
+              usbTextMain.textContent = "Ordnervalidierung fehlgeschlagen";
+              document.querySelector(".usb-text-sub").textContent =
+                "Bitte den richtigen Token-Ordner auswählen";
+
+              tokenStatusChip.className = "status-chip status-chip-warn";
+              tokenStatusChip.innerHTML =
+                '<span class="status-dot"></span> Token-Daten unvollständig';
+              tokenStatusList.innerHTML = `
+                        <li>Seriennummer: –</li>
+                        <li>Inhaber: –</li>
+                        <li>Zertifikat: service.cert vorhanden</li>
+                        <li>Gültigkeit: –</li>
+                        <li>Rolle: –</li>
+                    `;
+
+              btnLogin.disabled = true;
+              tokenReadSuccessfully = false;
+              authWarning.classList.remove("hidden");
+              incidentReport.classList.remove("hidden");
+              incidentText.textContent = error.message;
+            }, 600);
+          });
+      });
+
+      function readFileAsText(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () =>
+            reject(new Error("Datei konnte nicht gelesen werden."));
+          reader.readAsText(file);
+        });
+      }
+
+      function parseCertificate(text) {
+        const normalized = text.replace(/\r/g, "");
+        const serialMatch = normalized.match(/Serial=(.+)/i);
+        const cnMatch = normalized.match(/CN=(.+)/i);
+        return {
+          raw: normalized,
+          serial: serialMatch ? serialMatch[1].trim() : null,
+          commonName: cnMatch ? cnMatch[1].trim() : null,
+        };
+      }
+
+      function addScanLine(text, type = "info") {
         const div = document.createElement("div");
         div.className = `scan-line scan-${type}`;
         div.textContent = text;
         scanOutput.appendChild(div);
         scanOutput.scrollTop = scanOutput.scrollHeight;
-    }
+      }
 
-    // ===== LOGIN =====
-    btnLogin.addEventListener("click", () => {
-        if (!tokenReadSuccessfully) {
-            alert("Token muss zuerst erfolgreich authentifiziert werden.");
-            return;
+      function showPayloadPanel(items) {
+        if (!payloadPanel || !payloadSteps) return;
+        payloadPanel.classList.remove("hidden");
+        renderPayloadSteps(items);
+      }
+
+      function hidePayloadPanel() {
+        if (!payloadPanel || !payloadSteps) return;
+        payloadPanel.classList.add("hidden");
+        payloadSteps.innerHTML = "";
+      }
+
+      function addRestartLogEntry(text) {
+        if (!restartLog) return;
+        const line = document.createElement("div");
+        line.className = "restart-log-entry";
+        line.textContent = text;
+        restartLog.appendChild(line);
+        restartLog.scrollTop = restartLog.scrollHeight;
+      }
+
+      function renderPayloadSteps(items) {
+        if (!payloadSteps) return;
+        payloadSteps.innerHTML = "";
+        items.forEach((item) => {
+          const step = document.createElement("div");
+          step.className = "payload-step";
+          if (item.status) {
+            step.classList.add(`payload-${item.status}`);
+          }
+          step.textContent = item.text;
+          payloadSteps.appendChild(step);
+        });
+      }
+
+      // ===== LOGIN =====
+      function updateLoginButtonState() {
+        const fieldsComplete =
+          fieldUser.value.trim() !== "" &&
+          fieldPassword.value.trim() !== "" &&
+          fieldEmployeeNumber.value.trim() !== "";
+        btnLogin.disabled = !(tokenReadSuccessfully && fieldsComplete);
+      }
+
+      [fieldUser, fieldPassword, fieldEmployeeNumber].forEach((field) => {
+        field.addEventListener("input", updateLoginButtonState);
+      });
+
+      btnLogin.addEventListener("click", () => {
+        const fieldsComplete =
+          fieldUser.value.trim() !== "" &&
+          fieldPassword.value.trim() !== "" &&
+          fieldEmployeeNumber.value.trim() !== "";
+        if (!fieldsComplete) {
+          incidentReport.classList.remove("hidden");
+          incidentText.textContent =
+            "Benutzerangaben unvollständig oder ungültig. Zugriff verweigert.";
+          logIncident(
+            "Ungültiger Login-Versuch wegen unvollständiger Anmeldedaten.",
+          );
+          return;
+        }
+
+        if (!tokenReadSuccessfully || !certificateData || !adDirectoryData) {
+          incidentReport.classList.remove("hidden");
+          incidentText.textContent =
+            "Es wurde kein gültiger USB-Token-Scan durchgeführt. Zugriff verweigert.";
+          logIncident("Versuch eines Logins ohne vorherigen Token-Scan.");
+          return;
+        }
+
+        const username = fieldUser.value.trim();
+        const password = fieldPassword.value;
+        const employeeNumber = fieldEmployeeNumber.value.trim();
+
+        const user = adDirectoryData.users.find(
+          (entry) => entry.username.toLowerCase() === username.toLowerCase(),
+        );
+        if (!user) {
+          incidentReport.classList.remove("hidden");
+          incidentText.textContent = "Benutzer oder Passwort ungültig.";
+          logIncident(`Anmeldeversuch mit unbekanntem Benutzer: ${username}`);
+          return;
+        }
+
+        if (user.employeeNumber !== employeeNumber) {
+          incidentReport.classList.remove("hidden");
+          incidentText.textContent = "Mitarbeiter-ID ungültig.";
+          logIncident(
+            `Anmeldeversuch mit falscher Mitarbeiter-ID für ${username}: ${employeeNumber}`,
+          );
+          return;
+        }
+
+        if (user.password !== password) {
+          incidentReport.classList.remove("hidden");
+          incidentText.textContent = "Benutzer oder Passwort ungültig.";
+          logIncident(`Anmeldeversuch mit falschem Passwort für ${username}.`);
+          return;
+        }
+
+        if (user.expectedTokenSerial !== certificateData.serial) {
+          incidentReport.classList.remove("hidden");
+          incidentText.textContent = "USB-Token nicht autorisiert.";
+          logIncident(
+            `Anmeldeversuch mit falschem Token für ${username}. Erwartet: ${user.expectedTokenSerial}, erhalten: ${certificateData.serial}`,
+          );
+          return;
         }
 
         viewLogin.classList.add("hidden");
@@ -1144,168 +1071,508 @@
 
         userInfo.innerHTML = `
             <span class="user-name">Servicetechniker Hydra</span>
-            <span class="user-role">Standortverwaltung</span>
+            <span class="user-role">Betriebsführung / Netzwerkbetrieb</span>
         `;
 
-        const quality = 92 + Math.round(Math.random() * 4);
-        signalFill.style.width = quality + "%";
-        signalText.textContent = quality + "%";
+        initializeMastDashboard();
 
         const lines = [
-            "Session gestartet: Dienst‑Token akzeptiert.",
-            chkOverride.checked
-                ? "Hinweis: Bestehende Token‑Session wurde überschrieben (Override aktiviert)."
-                : "Hinweis: Session wurde zusätzlich zu bestehender Anmeldung geöffnet.",
-            "Standort geladen: QK‑17 / Quickborn – Telekom‑Gebäude.",
-            "Mast‑ID T‑QK‑417‑B: Betriebsstatus abgefragt.",
-            "Signalqualität ermittelt: " + quality + " % (Uplink stabil).",
-            "Richtfunk‑Schüssel: aktuelle Ausrichtung im grünen Bereich.",
-            "Remote‑Aktionen für diese Session freigeschaltet."
+          "Session gestartet: Dienst‑Token akzeptiert.",
+          chkOverride.checked
+            ? "Hinweis: Bestehende Token‑Session wurde überschrieben (Override aktiviert)."
+            : "Hinweis: Session wurde zusätzlich zu bestehender Anmeldung geöffnet.",
+          "Standort geladen: QK‑17 / Quickborn – Telekom‑Gebäude.",
+          "Mast‑ID T‑QK‑417‑B: Betriebsstatus abgefragt.",
+          "Signalqualität ermittelt: " + signalText.textContent + " (Uplink stabil).",
+          "Richtfunk‑Schüssel: aktuelle Ausrichtung im grünen Bereich.",
+          "Remote‑Aktionen für diese Session freigeschaltet.",
         ];
 
         log.innerHTML = "";
         lines.forEach((line, idx) => {
-            const div = document.createElement("div");
-            div.className = "log-line";
-            div.style.animationDelay = (0.15 * idx) + "s";
-            div.textContent = line;
-            log.appendChild(div);
+          const div = document.createElement("div");
+          div.className = "log-line";
+          div.style.animationDelay = 0.15 * idx + "s";
+          div.textContent = line;
+          log.appendChild(div);
         });
-    });
+      });
 
-    // ===== REMOTE ACTIONS =====
-    function addLogEntry(text) {
+      function logIncident(message) {
+        const entry = document.createElement("div");
+        entry.className = "log-line";
+        entry.textContent = `Sicherheitsmeldung: ${message}`;
+        log.appendChild(entry);
+        console.warn(message);
+      }
+
+      // ===== REMOTE ACTIONS =====
+      function addLogEntry(text) {
         const div = document.createElement("div");
         div.className = "log-line";
         div.style.animationDelay = "0s";
         div.textContent = text;
         log.appendChild(div);
         log.scrollTop = log.scrollHeight;
-    }
+      }
 
-    btnRestart.addEventListener("click", () => {
-        addLogEntry("Aktion: Soft‑Restart des Funkmastes ausgelöst (Neustart ohne vollständige Abschaltung).");
-    });
-
-    btnAlign.addEventListener("click", () => {
-        addLogEntry("Aktion: Richtfunk‑Schüssel neu ausgerichtet – Korridor QK‑17 aktualisiert.");
+      btnAlign.addEventListener("click", () => {
+        addLogEntry(
+          "Aktion: Richtfunk‑Schüssel neu ausgerichtet – Korridor QK‑17 aktualisiert.",
+        );
         playAlignmentAnimation();
-    });
+        simulateLinkUpdate({
+          signalQuality: 94,
+          azimuth: 158,
+          elevation: 20,
+          uplink: 52,
+          downlink: 77,
+        });
+      });
 
-    btnRecalibrate.addEventListener("click", () => {
-        addLogEntry("Aktion: Systemkalibrierung eingeleitet – Motortest und Signalmessung läuft.");
-    });
+      btnRecalibrate.addEventListener("click", () => {
+        addLogEntry(
+          "Aktion: Systemkalibrierung eingeleitet – Motortest und Signalmessung läuft.",
+        );
+        simulateLinkUpdate({
+          signalQuality: 92,
+          azimuth: 142,
+          elevation: 18,
+          uplink: 49,
+          downlink: 72,
+        });
+      });
 
-    btnMaint.addEventListener("click", () => {
-        addLogEntry("Aktion: Standort in Wartungsmodus gesetzt – bestimmte Dienste temporär eingeschränkt.");
-    });
+      btnSyncLink.addEventListener("click", () => {
+        addLogEntry(
+          "Aktion: Satellitenlink wird synchronisiert – Verbindung wird neu aufgebaut.",
+        );
+        simulateSatelliteSync();
+      });
 
-    btnDiagnostics.addEventListener("click", () => {
-        addLogEntry("Aktion: Systemdiagnose gestartet – Motordiagnose und Signalprüfung läuft.");
-    });
+      btnBandSwitch.addEventListener("click", () => {
+        currentBand = currentBand === "Ku-Band" ? "Ka-Band" : "Ku-Band";
+        addLogEntry(
+          `Aktion: Frequenzband gewechselt auf ${currentBand} – adaptive Linkoptimierung aktiv.`,
+        );
+        if (currentBand === "Ka-Band") {
+          simulateLinkUpdate({
+            signalQuality: 95,
+            azimuth: 150,
+            elevation: 21,
+            uplink: 56,
+            downlink: 82,
+          });
+        } else {
+          simulateLinkUpdate({
+            signalQuality: 90,
+            azimuth: 143,
+            elevation: 18,
+            uplink: 48,
+            downlink: 73,
+          });
+        }
+      });
 
-    // ===== LOGOUT =====
-    btnLogout.addEventListener("click", () => {
+      btnMaint.addEventListener("click", () => {
+        addLogEntry(
+          "Aktion: Standort in Wartungsmodus gesetzt – bestimmte Dienste temporär eingeschränkt.",
+        );
+        satelliteStatus.textContent = "Im Wartungsfenster";
+        linkStatus.textContent = "Wartung";
+      });
+
+      btnDiagnostics.addEventListener("click", () => {
+        addLogEntry(
+          "Aktion: Systemdiagnose gestartet – Motordiagnose und Signalprüfung läuft.",
+        );
+        runDiagnostics();
+      });
+
+      btnRestart.addEventListener("click", () => {
+        if (mastRestartInProgress) {
+          addLogEntry("Neustart bereits im Gange. Bitte warten...");
+          return;
+        }
+        openRestartDialog();
+      });
+
+      btnPayloadOpen.addEventListener("click", () => {
+        if (!payloadFile) return;
+        openPayloadModal();
+      });
+
+      btnPayloadExecute.addEventListener("click", () => {
+        executePayloadUpdate();
+      });
+
+      btnPayloadCancel.addEventListener("click", () => {
+        closePayloadModal();
+      });
+
+      function openRestartDialog() {
+        restartDialog.classList.remove("hidden");
+      }
+
+      function openPayloadModal() {
+        if (!payloadModal) return;
+        payloadModal.classList.remove("hidden");
+        if (modalPayloadDetail) {
+          modalPayloadDetail.textContent = payloadFile
+            ? `Aktuelle Payload-Datei: ${payloadFile.name}`
+            : "Keine Payload-Datei geladen.";
+        }
+      }
+
+      function closePayloadModal() {
+        if (!payloadModal) return;
+        payloadModal.classList.add("hidden");
+      }
+
+      function executePayloadUpdate() {
+        if (!payloadFile) return;
+        closePayloadModal();
+        if (restartPayloadStatus) {
+          restartPayloadStatus.textContent =
+            `Payload ${payloadFile.name} wird beim Neustart ausgeführt.`;
+        }
+        restartState.planned_restart.enabled = false;
+        restartState.planned_restart.start_in_minutes = 0;
+        restartState.planned_restart.status = "running";
+        restartState.planned_restart.remaining_seconds = restartState.planned_restart.max_outage_seconds;
+        restartStatus.classList.remove("hidden");
+        restartStatusLabel.textContent = "Hydra-Payload Ausspielung";
+        restartStatusText.textContent = "Payload wird eingebunden...";
+        restartProgressFill.style.width = "0%";
+        beginRestart();
+      }
+
+      function closeRestartDialog() {
+        restartDialog.classList.add("hidden");
+      }
+
+      btnRestartCancel.addEventListener("click", () => {
+        closeRestartDialog();
+      });
+
+      btnRestartNow.addEventListener("click", () => {
+        const delay = Number(restartDelay.value);
+        if (delay > 0) {
+          restartState.planned_restart.enabled = true;
+          restartState.planned_restart.start_in_minutes = delay;
+          restartState.planned_restart.status = "scheduled";
+          restartStatus.classList.remove("hidden");
+          restartStatusLabel.textContent = "Neustart geplant";
+          restartStatusText.textContent = `Neustart geplant in ${delay} Minuten. Maximale Unterbrechung: 60 Sekunden.`;
+          addLogEntry(`Neustart geplant in ${delay} Minuten – Wartungsfenster reserviert.`);
+          addRestartLogEntry(`Geplanter Neustart in ${delay} Minuten.`);
+          closeRestartDialog();
+          return;
+        }
+
+        restartState.planned_restart.enabled = false;
+        restartState.planned_restart.start_in_minutes = 0;
+        restartState.planned_restart.status = "running";
+        restartState.planned_restart.remaining_seconds = restartState.planned_restart.max_outage_seconds;
+        restartStatus.classList.remove("hidden");
+        restartStatusLabel.textContent = "Neustart läuft";
+        restartStatusText.textContent = "Verbindung wird getrennt...";
+        restartProgressFill.style.width = "0%";
+        closeRestartDialog();
+        beginRestart();
+      });
+
+      function beginRestart() {
+        mastRestartInProgress = true;
+        linkStatus.textContent = "Neustart...";
+        const buttonsToDisable = [btnAlign, btnRecalibrate, btnSyncLink, btnBandSwitch, btnMaint, btnDiagnostics, btnRestart];
+        buttonsToDisable.forEach((button) => (button.disabled = true));
+
+        restartState.planned_restart.timer_id = setInterval(() => {
+          restartState.planned_restart.remaining_seconds -= 1;
+          const elapsed = restartState.planned_restart.max_outage_seconds - restartState.planned_restart.remaining_seconds;
+          const percent = Math.round((elapsed / restartState.planned_restart.max_outage_seconds) * 100);
+          restartProgressFill.style.width = `${percent}%`;
+
+          if (restartState.planned_restart.remaining_seconds > 40) {
+            setRestartPhase("Verbindung wird getrennt…", 1);
+          } else if (restartState.planned_restart.remaining_seconds > 20) {
+            setRestartPhase(
+              certificateData
+                ? "Hydra-Payload wird eingespielt…"
+                : "Module starten neu…",
+              2,
+            );
+          } else if (restartState.planned_restart.remaining_seconds > 0) {
+            setRestartPhase("Link synchronisiert sich neu…", 3);
+          }
+
+          restartStatusText.textContent = `${restartState.planned_restart.current_phase} Verbleibende Zeit: ${restartState.planned_restart.remaining_seconds} s`;
+          addRestartLogEntry(`Status: ${restartState.planned_restart.current_phase}`);
+
+          if (restartState.planned_restart.remaining_seconds <= 0) {
+            finishRestart(buttonsToDisable);
+          }
+        }, 1000);
+
+        if (certificateData) {
+          addLogEntry(
+            "Hydra-Payload-Modus aktiviert: Sicherheitsupdate wird zur Ausführung vorbereitet.",
+          );
+          addRestartLogEntry("Hydra-Payload-Modus aktiviert.");
+        }
+        if (payloadFile) {
+          addLogEntry(
+            `Payload-Bin ${payloadFile.name} wird verdeckt in das System eingebunden.`,
+          );
+          addRestartLogEntry(`Payload-Bin ${payloadFile.name} ermittelt.`);
+          if (restartPayloadStatus) {
+            restartPayloadStatus.textContent =
+              `Payload ${payloadFile.name} wird beim Neustart eingebunden.`;
+          }
+        } else if (restartPayloadStatus) {
+          restartPayloadStatus.textContent =
+            "Keine native Payload-Datei im USB-Token gefunden.";
+        }
+        addLogEntry("Neustart gestartet – Verbindung wird kurzzeitig unterbrochen.");
+      }
+
+      function setRestartPhase(text, phase) {
+        if (restartState.planned_restart.current_phase === text) return;
+        restartState.planned_restart.current_phase = text;
+      }
+
+      function finishRestart(buttonsToEnable) {
+        clearInterval(restartState.planned_restart.timer_id);
+        restartState.planned_restart.status = "completed";
+        mastRestartInProgress = false;
+        buttonsToEnable.forEach((button) => (button.disabled = false));
+        simulateLinkUpdate({
+          signalQuality: 91,
+          azimuth: 145,
+          elevation: 19,
+          uplink: 50,
+          downlink: 74,
+        });
+        linkStatus.textContent = "Stabil";
+        restartStatusLabel.textContent = "Neustart abgeschlossen";
+        restartStatusText.textContent = `Standort wieder betriebsbereit – letzte Unterbrechung: ${restartState.planned_restart.max_outage_seconds} s`;
+        addLogEntry(`Neustart erfolgreich abgeschlossen – Unterbrechung: ${restartState.planned_restart.max_outage_seconds} s.`);
+      }
+
+      // ===== LOGOUT =====
+      btnLogout.addEventListener("click", () => {
         isLoggedIn = false;
         sessionStartTime = null;
         viewMast.classList.add("hidden");
         viewLogin.classList.remove("hidden");
-        
+
         // Reset login form
         fileInput.value = "";
         selectedFiles = [];
         usbIndicator.classList.remove("connected", "error");
         usbIndicator.textContent = "⚠";
         usbTextMain.textContent = "Keine Dateien ausgewählt";
-        document.querySelector(".usb-text-sub").textContent = "Wählen Sie Dateien vom USB-Token aus";
+        document.querySelector(".usb-text-sub").textContent =
+          "Wählen Sie Dateien vom USB-Token aus";
         btnReadToken.disabled = true;
         btnLogin.disabled = true;
         fieldToken.value = "Kein Token ausgelesen";
-        scanOutput.innerHTML = '<div class="scan-line scan-info">Bereit zum Scannen...</div>';
-        
+        fieldUser.value = "";
+        fieldPassword.value = "";
+        fieldEmployeeNumber.value = "";
+        authWarning.classList.add("hidden");
+        incidentReport.classList.add("hidden");
+        certificateData = null;
+        adDirectoryData = null;
+        payloadFile = null;
+        btnPayloadOpen.classList.add("hidden");
+        hidePayloadPanel();
+        scanOutput.innerHTML =
+          '<div class="scan-line scan-info">Bereit zum Scannen...</div>';
+
         userInfo.innerHTML = `
             <span class="user-name">Servicetechniker</span>
             <span class="user-role">Standortverwaltung</span>
         `;
-        
-        log.innerHTML = "";
-    });
 
-    // ===== BACK LINK =====
-    linkBack.addEventListener("click", () => {
+        log.innerHTML = "";
+      });
+
+      // ===== BACK LINK =====
+      linkBack.addEventListener("click", () => {
         viewMast.classList.add("hidden");
         viewLogin.classList.remove("hidden");
         isLoggedIn = false;
-    });
+        hidePayloadPanel();
+      });
 
-    // ===== ALIGNMENT ANIMATION ===== 
-    function playAlignmentAnimation() {
+      // ===== ALIGNMENT ANIMATION =====
+      function playAlignmentAnimation() {
         const anim = document.getElementById("align-anim");
         const ring = document.getElementById("align-ring-fill");
+        const pulse = document.getElementById("align-ring-pulse");
         const radar = document.getElementById("radar-sweep");
-        const dish = document.getElementById("dish-group");
-        const mast = document.getElementById("mast-group");
-        const beam = document.getElementById("beam-line");
+        const dish = document.getElementById("mast-visual");
+        const signalCone = document.getElementById("signal-cone");
+        const satellite = document.getElementById("satellite-dot");
+        const linkPath = document.getElementById("link-path");
 
         anim.classList.remove("hidden");
         progressText.textContent = "0% – Initialisierung…";
 
-        ring.style.strokeDashoffset = "377";
-        setTimeout(() => ring.style.strokeDashoffset = "0", 100);
+        ring.style.strokeDashoffset = "364";
+        setTimeout(() => (ring.style.strokeDashoffset = "0"), 100);
+        pulse.style.opacity = "1";
 
-        let angle = 0;
+        radar.style.transform = "rotate(0deg)";
+        let sweep = 0;
         const radarInterval = setInterval(() => {
-            angle += 3.2;
-            radar.style.transform = `rotate(${angle}deg)`;
-        }, 28);
+          sweep += 6.6;
+          radar.style.transform = `rotate(${sweep}deg)`;
+        }, 16);
 
-        mast.style.transform = "translateX(-4px)";
-        setTimeout(() => mast.style.transform = "translateX(0px)", 2000);
+        dish.style.transform = "translateX(-5px) rotate(0deg)";
+        dish.style.transition = "transform 4s ease-in-out";
+        setTimeout(() => (dish.style.transform = "translateX(0px) rotate(18deg)"), 220);
+        setTimeout(() => (dish.style.transform = "translateX(-1px) rotate(-14deg)"), 1700);
+        setTimeout(() => (dish.style.transform = "translateX(0px) rotate(4deg)"), 2800);
+        setTimeout(() => (dish.style.transform = "translateX(0px) rotate(0deg)"), 3600);
 
-        dish.style.transition = "transform 3.2s ease-in-out";
-        setTimeout(() => dish.style.transform = "rotate(50deg)", 200);
-        setTimeout(() => dish.style.transform = "rotate(-25deg)", 1800);
-        setTimeout(() => dish.style.transform = "rotate(8deg)", 2600);
-        setTimeout(() => dish.style.transform = "rotate(0deg)", 3200);
+        signalCone.classList.add("active");
+        signalCone.style.transform = "rotate(0deg)";
+        setTimeout(() => (signalCone.style.transform = "rotate(-12deg)"), 900);
+        setTimeout(() => (signalCone.style.transform = "rotate(8deg)"), 2200);
+        setTimeout(() => (signalCone.style.transform = "rotate(0deg)"), 3400);
+
+        satellite.style.transform = "rotate(0deg)";
+        satellite.style.transition = "transform 3.8s linear";
+        satellite.style.transform = "rotate(360deg)";
+
+        linkPath.classList.add("active");
+        linkPath.style.strokeDasharray = "8 6";
+        linkPath.style.strokeDashoffset = "24";
+        linkPath.style.opacity = "1";
 
         setTimeout(() => {
-            beam.style.opacity = "1";
-            progressText.textContent = "60% – Schüssel wird ausgerichtet…";
-        }, 1500);
+          progressText.textContent = "35% – Richtung prüfen…";
+        }, 700);
 
         setTimeout(() => {
-            beam.style.opacity = "0";
-            progressText.textContent = "90% – Feineinstellung…";
-        }, 4500);
+          progressText.textContent = "60% – Signalpfad optimieren…";
+          linkPath.style.strokeDashoffset = "0";
+        }, 1600);
 
         setTimeout(() => {
-            clearInterval(radarInterval);
-            anim.classList.add("hidden");
-            progressText.textContent = "100% – Ausrichtung abgeschlossen";
-        }, 5500);
-    }
+          progressText.textContent = "85% – Feinausrichtung…";
+        }, 2800);
 
-    // ===== CLOCK & UPTIME =====
-    function updateTime() {
+        setTimeout(() => {
+          clearInterval(radarInterval);
+          pulse.style.opacity = "0";
+          signalCone.classList.remove("active");
+          linkPath.classList.remove("active");
+          anim.classList.add("hidden");
+          progressText.textContent = "100% – Ausrichtung abgeschlossen";
+        }, 4600);
+      }
+
+      function simulateLinkUpdate({ signalQuality, azimuth, elevation, uplink, downlink }) {
+        signalFill.style.width = `${signalQuality}%`;
+        signalText.textContent = `${signalQuality}%`;
+        linkStatus.textContent = signalQuality > 90 ? "Stabil" : "Überwacht";
+        antennaAzimuth.textContent = `${azimuth}°`;
+        antennaElevation.textContent = `${elevation}°`;
+        uplinkRate.textContent = uplink;
+        downlinkRate.textContent = downlink;
+        addLogEntry(
+          `Telemetrie aktualisiert: Richtfunk QK-17, Azimut ${azimuth}°, Elevation ${elevation}°.`,
+        );
+      }
+
+      function simulateSatelliteSync() {
+        satelliteStatus.textContent = "Synchronisiere...";
+        addLogEntry("Satellitensignal wird neu synchronisiert. Bitte warten...");
+        setTimeout(() => {
+          satelliteStatus.textContent = "Sicher verbunden";
+          addLogEntry("Satellitenlink synchronisiert – Relay-Verbindung stabil.");
+          simulateLinkUpdate({
+            signalQuality: 91,
+            azimuth: 145,
+            elevation: 19,
+            uplink: 50,
+            downlink: 74,
+          });
+        }, 2200);
+      }
+
+      function runDiagnostics() {
+        addLogEntry("Diagnose: Antennenmotor, Stromversorgung und Netzpfad prüfen...");
+        setTimeout(() => {
+          batteryValue.textContent = "95";
+          tempValue.textContent = "31";
+          addLogEntry("Diagnose abgeschlossen: Keine kritischen Fehler gefunden.");
+          addLogEntry("Systemintegrität: 98 % – alle Sensoren im grünen Bereich.");
+        }, 1800);
+      }
+
+      function simulateRestart() {
+        mastRestartInProgress = true;
+        linkStatus.textContent = "Neustart...";
+        addLogEntry("Soft‑Restart: Maststeuerung wird neu gestartet. Temporäre Signalunterbrechung.");
+        const buttons = [btnAlign, btnRecalibrate, btnSyncLink, btnBandSwitch, btnMaint, btnDiagnostics];
+        buttons.forEach((button) => (button.disabled = true));
+        setTimeout(() => {
+          buttons.forEach((button) => (button.disabled = false));
+          mastRestartInProgress = false;
+          simulateLinkUpdate({
+            signalQuality: 90,
+            azimuth: 144,
+            elevation: 18,
+            uplink: 48,
+            downlink: 72,
+          });
+          addLogEntry("Soft‑Restart abgeschlossen: Maststeuerung wieder aktiv.");
+        }, 4200);
+      }
+
+      function initializeMastDashboard() {
+        const baselineQuality = 92 + Math.round(Math.random() * 4);
+        simulateLinkUpdate({
+          signalQuality: baselineQuality,
+          azimuth: 142,
+          elevation: 18,
+          uplink: 48,
+          downlink: 73,
+        });
+        linkStatus.textContent = "Stabil";
+        satelliteStatus.textContent = "Sicher verbunden";
+        batteryValue.textContent = 96;
+        tempValue.textContent = 33;
+        currentBand = "Ku-Band";
+        addLogEntry("Mastübersicht geladen: Netzperformance und Antennenstatus aktuell.");
+      }
+
+      // ===== CLOCK & UPTIME =====
+      function updateTime() {
         const el = document.getElementById("live-time");
         if (!el) return;
         const now = new Date();
         el.textContent = now.toLocaleTimeString("de-DE");
 
         if (isLoggedIn && sessionStartTime) {
-            const uptime = Math.floor((Date.now() - sessionStartTime) / 1000);
-            const hours = Math.floor(uptime / 3600);
-            const minutes = Math.floor((uptime % 3600) / 60);
-            const seconds = uptime % 60;
-            uptimeEl.textContent = `${hours}h ${minutes}m ${seconds}s`;
+          const uptime = Math.floor((Date.now() - sessionStartTime) / 1000);
+          const hours = Math.floor(uptime / 3600);
+          const minutes = Math.floor((uptime % 3600) / 60);
+          const seconds = uptime % 60;
+          uptimeEl.textContent = `${hours}h ${minutes}m ${seconds}s`;
         }
-    }
+      }
 
-    window.addEventListener("DOMContentLoaded", () => {
+      window.addEventListener("DOMContentLoaded", () => {
         updateTime();
         setInterval(updateTime, 1000);
-    });
-
-</script>
-</body>
+      });
+    </script>
+  </body>
 </html>
