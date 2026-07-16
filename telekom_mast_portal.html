@@ -102,19 +102,15 @@
               <div class="scan-line scan-info">Bereit zum Scannen…</div>
             </div>
 
-            <div id="payload-panel" class="payload-panel hidden">
-              <div class="payload-header">
-                <span class="payload-badge">hydra-pki</span>
-                <div>
-                  <div class="payload-title">Hydra PKI Payload-Check</div>
-                  <div class="payload-subtitle">
-                    Token-Daten und Update-Metadaten werden vorbereitet.
-                  </div>
-                </div>
+            <div id="validation-panel" class="validation-panel hidden" aria-live="polite">
+              <div class="validation-header">
+                <span class="validation-title">Sicherheitsprüfung</span>
               </div>
-              <div class="payload-steps" id="payload-steps">
-                <div class="payload-step">Warte auf USB-Token-Scan…</div>
-              </div>
+              <ol class="validation-steps" id="validation-steps" aria-label="Prüfungsschritte"></ol>
+              <button class="vdiag-toggle" id="vdiag-toggle" aria-expanded="false" aria-controls="vdiag-content">
+                Diagnose anzeigen
+              </button>
+              <div id="vdiag-content" class="vdiag-content hidden"></div>
             </div>
 
             <div id="auth-warning" class="warning-box hidden">
@@ -426,10 +422,6 @@
                 Der Funkstandort wird neu gestartet. Die Verbindung ist für bis zu
                 <strong>60 Sekunden</strong> unterbrochen.
               </div>
-              <div class="field-label">Payload-Status</div>
-              <div id="restart-payload-status" class="payload-status-text">
-                Keine zusätzliche Payload-Datei geladen.
-              </div>
               <div class="field-inline">
                 <button class="btn-primary btn-full" id="btn-restart-now">
                   Jetzt neu starten
@@ -457,34 +449,7 @@
                 Wartet auf Bestätigung
               </div>
               <div class="restart-log" id="restart-log">
-                <div class="restart-log-entry">Hydra-Payload-Prüfung bereit.</div>
-              </div>
-            </div>
-
-            <button class="btn-secondary btn-full hidden" id="btn-payload-open">
-              Hydra-Payload ausführen
-            </button>
-
-            <div id="payload-modal" class="modal hidden">
-              <div class="modal-backdrop"></div>
-              <div class="modal-card">
-                <div class="modal-title">Hydra-Payload ausführen</div>
-                <div class="modal-text">
-                  Eine zusätzliche Payload-Datei wurde auf dem Token erkannt.
-                  Diese Option startet eine verdeckte Ausspielung und führt im
-                  Anschluss einen Neustart des Funkstandorts durch.
-                </div>
-                <div class="modal-detail" id="modal-payload-detail">
-                  Aktuelles Payload: keine
-                </div>
-                <div class="field-inline">
-                  <button class="btn-primary btn-full" id="btn-payload-execute">
-                    Payload einspielen und Neustart
-                  </button>
-                  <button class="btn-secondary btn-full" id="btn-payload-cancel">
-                    Abbrechen
-                  </button>
-                </div>
+                <div class="restart-log-entry">Neustart-Protokoll bereit.</div>
               </div>
             </div>
 
@@ -586,20 +551,21 @@
       const restartProgressFill = document.getElementById("restart-progress-fill");
       const restartStatusText = document.getElementById("restart-status-text");
       const restartLog = document.getElementById("restart-log");
-      const restartPayloadStatus = document.getElementById("restart-payload-status");
-      const payloadModal = document.getElementById("payload-modal");
-      const btnPayloadOpen = document.getElementById("btn-payload-open");
-      const btnPayloadExecute = document.getElementById("btn-payload-execute");
-      const btnPayloadCancel = document.getElementById("btn-payload-cancel");
-      const modalPayloadDetail = document.getElementById("modal-payload-detail");
-      const payloadPanel = document.getElementById("payload-panel");
-      const payloadSteps = document.getElementById("payload-steps");
+      const restartPayloadStatus = null; // removed
+      const payloadModal = null; // removed
+      const btnPayloadOpen = null; // removed
+      const btnPayloadExecute = null; // removed
+      const btnPayloadCancel = null; // removed
+      const modalPayloadDetail = null; // removed
+      const validationPanel = document.getElementById("validation-panel");
+      const validationSteps = document.getElementById("validation-steps");
+      const vdiagToggle = document.getElementById("vdiag-toggle");
+      const vdiagContent = document.getElementById("vdiag-content");
 
       let isLoggedIn = false;
       let sessionStartTime = null;
       let tokenReadSuccessfully = false;
       let selectedFiles = [];
-      let payloadFile = null;
       let certificateData = null;
       let adDirectoryData = null;
       let currentBand = "Ku-Band";
@@ -819,62 +785,32 @@
             fieldToken.value = cert.serial;
 
             setTimeout(() => {
-              addScanLine("✓ service.cert gefunden", "success");
-              addScanLine(
-                "✓ Zertifikat gültig: " + cert.commonName,
-                "success",
-              );
-              addScanLine("✓ Demo AD-Daten geladen", "success");
-              addScanLine(
-                "✓ Hydra-Update-Berechtigung bestätigt",
-                "success",
-              );
-              addScanLine(
-                "✓ Token-Prüfung abgeschlossen. Anmeldung möglich.",
-                "success",
-              );
+              addScanLine("✓ Token erkannt", "success");
+              addScanLine("✓ service.cert gelesen", "success");
+              addScanLine("✓ ad-demo.json validiert", "success");
+              addScanLine("✓ Zertifikatskette geprüft", "success");
+              addScanLine("✓ Anmeldung freigegeben", "success");
 
-              const payloadStepsList = [
-                {
-                  text: "Hydra-PKI Token ist autorisiert.",
-                  status: "success",
-                },
-                {
-                  text: "Update-Metadaten erfolgreich geladen.",
-                  status: "success",
-                },
-                {
-                  text: "Sicherheits-Wrapper wird vorbereitet.",
-                  status: "info",
-                },
+              const now = new Date();
+              const ts = (offsetMs) => {
+                const d = new Date(now.getTime() - offsetMs);
+                return d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+              };
+              const validationItems = [
+                { text: "Token erkannt", status: "success", time: ts(4000) },
+                { text: "service.cert gelesen", status: "success", time: ts(3000) },
+                { text: "ad-demo.json validiert", status: "success", time: ts(2000) },
+                { text: "Zertifikatskette geprüft", status: "success", time: ts(1000) },
+                { text: "Anmeldung freigegeben", status: "success", time: ts(0) },
               ];
-              if (payloadFile) {
-                payloadStepsList.push({
-                  text: `Hydra-Payload-Bin gefunden: ${payloadFile.name}`,
-                  status: "warning",
-                });
-                payloadStepsList.push({
-                  text: "Verdeckter Systempatch für Neustart vorbereitet.",
-                  status: "info",
-                });
-              } else {
-                payloadStepsList.push({
-                  text: "Payload-Integration für späteren Neustart bereit.",
-                  status: "info",
-                });
-              }
-              payloadStepsList.push({
-                text: "Payload-Integration aktivieren beim nächsten Neustart.",
-                status: "info",
-              });
+              const diagText =
+                `Seriennummer : ${cert.serial}\n` +
+                `Inhaber      : ${cert.commonName}\n` +
+                `Zertifikat   : service.cert (valide)\n` +
+                `AD-Quelle    : ad-demo.json\n` +
+                `Rollenprüfung: Standortverwaltung / Maststeuerung`;
 
-              showPayloadPanel(payloadStepsList);
-              if (payloadFile) {
-                btnPayloadOpen.classList.remove("hidden");
-                btnPayloadOpen.textContent = `Hydra-Payload ausführen (${payloadFile.name})`;
-              } else {
-                btnPayloadOpen.classList.add("hidden");
-              }
+              showValidationPanel(validationItems, diagText);
 
               setTokenStatus(
                 "success",
@@ -944,7 +880,7 @@
         authWarning.classList.remove("hidden");
         incidentReport.classList.add("hidden");
         fieldToken.value = "Kein Token ausgelesen";
-        hidePayloadPanel();
+        hideValidationPanel();
       }
 
       // Primary scan button – uses File System Access API when available
@@ -960,11 +896,6 @@
               }
             }
             selectedFiles = files;
-            payloadFile = files.find(
-              (f) =>
-                f.name.toLowerCase().includes("hydra") &&
-                f.name.toLowerCase().endsWith(".bin"),
-            );
             prepareForScan();
             runTokenScan();
           } catch (e) {
@@ -990,11 +921,6 @@
       fileInput.addEventListener("change", (e) => {
         selectedFiles = Array.from(e.target.files);
         if (selectedFiles.length > 0) {
-          payloadFile = selectedFiles.find(
-            (f) =>
-              f.name.toLowerCase().includes("hydra") &&
-              f.name.toLowerCase().endsWith(".bin"),
-          );
           btnScanToken.disabled = true;
           prepareForScan();
           runTokenScan();
@@ -1043,39 +969,64 @@
         scanOutput.scrollTop = scanOutput.scrollHeight;
       }
 
-      function showPayloadPanel(items) {
-        if (!payloadPanel || !payloadSteps) return;
-        payloadPanel.classList.remove("hidden");
-        renderPayloadSteps(items);
+      function showValidationPanel(items, diagText) {
+        if (!validationPanel || !validationSteps) return;
+        validationPanel.classList.remove("hidden");
+        renderValidationSteps(items);
+        if (vdiagContent && diagText) {
+          vdiagContent.textContent = diagText;
+        }
       }
 
-      function hidePayloadPanel() {
-        if (!payloadPanel || !payloadSteps) return;
-        payloadPanel.classList.add("hidden");
-        payloadSteps.innerHTML = "";
+      function hideValidationPanel() {
+        if (!validationPanel || !validationSteps) return;
+        validationPanel.classList.add("hidden");
+        validationSteps.innerHTML = "";
+        if (vdiagContent) {
+          vdiagContent.textContent = "";
+          vdiagContent.classList.add("hidden");
+        }
+        if (vdiagToggle) {
+          vdiagToggle.setAttribute("aria-expanded", "false");
+          vdiagToggle.textContent = "Diagnose anzeigen";
+        }
       }
 
-      function addRestartLogEntry(text) {
+      if (vdiagToggle && vdiagContent) {
+        vdiagToggle.addEventListener("click", () => {
+          const expanded = vdiagToggle.getAttribute("aria-expanded") === "true";
+          if (expanded) {
+            vdiagContent.classList.add("hidden");
+            vdiagToggle.setAttribute("aria-expanded", "false");
+            vdiagToggle.textContent = "Diagnose anzeigen";
+          } else {
+            vdiagContent.classList.remove("hidden");
+            vdiagToggle.setAttribute("aria-expanded", "true");
+            vdiagToggle.textContent = "Diagnose ausblenden";
+          }
+        });
+      }
+
+      function renderValidationSteps(items) {
+        if (!validationSteps) return;
+        validationSteps.innerHTML = "";
+        const icons = { success: "✓", error: "✗", warning: "!", info: "i" };
+        items.forEach((item) => {
+          const li = document.createElement("li");
+          li.className = `vstep vstep-${item.status || "info"}`;
+          li.innerHTML =
+            `<span class="vstep-time">${item.time || ""}</span>` +
+            `<span class="vstep-icon" aria-hidden="true">${icons[item.status] || "i"}</span>` +
+            `<span class="vstep-text">${item.text}</span>`;
+          validationSteps.appendChild(li);
+        });
+      }
         if (!restartLog) return;
         const line = document.createElement("div");
         line.className = "restart-log-entry";
         line.textContent = text;
         restartLog.appendChild(line);
         restartLog.scrollTop = restartLog.scrollHeight;
-      }
-
-      function renderPayloadSteps(items) {
-        if (!payloadSteps) return;
-        payloadSteps.innerHTML = "";
-        items.forEach((item) => {
-          const step = document.createElement("div");
-          step.className = "payload-step";
-          if (item.status) {
-            step.classList.add(`payload-${item.status}`);
-          }
-          step.textContent = item.text;
-          payloadSteps.appendChild(step);
-        });
       }
 
       // ===== LOGIN =====
@@ -1159,7 +1110,7 @@
         sessionStartTime = Date.now();
 
         userInfo.innerHTML = `
-            <span class="user-name">Servicetechniker Hydra</span>
+            <span class="user-name">Servicetechniker</span>
             <span class="user-role">Betriebsführung / Netzwerkbetrieb</span>
         `;
 
@@ -1286,54 +1237,8 @@
         openRestartDialog();
       });
 
-      btnPayloadOpen.addEventListener("click", () => {
-        if (!payloadFile) return;
-        openPayloadModal();
-      });
-
-      btnPayloadExecute.addEventListener("click", () => {
-        executePayloadUpdate();
-      });
-
-      btnPayloadCancel.addEventListener("click", () => {
-        closePayloadModal();
-      });
-
       function openRestartDialog() {
         restartDialog.classList.remove("hidden");
-      }
-
-      function openPayloadModal() {
-        if (!payloadModal) return;
-        payloadModal.classList.remove("hidden");
-        if (modalPayloadDetail) {
-          modalPayloadDetail.textContent = payloadFile
-            ? `Aktuelle Payload-Datei: ${payloadFile.name}`
-            : "Keine Payload-Datei geladen.";
-        }
-      }
-
-      function closePayloadModal() {
-        if (!payloadModal) return;
-        payloadModal.classList.add("hidden");
-      }
-
-      function executePayloadUpdate() {
-        if (!payloadFile) return;
-        closePayloadModal();
-        if (restartPayloadStatus) {
-          restartPayloadStatus.textContent =
-            `Payload ${payloadFile.name} wird beim Neustart ausgeführt.`;
-        }
-        restartState.planned_restart.enabled = false;
-        restartState.planned_restart.start_in_minutes = 0;
-        restartState.planned_restart.status = "running";
-        restartState.planned_restart.remaining_seconds = restartState.planned_restart.max_outage_seconds;
-        restartStatus.classList.remove("hidden");
-        restartStatusLabel.textContent = "Hydra-Payload Ausspielung";
-        restartStatusText.textContent = "Payload wird eingebunden...";
-        restartProgressFill.style.width = "0%";
-        beginRestart();
       }
 
       function closeRestartDialog() {
@@ -1386,12 +1291,7 @@
           if (restartState.planned_restart.remaining_seconds > 40) {
             setRestartPhase("Verbindung wird getrennt…", 1);
           } else if (restartState.planned_restart.remaining_seconds > 20) {
-            setRestartPhase(
-              certificateData
-                ? "Hydra-Payload wird eingespielt…"
-                : "Module starten neu…",
-              2,
-            );
+            setRestartPhase("Module starten neu…", 2);
           } else if (restartState.planned_restart.remaining_seconds > 0) {
             setRestartPhase("Link synchronisiert sich neu…", 3);
           }
@@ -1404,25 +1304,6 @@
           }
         }, 1000);
 
-        if (certificateData) {
-          addLogEntry(
-            "Hydra-Payload-Modus aktiviert: Sicherheitsupdate wird zur Ausführung vorbereitet.",
-          );
-          addRestartLogEntry("Hydra-Payload-Modus aktiviert.");
-        }
-        if (payloadFile) {
-          addLogEntry(
-            `Payload-Bin ${payloadFile.name} wird verdeckt in das System eingebunden.`,
-          );
-          addRestartLogEntry(`Payload-Bin ${payloadFile.name} ermittelt.`);
-          if (restartPayloadStatus) {
-            restartPayloadStatus.textContent =
-              `Payload ${payloadFile.name} wird beim Neustart eingebunden.`;
-          }
-        } else if (restartPayloadStatus) {
-          restartPayloadStatus.textContent =
-            "Keine native Payload-Datei im USB-Token gefunden.";
-        }
         addLogEntry("Neustart gestartet – Verbindung wird kurzzeitig unterbrochen.");
       }
 
@@ -1470,9 +1351,7 @@
         incidentReport.classList.add("hidden");
         certificateData = null;
         adDirectoryData = null;
-        payloadFile = null;
-        btnPayloadOpen.classList.add("hidden");
-        hidePayloadPanel();
+        hideValidationPanel();
         scanOutput.innerHTML =
           '<div class="scan-line scan-info">Bereit zum Scannen\u2026</div>';
 
@@ -1489,7 +1368,7 @@
         viewMast.classList.add("hidden");
         viewLogin.classList.remove("hidden");
         isLoggedIn = false;
-        hidePayloadPanel();
+        hideValidationPanel();
       });
 
       // ===== ALIGNMENT ANIMATION =====
