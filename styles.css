@@ -242,33 +242,6 @@ main {
     display: none;
 }
 
-.file-picker-button {
-    display: inline-block;
-    padding: 9px 16px;
-    border-radius: 4px;
-    border: 1px solid #d4d7e5;
-    background: #ffffff;
-    color: var(--primary);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-bottom: 10px;
-}
-
-.file-picker-button:hover {
-    background: #fafbff;
-    border-color: var(--primary);
-}
-
-.file-picker-button:disabled {
-    background: #f5f5f5;
-    color: #bbb;
-    border-color: #ddd;
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
 .checkbox-row {
     display: flex;
     align-items: center;
@@ -883,6 +856,35 @@ main {
     font-size: 12px;
 }
 
+/* ===== USB TOKEN PANEL ===== */
+.usb-token-panel {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border-radius: 6px;
+    border: 1px solid #d0d4e0;
+    background: #f9fafb;
+    margin-bottom: 12px;
+    font-size: 12px;
+    transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.usb-token-panel.state-scanning {
+    border-color: var(--primary);
+    background: rgba(226, 0, 116, 0.03);
+}
+
+.usb-token-panel.state-success {
+    border-color: #b6d9b6;
+    background: #f2faf2;
+}
+
+.usb-token-panel.state-error {
+    border-color: #f0bfbf;
+    background: #fff6f6;
+}
+
 .usb-indicator {
     width: 20px;
     height: 20px;
@@ -902,6 +904,17 @@ main {
 
 .usb-indicator.error {
     background: #ff6b6b;
+}
+
+/* Scanning state – pulsing animation */
+.usb-indicator--scanning {
+    background: var(--primary) !important;
+    animation: usbScanPulse 0.9s ease-in-out infinite;
+}
+
+@keyframes usbScanPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
 }
 
 .usb-text {
