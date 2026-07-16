@@ -431,7 +431,7 @@
                 </button>
               </div>
               <div class="field-label">Geplantes Neustart-Zeitfenster</div>
-              <select id="restart-delay" class="field">
+              <select id="restart-delay" class="field" title="Geplantes Neustart-Zeitfenster">
                 <option value="0">Sofort</option>
                 <option value="5">In 5 Minuten planen</option>
               </select>
@@ -1021,6 +1021,8 @@
           validationSteps.appendChild(li);
         });
       }
+
+      function addRestartLogEntry(text) {
         if (!restartLog) return;
         const line = document.createElement("div");
         line.className = "restart-log-entry";

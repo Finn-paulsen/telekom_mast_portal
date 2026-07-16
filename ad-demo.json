@@ -1,9 +1,9 @@
 {
   "users": [
     {
-      "username": "hydra.service",
+      "username": "MZimmermann",
       "password": "T3l3k0m!",
-      "employeeNumber": "T-417-B",
+      "employeeNumber": "MZ204",
       "expectedTokenSerial": "34F7A1B2C3D4E5F6"
     }
   ]
