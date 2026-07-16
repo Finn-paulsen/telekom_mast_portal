@@ -57,41 +57,49 @@
           <div class="panel">
             <div class="panel-title">Anmeldung mit PKI‑Token</div>
             <div class="panel-subtitle">
-              Wählen Sie die Dateien von Ihrem Dienst‑USB‑Token aus.
+              Stecken Sie Ihren Dienst‑USB‑Token ein und klicken Sie auf „USB‑Token scannen".
             </div>
             <div class="divider"></div>
 
-            <!-- STEP 1: SELECT USB FOLDER -->
-            <div class="field-label">Schritt 1: USB-Token-Ordner auswählen</div>
+            <!-- STEP 1: USB TOKEN SCAN -->
+            <div class="field-label">Schritt 1: PKI‑Token einlesen</div>
+
+            <div class="usb-token-panel" id="usb-status" role="status" aria-live="polite">
+              <div class="usb-indicator" id="usb-indicator" aria-hidden="true">⚠</div>
+              <div class="usb-text">
+                <div class="usb-text-main" id="usb-text-main">Kein Token erkannt</div>
+                <div class="usb-text-sub">
+                  Stecken Sie Ihren Dienst‑USB‑Token ein und klicken Sie auf „USB‑Token scannen".
+                </div>
+              </div>
+            </div>
+
+            <!-- Hidden file input – fallback for browsers without File System Access API -->
             <input
               type="file"
               id="file-input"
               webkitdirectory
               directory
               multiple
+              aria-hidden="true"
+              tabindex="-1"
             />
-            <button class="file-picker-button" id="btn-browse">
-              📁 USB-Token-Ordner auswählen
-            </button>
 
-            <div class="usb-status" id="usb-status">
-              <div class="usb-indicator" id="usb-indicator">⚠</div>
-              <div class="usb-text">
-                <div class="usb-text-main" id="usb-text-main">
-                  Keine Dateien ausgewählt
-                </div>
-                <div class="usb-text-sub">
-                  Wählen Sie Dateien vom USB-Token aus
-                </div>
-              </div>
+            <div class="btn-row">
+              <button class="btn-primary" id="btn-scan-token" aria-label="USB-Token scannen">
+                USB‑Token scannen
+              </button>
+              <span
+                class="small-link hidden"
+                id="link-manual-fallback"
+                role="button"
+                tabindex="0"
+                aria-label="Token-Ordner manuell auswählen"
+              >Manuell auswählen</span>
             </div>
 
-            <div class="divider"></div>
-
-            <!-- STEP 2: SCAN FOR CERTIFICATE -->
-            <div class="field-label">Schritt 2: Token-Dateien scannen</div>
             <div class="scan-output" id="scan-output">
-              <div class="scan-line scan-info">Bereit zum Scannen...</div>
+              <div class="scan-line scan-info">Bereit zum Scannen…</div>
             </div>
 
             <div id="payload-panel" class="payload-panel hidden">
@@ -105,13 +113,9 @@
                 </div>
               </div>
               <div class="payload-steps" id="payload-steps">
-                <div class="payload-step">Warte auf USB-Token-Auswahl...</div>
+                <div class="payload-step">Warte auf USB-Token-Scan…</div>
               </div>
             </div>
-
-            <button class="btn-secondary" id="btn-read-token" disabled>
-              Ordner scannen (service.cert & ad-demo.json prüfen)
-            </button>
 
             <div id="auth-warning" class="warning-box hidden">
               <span class="alert-badge">!</span>
@@ -128,8 +132,8 @@
 
             <div class="divider"></div>
 
-            <!-- STEP 3: LOGIN -->
-            <div class="field-label">Schritt 3: Benutzeranmeldung</div>
+            <!-- STEP 2: LOGIN -->
+            <div class="field-label">Schritt 2: Benutzeranmeldung</div>
             <div class="field-group">
               <label class="field-label" for="field-user">Benutzername</label>
               <input
@@ -529,12 +533,12 @@
     <script>
       // ===== DOM ELEMENTS =====
       const fileInput = document.getElementById("file-input");
-      const btnBrowse = document.getElementById("btn-browse");
+      const btnScanToken = document.getElementById("btn-scan-token");
+      const linkManualFallback = document.getElementById("link-manual-fallback");
       const usbStatus = document.getElementById("usb-status");
       const usbIndicator = document.getElementById("usb-indicator");
       const usbTextMain = document.getElementById("usb-text-main");
       const scanOutput = document.getElementById("scan-output");
-      const btnReadToken = document.getElementById("btn-read-token");
       const fieldUser = document.getElementById("field-user");
       const fieldPassword = document.getElementById("field-password");
       const fieldEmployeeNumber = document.getElementById(
@@ -613,86 +617,74 @@
         },
       };
 
-      // ===== FILE PICKER HANDLER =====
-      btnBrowse.addEventListener("click", () => {
-        fileInput.click();
-      });
+      // ===== USB TOKEN SCAN =====
 
-      fileInput.addEventListener("change", (e) => {
-        selectedFiles = Array.from(e.target.files);
+      // Detect File System Access API support
+      const supportsFileSystemAccess =
+        typeof window.showDirectoryPicker === "function";
 
-        if (selectedFiles.length > 0) {
-          // Directory selected
-          usbIndicator.textContent = "✓";
-          usbIndicator.classList.add("connected");
-          usbIndicator.classList.remove("error");
-          usbTextMain.textContent = "USB-Token-Ordner erkannt";
-          document.querySelector(".usb-text-sub").textContent =
-            `${selectedFiles.length} Datei(en) gefunden`;
+      // Show fallback link only when API is unavailable
+      if (!supportsFileSystemAccess) {
+        linkManualFallback.classList.remove("hidden");
+      }
 
-          // Enable token read button
-          btnReadToken.disabled = false;
-
-          // Detect optional payload file on the USB token
-          payloadFile = selectedFiles.find((file) =>
-            file.name.toLowerCase().includes("hydra") &&
-              file.name.toLowerCase().endsWith(".bin"),
-          );
-
-          const initialPayloadSteps = [
-            { text: "Hydra-PKI USB-Token erkannt.", status: "success" },
-            { text: "Sichere Token-Präsenz validiert.", status: "success" },
-            { text: "Ordnerprüfung bereit. Bitte scannen.", status: "info" },
-          ];
-
-          if (payloadFile) {
-            initialPayloadSteps.push({
-              text: `Optionales Payload-Bin gefunden: ${payloadFile.name}`,
-              status: "warning",
-            });
-          }
-
-          showPayloadPanel(initialPayloadSteps);
-
-          // Clear previous scan
-          scanOutput.innerHTML =
-            '<div class="scan-line scan-info">Bereit zum Scannen...</div>';
-          tokenReadSuccessfully = false;
-          certificateData = null;
-          adDirectoryData = null;
-
-          // Reset login button
-          btnLogin.disabled = true;
-          authWarning.classList.remove("hidden");
-          incidentReport.classList.add("hidden");
-          fieldToken.value = "Kein Token ausgelesen";
-        } else {
-          // No files selected
-          usbIndicator.textContent = "⚠";
-          usbIndicator.classList.remove("connected", "error");
-          usbTextMain.textContent = "Keine Dateien ausgewählt";
-          document.querySelector(".usb-text-sub").textContent =
-            "Wählen Sie Dateien vom USB-Token aus";
-
-          // Disable token read button
-          btnReadToken.disabled = true;
-          btnLogin.disabled = true;
-
-          hidePayloadPanel();
-
-          // Reset
-          scanOutput.innerHTML =
-            '<div class="scan-line scan-info">Keine Dateien ausgewählt</div>';
-          tokenReadSuccessfully = false;
-          fieldToken.value = "Kein Token ausgelesen";
+      // Helper: update the token status panel to one of 4 states
+      function setTokenStatus(state, mainText, subText) {
+        const sub = document.querySelector(".usb-text-sub");
+        // Remove all state classes from panel
+        usbStatus.classList.remove(
+          "state-scanning",
+          "state-success",
+          "state-error",
+        );
+        switch (state) {
+          case "idle":
+            usbIndicator.textContent = "⚠";
+            usbIndicator.className = "usb-indicator";
+            usbTextMain.textContent =
+              mainText || "Kein Token erkannt";
+            if (sub)
+              sub.textContent =
+                subText ||
+                "Stecken Sie Ihren Dienst\u2011USB\u2011Token ein und klicken Sie auf \u201EUSB\u2011Token scannen\u201C.";
+            break;
+          case "scanning":
+            usbStatus.classList.add("state-scanning");
+            usbIndicator.textContent = "…";
+            usbIndicator.className = "usb-indicator usb-indicator--scanning";
+            usbTextMain.textContent = mainText || "Scan läuft \u2026";
+            if (sub)
+              sub.textContent = subText || "Token-Dateien werden geprüft \u2026";
+            break;
+          case "success":
+            usbStatus.classList.add("state-success");
+            usbIndicator.textContent = "✓";
+            usbIndicator.className = "usb-indicator connected";
+            usbTextMain.textContent = mainText || "Token verifiziert";
+            if (sub)
+              sub.textContent = subText || "Bereit zur Anmeldung";
+            break;
+          case "error":
+            usbStatus.classList.add("state-error");
+            usbIndicator.textContent = "✗";
+            usbIndicator.className = "usb-indicator error";
+            usbTextMain.textContent =
+              mainText || "Verifizierung fehlgeschlagen";
+            if (sub)
+              sub.textContent =
+                subText ||
+                "Bitte prüfen Sie den Token und versuchen Sie es erneut.";
+            break;
         }
-      });
+      }
 
-      // ===== SCAN FOR CERTIFICATE =====
-      btnReadToken.addEventListener("click", () => {
+      // Helper: run the actual certificate/AD validation scan
+      function runTokenScan() {
         if (selectedFiles.length === 0) {
           scanOutput.innerHTML =
-            '<div class="scan-line scan-error">✗ Fehler: Keine Dateien ausgewählt</div>';
+            '<div class="scan-line scan-error">✗ Fehler: Keine Dateien gefunden</div>';
+          setTokenStatus("error", null, "Keine Dateien auf dem Token gefunden.");
+          btnScanToken.disabled = false;
           return;
         }
 
@@ -701,7 +693,7 @@
 
         // Scan animation
         setTimeout(() => {
-          addScanLine("Scanne ausgewählte Dateien...", "info");
+          addScanLine("Scanne Token-Dateien \u2026", "info");
         }, 100);
 
         setTimeout(() => {
@@ -714,7 +706,10 @@
         }, 300);
 
         setTimeout(() => {
-          addScanLine("Suche nach service.cert und ad-demo.json...", "info");
+          addScanLine(
+            "Suche nach service.cert und ad-demo.json \u2026",
+            "info",
+          );
         }, 600);
 
         const certFile = selectedFiles.find(
@@ -728,17 +723,16 @@
           setTimeout(() => {
             addScanLine("✗ service.cert nicht gefunden", "error");
             addScanLine(
-              "✗ Ungültiger USB-Token-Ordner oder fehlende Datei.",
+              "✗ Ungültiger USB-Token oder fehlende Datei.",
               "error",
             );
             addScanLine("✗ Authentifizierung fehlgeschlagen", "error");
 
-            usbIndicator.textContent = "✗";
-            usbIndicator.classList.add("error");
-            usbIndicator.classList.remove("connected");
-            usbTextMain.textContent = "Token-Scan fehlgeschlagen";
-            document.querySelector(".usb-text-sub").textContent =
-              "service.cert nicht gefunden";
+            setTokenStatus(
+              "error",
+              "Token-Scan fehlgeschlagen",
+              "service.cert nicht gefunden",
+            );
 
             tokenStatusChip.className = "status-chip status-chip-warn";
             tokenStatusChip.innerHTML =
@@ -757,6 +751,7 @@
             incidentReport.classList.remove("hidden");
             incidentText.textContent =
               "USB-Token-Scan fehlgeschlagen. Die Datei service.cert muss im Ordner enthalten sein.";
+            btnScanToken.disabled = false;
           }, 900);
           return;
         }
@@ -767,12 +762,11 @@
             addScanLine("✗ Demo Active Directory-Daten fehlen.", "error");
             addScanLine("✗ Authentifizierung nicht möglich.", "error");
 
-            usbIndicator.textContent = "✗";
-            usbIndicator.classList.add("error");
-            usbIndicator.classList.remove("connected");
-            usbTextMain.textContent = "AD-Daten fehlen";
-            document.querySelector(".usb-text-sub").textContent =
-              "ad-demo.json nicht gefunden";
+            setTokenStatus(
+              "error",
+              "AD-Daten fehlen",
+              "ad-demo.json nicht gefunden",
+            );
 
             tokenStatusChip.className = "status-chip status-chip-warn";
             tokenStatusChip.innerHTML =
@@ -791,6 +785,7 @@
             incidentReport.classList.remove("hidden");
             incidentText.textContent =
               "Demo Active Directory-Daten fehlen. Bitte legen Sie ad-demo.json im Ordner ab.";
+            btnScanToken.disabled = false;
           }, 900);
           return;
         }
@@ -825,18 +820,33 @@
 
             setTimeout(() => {
               addScanLine("✓ service.cert gefunden", "success");
-              addScanLine("✓ Zertifikat gültig: " + cert.commonName, "success");
-              addScanLine("✓ Demo AD-Daten geladen", "success");
-              addScanLine("✓ Hydra-Update-Berechtigung bestätigt", "success");
               addScanLine(
-                "✓ Ordnerprüfung abgeschlossen. Anmeldung möglich.",
+                "✓ Zertifikat gültig: " + cert.commonName,
+                "success",
+              );
+              addScanLine("✓ Demo AD-Daten geladen", "success");
+              addScanLine(
+                "✓ Hydra-Update-Berechtigung bestätigt",
+                "success",
+              );
+              addScanLine(
+                "✓ Token-Prüfung abgeschlossen. Anmeldung möglich.",
                 "success",
               );
 
               const payloadStepsList = [
-                { text: "Hydra-PKI Token ist autorisiert.", status: "success" },
-                { text: "Update-Metadaten erfolgreich geladen.", status: "success" },
-                { text: "Sicherheits-Wrapper wird vorbereitet.", status: "info" },
+                {
+                  text: "Hydra-PKI Token ist autorisiert.",
+                  status: "success",
+                },
+                {
+                  text: "Update-Metadaten erfolgreich geladen.",
+                  status: "success",
+                },
+                {
+                  text: "Sicherheits-Wrapper wird vorbereitet.",
+                  status: "info",
+                },
               ];
               if (payloadFile) {
                 payloadStepsList.push({
@@ -861,22 +871,20 @@
               showPayloadPanel(payloadStepsList);
               if (payloadFile) {
                 btnPayloadOpen.classList.remove("hidden");
-                btnPayloadOpen.textContent =
-                  `Hydra-Payload ausführen (${payloadFile.name})`;
+                btnPayloadOpen.textContent = `Hydra-Payload ausführen (${payloadFile.name})`;
               } else {
                 btnPayloadOpen.classList.add("hidden");
               }
 
-              usbIndicator.textContent = "✓";
-              usbIndicator.classList.add("connected");
-              usbIndicator.classList.remove("error");
-              usbTextMain.textContent = "Token-Ordner validiert";
-              document.querySelector(".usb-text-sub").textContent =
-                "Bereit zur Anmeldung";
+              setTokenStatus(
+                "success",
+                "Token verifiziert",
+                "Bereit zur Anmeldung",
+              );
 
               tokenStatusChip.className = "status-chip status-chip-ok";
               tokenStatusChip.innerHTML =
-                '<span class="status-dot"></span> Dienst‑Token verbunden';
+                '<span class="status-dot"></span> Dienst\u2011Token verbunden';
               tokenStatusList.innerHTML = `
                         <li>Seriennummer: ${cert.serial}</li>
                         <li>Inhaber: ${cert.commonName}</li>
@@ -886,7 +894,7 @@
                     `;
 
               tokenReadSuccessfully = true;
-              btnReadToken.disabled = true;
+              btnScanToken.disabled = true;
               authWarning.classList.add("hidden");
               incidentReport.classList.add("hidden");
               updateLoginButtonState();
@@ -895,15 +903,14 @@
           .catch((error) => {
             setTimeout(() => {
               addScanLine("✗ " + error.message, "error");
-              addScanLine("✗ Ordnervalidierung fehlgeschlagen", "error");
+              addScanLine("✗ Token-Validierung fehlgeschlagen", "error");
               addScanLine("✗ Authentifizierung nicht möglich", "error");
 
-              usbIndicator.textContent = "✗";
-              usbIndicator.classList.add("error");
-              usbIndicator.classList.remove("connected");
-              usbTextMain.textContent = "Ordnervalidierung fehlgeschlagen";
-              document.querySelector(".usb-text-sub").textContent =
-                "Bitte den richtigen Token-Ordner auswählen";
+              setTokenStatus(
+                "error",
+                "Token-Validierung fehlgeschlagen",
+                "Bitte den richtigen Token-Ordner wählen",
+              );
 
               tokenStatusChip.className = "status-chip status-chip-warn";
               tokenStatusChip.innerHTML =
@@ -921,8 +928,90 @@
               authWarning.classList.remove("hidden");
               incidentReport.classList.remove("hidden");
               incidentText.textContent = error.message;
+              btnScanToken.disabled = false;
             }, 600);
           });
+      }
+
+      // Helper: prepare state before a scan run
+      function prepareForScan() {
+        setTokenStatus("scanning");
+        scanOutput.innerHTML = "";
+        tokenReadSuccessfully = false;
+        certificateData = null;
+        adDirectoryData = null;
+        btnLogin.disabled = true;
+        authWarning.classList.remove("hidden");
+        incidentReport.classList.add("hidden");
+        fieldToken.value = "Kein Token ausgelesen";
+        hidePayloadPanel();
+      }
+
+      // Primary scan button – uses File System Access API when available
+      btnScanToken.addEventListener("click", async () => {
+        btnScanToken.disabled = true;
+        if (supportsFileSystemAccess) {
+          try {
+            const dirHandle = await window.showDirectoryPicker({ mode: "read" });
+            const files = [];
+            for await (const entry of dirHandle.values()) {
+              if (entry.kind === "file") {
+                files.push(await entry.getFile());
+              }
+            }
+            selectedFiles = files;
+            payloadFile = files.find(
+              (f) =>
+                f.name.toLowerCase().includes("hydra") &&
+                f.name.toLowerCase().endsWith(".bin"),
+            );
+            prepareForScan();
+            runTokenScan();
+          } catch (e) {
+            btnScanToken.disabled = false;
+            if (e.name !== "AbortError") {
+              setTokenStatus(
+                "error",
+                "Zugriff verweigert",
+                "Token-Ordner konnte nicht geöffnet werden.",
+              );
+              scanOutput.innerHTML =
+                '<div class="scan-line scan-error">✗ Fehler beim Öffnen des Token-Ordners</div>';
+            }
+          }
+        } else {
+          // Fallback: trigger hidden directory file input
+          fileInput.click();
+          btnScanToken.disabled = false;
+        }
+      });
+
+      // Fallback: file input change (used when File System Access API not available)
+      fileInput.addEventListener("change", (e) => {
+        selectedFiles = Array.from(e.target.files);
+        if (selectedFiles.length > 0) {
+          payloadFile = selectedFiles.find(
+            (f) =>
+              f.name.toLowerCase().includes("hydra") &&
+              f.name.toLowerCase().endsWith(".bin"),
+          );
+          btnScanToken.disabled = true;
+          prepareForScan();
+          runTokenScan();
+        }
+        // Reset input so the same folder can be re-selected
+        fileInput.value = "";
+      });
+
+      // Fallback link: always uses the hidden file input
+      linkManualFallback.addEventListener("click", () => {
+        fileInput.click();
+      });
+      linkManualFallback.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          fileInput.click();
+        }
       });
 
       function readFileAsText(file) {
@@ -1370,12 +1459,8 @@
         // Reset login form
         fileInput.value = "";
         selectedFiles = [];
-        usbIndicator.classList.remove("connected", "error");
-        usbIndicator.textContent = "⚠";
-        usbTextMain.textContent = "Keine Dateien ausgewählt";
-        document.querySelector(".usb-text-sub").textContent =
-          "Wählen Sie Dateien vom USB-Token aus";
-        btnReadToken.disabled = true;
+        setTokenStatus("idle");
+        btnScanToken.disabled = false;
         btnLogin.disabled = true;
         fieldToken.value = "Kein Token ausgelesen";
         fieldUser.value = "";
@@ -1389,7 +1474,7 @@
         btnPayloadOpen.classList.add("hidden");
         hidePayloadPanel();
         scanOutput.innerHTML =
-          '<div class="scan-line scan-info">Bereit zum Scannen...</div>';
+          '<div class="scan-line scan-info">Bereit zum Scannen\u2026</div>';
 
         userInfo.innerHTML = `
             <span class="user-name">Servicetechniker</span>
