@@ -1,10 +1,350 @@
 {
+  "meta": {
+    "dataset": "Telekom Mast Portal Demo",
+    "version": "2.0",
+    "generatedAt": "2026-07-17T20:45:00Z",
+    "activeScenario": "normal",
+    "description": "Erweiterte Demo-Daten für Richtfunk-, Satelliten- und Session-Telemetrie eines Telekom-Standorts.",
+    "validation": {
+      "schemaVersion": "telekom-demo-site.v2",
+      "notes": [
+        "Alle Werte sind Demo-Daten und nicht produktiv einsetzbar.",
+        "Szenarien teilen sich dieselbe Benutzer- und Token-Bindung."
+      ]
+    }
+  },
   "users": [
     {
       "username": "MZimmermann",
       "password": "T3l3k0m!",
       "employeeNumber": "MZ204",
-      "expectedTokenSerial": "34F7A1B2C3D4E5F6"
+      "displayName": "Marlene Zimmermann",
+      "role": "Betriebsführung / Richtfunk-Service",
+      "expectedTokenSerial": "34F7A1B2C3D4E5F6",
+      "siteAccess": [
+        "QK-17",
+        "HH-NORD-05"
+      ],
+      "operatorNotes": [
+        "Freigabe für Remote-Neuausrichtung und Soft-Restarts im Wartungsfenster.",
+        "Diagnosezugriff für Richtfunk- und Satelliten-Relay-Metriken aktiviert."
+      ]
     }
-  ]
+  ],
+  "sites": [
+    {
+      "siteId": "QK-17",
+      "mastId": "T-QK-417-B",
+      "name": "Quickborn Telekom-Gebäude",
+      "region": "Schleswig-Holstein / Quickborn",
+      "cluster": "Nord-West Backbone Cluster 4",
+      "coordinates": {
+        "lat": 53.7281,
+        "lon": 9.9024,
+        "altitudeM": 51
+      },
+      "backhaulType": "Hybrid Richtfunk / Satelliten-Relay",
+      "weatherProfile": {
+        "condition": "leichter Dunst",
+        "windKph": 18,
+        "humidityPct": 64,
+        "temperatureC": 33,
+        "impact": "Moderate Dämpfung im oberen Ku-Band, Ka-Band nur überwacht."
+      },
+      "alarmClasses": [
+        {
+          "severity": "info",
+          "class": "OPS-INFO",
+          "description": "Normale Telemetrieereignisse"
+        },
+        {
+          "severity": "warning",
+          "class": "RSL-WARN",
+          "description": "Signalreserve fällt unter 8 dB"
+        },
+        {
+          "severity": "critical",
+          "class": "SYNC-LOSS",
+          "description": "Sync-Lag über 90 ms oder Paketverlust > 1.5 %"
+        }
+      ],
+      "maintenanceWindows": [
+        {
+          "name": "Wochenfenster Nord",
+          "start": "2026-07-18T00:30:00+02:00",
+          "end": "2026-07-18T02:00:00+02:00",
+          "scope": "Soft-Restart / Kalibrierung"
+        }
+      ],
+      "linkHealth": {
+        "primaryLink": {
+          "band": "Ku-Band",
+          "availabilityPct": 99.74,
+          "latencyMs": 24,
+          "jitterMs": 3.8,
+          "packetLossPct": 0.03
+        },
+        "satelliteRelay": {
+          "lockPct": 98,
+          "syncLagMs": 12,
+          "orbitalSlot": "9.0E",
+          "beaconSnrDb": 14.2
+        },
+        "radioBridge": {
+          "remoteSite": "HH-NORD-05",
+          "distanceKm": 22.4,
+          "rslDbm": -47.6,
+          "modulation": "256-QAM adaptive"
+        }
+      }
+    }
+  ],
+  "activeScenario": "normal",
+  "scenarios": {
+    "normal": {
+      "label": "Normalbetrieb",
+      "telemetry": {
+        "signalQuality": 93,
+        "azimuth": 142,
+        "elevation": 18,
+        "uplink": 48,
+        "downlink": 73,
+        "latency": 24,
+        "lock": 98,
+        "syncLag": 12,
+        "packetLoss": 0.03,
+        "temperature": 33,
+        "battery": 96,
+        "band": "Ku-Band",
+        "satelliteStatus": "Sicher verbunden",
+        "linkStatus": "Stabil"
+      },
+      "kpiHistory": [
+        {
+          "time": "20:05",
+          "uplinkMbps": 45,
+          "downlinkMbps": 71,
+          "latencyMs": 23,
+          "packetLossPct": 0.02
+        },
+        {
+          "time": "20:10",
+          "uplinkMbps": 47,
+          "downlinkMbps": 72,
+          "latencyMs": 24,
+          "packetLossPct": 0.03
+        },
+        {
+          "time": "20:15",
+          "uplinkMbps": 48,
+          "downlinkMbps": 73,
+          "latencyMs": 24,
+          "packetLossPct": 0.03
+        },
+        {
+          "time": "20:20",
+          "uplinkMbps": 49,
+          "downlinkMbps": 74,
+          "latencyMs": 25,
+          "packetLossPct": 0.04
+        }
+      ],
+      "sessionEvents": [
+        {
+          "category": "session",
+          "severity": "info",
+          "delay": 0,
+          "message": "Session gestartet: Dienst-Token akzeptiert und Operator-Kontext geladen."
+        },
+        {
+          "category": "hint",
+          "severity": "info",
+          "delay": 0.12,
+          "message": "Hinweis: Standortprofil QK-17 wurde mit Wetter- und Backhaul-Metadaten ergänzt."
+        },
+        {
+          "category": "session",
+          "severity": "info",
+          "delay": 0.24,
+          "message": "Standort geladen: QK-17 / Quickborn – Nord-West Backbone Cluster 4."
+        },
+        {
+          "category": "telemetry",
+          "severity": "info",
+          "delay": 0.36,
+          "message": "Signalqualität ermittelt: 93% – Uplink stabil, Sync-Lag 12 ms."
+        },
+        {
+          "category": "telemetry",
+          "severity": "info",
+          "delay": 0.48,
+          "message": "Link-Health: Jitter 3.8 ms, Paketverlust 0.03 %, Richtfunkreserve im grünen Bereich."
+        },
+        {
+          "category": "session",
+          "severity": "info",
+          "delay": 0.6,
+          "message": "Remote-Aktionen für diese Session freigeschaltet."
+        }
+      ]
+    },
+    "high-load": {
+      "label": "Abendliche Spitzenlast",
+      "telemetry": {
+        "signalQuality": 88,
+        "azimuth": 145,
+        "elevation": 19,
+        "uplink": 56,
+        "downlink": 84,
+        "latency": 31,
+        "lock": 93,
+        "syncLag": 24,
+        "packetLoss": 0.12,
+        "temperature": 35,
+        "battery": 94,
+        "band": "Ka-Band",
+        "satelliteStatus": "Überwacht",
+        "linkStatus": "Überwacht"
+      },
+      "kpiHistory": [
+        {
+          "time": "19:45",
+          "uplinkMbps": 51,
+          "downlinkMbps": 80,
+          "latencyMs": 29,
+          "packetLossPct": 0.1
+        },
+        {
+          "time": "19:50",
+          "uplinkMbps": 54,
+          "downlinkMbps": 82,
+          "latencyMs": 30,
+          "packetLossPct": 0.11
+        },
+        {
+          "time": "19:55",
+          "uplinkMbps": 56,
+          "downlinkMbps": 84,
+          "latencyMs": 31,
+          "packetLossPct": 0.12
+        }
+      ],
+      "sessionEvents": [
+        {
+          "category": "session",
+          "severity": "info",
+          "delay": 0,
+          "message": "Session gestartet: Lastprofil High-Load für den Standort wurde zugeschaltet."
+        },
+        {
+          "category": "telemetry",
+          "severity": "warning",
+          "delay": 0.18,
+          "message": "Telemetrie: Downlink-Spitzenlast auf 84 Mbps, adaptive Modulation aktiv."
+        },
+        {
+          "category": "hint",
+          "severity": "info",
+          "delay": 0.32,
+          "message": "Hinweis: Ka-Band ist aktiviert, Wetterreserve bleibt beobachtet."
+        }
+      ]
+    },
+    "degraded": {
+      "label": "Degradiertes Richtfunkfenster",
+      "telemetry": {
+        "signalQuality": 71,
+        "azimuth": 148,
+        "elevation": 17,
+        "uplink": 29,
+        "downlink": 46,
+        "latency": 58,
+        "lock": 61,
+        "syncLag": 74,
+        "packetLoss": 0.86,
+        "temperature": 36,
+        "battery": 92,
+        "band": "Ku-Band",
+        "satelliteStatus": "Instabil",
+        "linkStatus": "Degradiert"
+      },
+      "alarms": [
+        {
+          "severity": "warning",
+          "code": "RSL-WARN",
+          "text": "Signalreserve fällt wetterbedingt ab."
+        },
+        {
+          "severity": "critical",
+          "code": "SYNC-LOSS",
+          "text": "Sync-Lag überschreitet 70 ms."
+        }
+      ],
+      "sessionEvents": [
+        {
+          "category": "error",
+          "severity": "critical",
+          "delay": 0,
+          "message": "Sicherheitsmeldung: Degradiertes Linkfenster erkannt – Interferenzfilter aktiv."
+        },
+        {
+          "category": "telemetry",
+          "severity": "warning",
+          "delay": 0.16,
+          "message": "Telemetrie: Paketverlust 0.86 %, Jitter 14.2 ms, Richtfunkreserve kritisch."
+        },
+        {
+          "category": "maintenance",
+          "severity": "warning",
+          "delay": 0.32,
+          "message": "Hinweis: Empfohlenes Wartungsfenster für Re-Kalibrierung ist vorbereitet."
+        }
+      ]
+    },
+    "recovery": {
+      "label": "Recovery nach Override",
+      "telemetry": {
+        "signalQuality": 91,
+        "azimuth": 144,
+        "elevation": 19,
+        "uplink": 50,
+        "downlink": 74,
+        "latency": 25,
+        "lock": 97,
+        "syncLag": 14,
+        "packetLoss": 0.05,
+        "temperature": 32,
+        "battery": 95,
+        "band": "Ku-Band",
+        "satelliteStatus": "Sicher verbunden",
+        "linkStatus": "Stabil"
+      },
+      "sessionEvents": [
+        {
+          "category": "session",
+          "severity": "info",
+          "delay": 0,
+          "message": "Session gestartet: Override-Login verifiziert, vorherige Sitzung in Recovery-Mode übernommen."
+        },
+        {
+          "category": "hint",
+          "severity": "info",
+          "delay": 0.14,
+          "message": "Hinweis: Recovery-Profil aktiviert – letzte Wartungsmarker werden erneut geprüft."
+        },
+        {
+          "category": "telemetry",
+          "severity": "info",
+          "delay": 0.28,
+          "message": "Telemetrie: Linkreserve wiederhergestellt, Sync-Lag 14 ms."
+        },
+        {
+          "category": "session",
+          "severity": "info",
+          "delay": 0.42,
+          "message": "Remote-Aktionen für Recovery-Freigabe stehen bereit."
+        }
+      ]
+    }
+  }
 }

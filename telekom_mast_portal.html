@@ -304,7 +304,19 @@
             <div class="divider divider--spaced"></div>
 
             <div class="panel-section-label">Session-Protokoll</div>
-            <div class="log" id="log" role="log" aria-label="Session-Protokoll" aria-live="polite"></div>
+            <div class="log-shell" aria-labelledby="session-log-summary">
+              <div class="log-shell-header">
+                <div>
+                  <div class="log-shell-kicker">Live Event Feed</div>
+                  <div class="log-shell-summary" id="session-log-summary">Keine aktive Remote-Session</div>
+                </div>
+                <div class="log-shell-meta">
+                  <span class="log-shell-count" id="log-counter">0 Events</span>
+                  <span class="log-shell-health" id="log-health-chip">Monitoring ausstehend</span>
+                </div>
+              </div>
+              <div class="log" id="log" role="log" aria-label="Session-Protokoll" aria-live="polite" aria-busy="false"></div>
+            </div>
           </div>
 
           <!-- CENTER: Animation scene -->
@@ -403,6 +415,9 @@
                   <circle cx="222" cy="78" r="4.5" fill="#e20074" filter="url(#ms-glow)" opacity="0.9"/>
                   <circle cx="222" cy="78" r="2"   fill="#fff" opacity="0.6"/>
                   <circle id="ms-feed-pulse" cx="222" cy="78" r="6" fill="none" stroke="#ff6abf" stroke-width="0.9" opacity="0"/>
+                  <path id="ms-uplink-core" d="M 258 78 L 580 78" stroke="#ff6abf" stroke-width="3.2" stroke-linecap="round" opacity="0" filter="url(#ms-glow-lg)"/>
+                  <path id="ms-uplink-trace" d="M 258 78 L 560 24" stroke="#7cc8ff" stroke-width="1.1" stroke-dasharray="12 10" stroke-linecap="round" opacity="0.18"/>
+                  <ellipse id="ms-dish-aura" cx="240" cy="78" rx="28" ry="21" fill="none" stroke="#ff6abf" stroke-width="1.1" opacity="0.2"/>
                 </g>
 
                 <!-- SIGNAL RINGS at dish mouth (260, 78) -->
@@ -479,6 +494,10 @@
                 </g>
 
                 <!-- Beacon light -->
+                <g id="ms-beacon-glow" aria-hidden="true">
+                  <circle cx="200" cy="32" r="11" fill="#ff5c7a" opacity="0.18" filter="url(#ms-glow-lg)"/>
+                  <circle cx="200" cy="32" r="22" fill="none" stroke="#ff7ac8" stroke-width="1" opacity="0.16"/>
+                </g>
                 <circle id="ms-beacon" cx="200" cy="32" r="3.5" fill="#ff2020" filter="url(#ms-glow)" aria-hidden="true"/>
 
                 <!-- SATELLITE ICON -->
@@ -535,6 +554,17 @@
                   <rect id="ms-err-flash" width="580" height="400" fill="#ff1010" opacity="0"/>
                 </g>
 
+                <g id="ms-alert-overlay" opacity="0" aria-hidden="true">
+                  <circle id="ms-alert-pulse" cx="200" cy="165" r="52" fill="none" stroke="#f0a012" stroke-width="2" opacity="0"/>
+                  <circle id="ms-alert-pulse-2" cx="200" cy="165" r="70" fill="none" stroke="#ffd36b" stroke-width="1.4" opacity="0"/>
+                </g>
+
+                <g id="ms-interference-overlay" opacity="0" aria-hidden="true">
+                  <path class="ms-interference-line" d="M 132 110 C 166 96 201 124 238 108 C 272 94 310 124 344 108" fill="none" stroke="#ff5c7a" stroke-width="2" opacity="0.35"/>
+                  <path class="ms-interference-line" d="M 126 152 C 166 140 206 166 248 152 C 290 138 326 166 366 150" fill="none" stroke="#ff7a9a" stroke-width="1.4" opacity="0.28"/>
+                  <path class="ms-interference-line" d="M 134 196 C 182 176 230 212 280 194 C 330 176 372 210 420 190" fill="none" stroke="#ff9bb8" stroke-width="1.1" opacity="0.2"/>
+                </g>
+
                 <!-- Band switch overlay -->
                 <g id="ms-band-overlay" opacity="0" aria-hidden="true">
                   <circle cx="262" cy="80" r="60" fill="none" stroke="#7cc8ff" stroke-width="1.4" stroke-dasharray="9 7" opacity="0.65"/>
@@ -589,7 +619,7 @@
             <div class="action-group">
               <div class="action-group-hdr">Antennensteuerung</div>
 
-              <button class="action-btn action-btn--align" id="btn-align" aria-label="Richtfunk-Schüssel neu ausrichten">
+              <button class="action-btn action-btn--align" id="btn-align" data-action-key="align" aria-label="Richtfunk-Schüssel neu ausrichten">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.4"/>
@@ -604,7 +634,7 @@
                 <span class="action-btn-status" id="abs-align" aria-live="polite"></span>
               </button>
 
-              <button class="action-btn action-btn--recal" id="btn-recalibrate" aria-label="Systemkalibrierung durchführen">
+              <button class="action-btn action-btn--recal" id="btn-recalibrate" data-action-key="recalibrate" aria-label="Systemkalibrierung durchführen">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <rect x="4" y="4" width="7" height="7" stroke="currentColor" stroke-width="1.4" rx="1"/>
@@ -621,7 +651,7 @@
                 <span class="action-btn-status" id="abs-recal" aria-live="polite"></span>
               </button>
 
-              <button class="action-btn action-btn--sync" id="btn-sync-link" aria-label="Satellitenlink synchronisieren">
+              <button class="action-btn action-btn--sync" id="btn-sync-link" data-action-key="sync" aria-label="Satellitenlink synchronisieren">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <path d="M 2 7.5 C 2 4.5 4.5 2 7.5 2 C 9.3 2 10.9 2.9 11.9 4.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
@@ -642,7 +672,7 @@
             <div class="action-group">
               <div class="action-group-hdr">Übertragung</div>
 
-              <button class="action-btn action-btn--band" id="btn-band-switch" aria-label="Frequenzband wechseln">
+              <button class="action-btn action-btn--band" id="btn-band-switch" data-action-key="band" aria-label="Frequenzband wechseln">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <path d="M 1 7.5 Q 3.5 4 7.5 7.5 Q 11.5 11 14 7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/>
@@ -661,7 +691,7 @@
             <div class="action-group">
               <div class="action-group-hdr">Systemverwaltung</div>
 
-              <button class="action-btn action-btn--diag" id="btn-diagnostics" aria-label="Systemdiagnose starten">
+              <button class="action-btn action-btn--diag" id="btn-diagnostics" data-action-key="diagnostics" aria-label="Systemdiagnose starten">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <path d="M 1 7.5 L 3 7.5 L 4.5 3.5 L 7 11.5 L 8.5 5.5 L 10.5 9.5 L 12 7.5 L 14 7.5"
@@ -675,7 +705,7 @@
                 <span class="action-btn-status" id="abs-diag" aria-live="polite"></span>
               </button>
 
-              <button class="action-btn action-btn--warn action-btn--maint" id="btn-maint" aria-label="Standort in Wartungsmodus setzen">
+              <button class="action-btn action-btn--warn action-btn--maint" id="btn-maint" data-action-key="maintenance" aria-label="Standort in Wartungsmodus setzen">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <path d="M 7.5 1 L 13.5 12 L 1.5 12 Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
@@ -690,7 +720,7 @@
                 <span class="action-btn-status" id="abs-maint" aria-live="polite"></span>
               </button>
 
-              <button class="action-btn action-btn--crit action-btn--restart" id="btn-restart" aria-label="Mast neu starten (Soft-Restart)">
+              <button class="action-btn action-btn--crit action-btn--restart" id="btn-restart" data-action-key="restart" aria-label="Mast neu starten (Soft-Restart)">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <path d="M 3 7.5 C 3 5 5 3 7.5 3 C 9.3 3 10.8 4 11.6 5.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
@@ -830,6 +860,10 @@
       const metAzimuth      = document.getElementById("met-azimuth");
       const metBand         = document.getElementById("met-band");
       const currentBandLabel = document.getElementById("current-band-label");
+      const sessionLogSummary = document.getElementById("session-log-summary");
+      const logCounter = document.getElementById("log-counter");
+      const logHealthChip = document.getElementById("log-health-chip");
+      const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
       let isLoggedIn = false;
       let sessionStartTime = null;
@@ -1093,9 +1127,9 @@
               tokenStatusList.innerHTML = `
                         <li>Seriennummer: ${cert.serial}</li>
                         <li>Inhaber: ${cert.commonName}</li>
-                        <li>Zertifikat: service.cert (valide)</li>
-                        <li>Gültigkeit: Temporäre Demo-Session</li>
-                        <li>Rolle: Standortverwaltung / Maststeuerung</li>
+                        <li>Issuer: ${cert.issuer || "–"}</li>
+                        <li>Gültig bis: ${cert.validTo || "Temporäre Demo-Session"}</li>
+                        <li>Fingerprint: ${cert.fingerprintSha256 || "–"}</li>
                     `;
 
               tokenReadSuccessfully = true;
@@ -1221,12 +1255,31 @@
 
       function parseCertificate(text) {
         const normalized = text.replace(/\r/g, "");
-        const serialMatch = normalized.match(/Serial=(.+)/i);
-        const cnMatch = normalized.match(/CN=(.+)/i);
+        const metadata = {};
+        normalized.split("\n").forEach((line) => {
+          const idx = line.indexOf("=");
+          if (idx <= 0) return;
+          const key = line.slice(0, idx).trim();
+          const value = line.slice(idx + 1).trim();
+          if (key && value) metadata[key] = value;
+        });
+        const subject = metadata.Subject || "";
+        const cnFromSubject = subject.match(/CN=([^,]+)/i);
+        const cnFromLine = metadata.CN || normalized.match(/\nCN=(.+)/i)?.[1]?.trim();
         return {
           raw: normalized,
-          serial: serialMatch ? serialMatch[1].trim() : null,
-          commonName: cnMatch ? cnMatch[1].trim() : null,
+          metadata,
+          serial: metadata.Serial || normalized.match(/Serial=(.+)/i)?.[1]?.trim() || null,
+          commonName: cnFromLine || (cnFromSubject ? cnFromSubject[1].trim() : null),
+          issuer: metadata.Issuer || null,
+          subject: metadata.Subject || null,
+          validFrom: metadata["Valid-From"] || null,
+          validTo: metadata["Valid-To"] || null,
+          fingerprintSha256: metadata["Fingerprint-SHA256"] || null,
+          policies: metadata.Policies || null,
+          ocspUrl: metadata.OCSP || null,
+          crlUrl: metadata.CRL || null,
+          demoProfile: metadata["Demo-Profile"] || null,
         };
       }
 
@@ -1313,107 +1366,309 @@
         field.addEventListener("input", updateLoginButtonState);
       });
 
-      btnLogin.addEventListener("click", () => {
-        const fieldsComplete =
-          fieldUser.value.trim() !== "" &&
-          fieldPassword.value.trim() !== "" &&
-          fieldEmployeeNumber.value.trim() !== "";
-        if (!fieldsComplete) {
-          incidentReport.classList.remove("hidden");
-          incidentText.textContent =
-            "Benutzerangaben unvollständig oder ungültig. Zugriff verweigert.";
-          logIncident(
-            "Ungültiger Login-Versuch wegen unvollständiger Anmeldedaten.",
-          );
+      function getDemoSite() {
+        return Array.isArray(adDirectoryData?.sites) ? adDirectoryData.sites[0] : null;
+      }
+
+      function getScenarioConfig(name) {
+        const scenarios = adDirectoryData?.scenarios || {};
+        return scenarios[name] || scenarios[adDirectoryData?.activeScenario] || scenarios.normal || null;
+      }
+
+      function formatTs(date) {
+        return date.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      }
+
+      const LOG_TYPE_META = {
+        action: { badge: "AKTION", icon: "↗", tone: "action" },
+        session: { badge: "SESSION", icon: "◎", tone: "session" },
+        hint: { badge: "HINWEIS", icon: "i", tone: "hint" },
+        telemetry: { badge: "TELEMETRIE", icon: "≈", tone: "telemetry" },
+        maintenance: { badge: "BETRIEB", icon: "△", tone: "maintenance" },
+        error: { badge: "ALARM", icon: "!", tone: "error" },
+        info: { badge: "INFO", icon: "•", tone: "info" },
+      };
+
+      const sessionLogState = {
+        entries: [],
+        viewState: "empty",
+        message: "Keine aktive Remote-Session",
+      };
+      let logEntrySequence = 0;
+      let queuedLogTimers = [];
+
+      function inferLogType(text) {
+        if (text.startsWith("Aktion:")) return "action";
+        if (text.startsWith("Session") || text.startsWith("Mastübersicht")) return "session";
+        if (text.startsWith("Hinweis:")) return "hint";
+        if (text.startsWith("Telemetrie") || text.startsWith("Signalqualität")) return "telemetry";
+        if (text.startsWith("Sicherheitsmeldung:") || text.includes("Zugriff verweigert") || text.includes("Störung")) return "error";
+        if (text.includes("Neustart") || text.includes("Wartungsmodus")) return "maintenance";
+        return "info";
+      }
+
+      function splitLogText(text) {
+        if (text.includes(":")) {
+          const [first, ...rest] = text.split(":");
+          const detail = rest.join(":").trim();
+          return { title: first.trim(), detail };
+        }
+        if (text.includes(" – ")) {
+          const [title, ...rest] = text.split(" – ");
+          return { title: title.trim(), detail: rest.join(" – ").trim() };
+        }
+        return { title: text.trim(), detail: "" };
+      }
+
+      function summarizeSessionLog() {
+        if (!sessionLogSummary || !logCounter || !logHealthChip) return;
+        const count = sessionLogState.entries.length;
+        logCounter.textContent = `${count} ${count === 1 ? "Event" : "Events"}`;
+        if (sessionLogState.viewState === "loading") {
+          sessionLogSummary.textContent = "Session-Protokoll wird aufgebaut";
+          logHealthChip.textContent = "Initialisiere";
           return;
         }
-
-        if (!tokenReadSuccessfully || !certificateData || !adDirectoryData) {
-          incidentReport.classList.remove("hidden");
-          incidentText.textContent =
-            "Es wurde kein gültiger USB-Token-Scan durchgeführt. Zugriff verweigert.";
-          logIncident("Versuch eines Logins ohne vorherigen Token-Scan.");
+        if (sessionLogState.viewState === "error") {
+          sessionLogSummary.textContent = "Protokoll mit Störung";
+          logHealthChip.textContent = "Alarm aktiv";
           return;
         }
+        if (count === 0) {
+          sessionLogSummary.textContent = "Keine aktive Remote-Session";
+          logHealthChip.textContent = "Standby";
+          return;
+        }
+        const last = sessionLogState.entries[sessionLogState.entries.length - 1];
+        sessionLogSummary.textContent = last.detail || last.title;
+        const severe = sessionLogState.entries.some((entry) => entry.type === "error");
+        const busy = sessionLogState.entries.slice(-4).some((entry) => entry.type === "action" || entry.type === "maintenance");
+        logHealthChip.textContent = severe ? "Alarm aktiv" : busy ? "Operation aktiv" : "Stabil";
+      }
 
-        const username = fieldUser.value.trim();
-        const password = fieldPassword.value;
-        const employeeNumber = fieldEmployeeNumber.value.trim();
+      function formatLogGroup(date) {
+        const now = new Date();
+        const sameDay = now.toDateString() === date.toDateString();
+        if (sameDay) {
+          const diffMinutes = Math.abs(now.getTime() - date.getTime()) / 60000;
+          if (diffMinutes < 5) return "Gerade eben";
+          return `Heute · ${date.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`;
+        }
+        return date.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+      }
 
-        const user = adDirectoryData.users.find(
-          (entry) => entry.username.toLowerCase() === username.toLowerCase(),
+      function renderLogPlaceholder(kind, title, detail) {
+        clearSessionLog("empty");
+        log.className = `log log--${kind}`;
+        log.setAttribute("aria-busy", kind === "loading" ? "true" : "false");
+        const placeholder = document.createElement("div");
+        placeholder.className = `log-placeholder log-placeholder--${kind}`;
+        placeholder.innerHTML =
+          `<span class="log-placeholder-icon" aria-hidden="true">${kind === "loading" ? "◌" : kind === "error" ? "⚠" : "◎"}</span>` +
+          `<div class="log-placeholder-title">${title}</div>` +
+          `<div class="log-placeholder-text">${detail}</div>`;
+        log.appendChild(placeholder);
+        summarizeSessionLog();
+      }
+
+      function clearQueuedLogTimers() {
+        queuedLogTimers.forEach((timerId) => clearTimeout(timerId));
+        queuedLogTimers = [];
+      }
+
+      function setSessionLogState(kind, title, detail) {
+        sessionLogState.viewState = kind;
+        sessionLogState.message = title;
+        if (kind === "loading") {
+          renderLogPlaceholder("loading", title || "Session-Protokoll wird vorbereitet", detail || "Remote-Events und Telemetriedaten werden synchronisiert.");
+        } else if (kind === "error") {
+          renderLogPlaceholder("error", title || "Session-Protokoll vorübergehend eingeschränkt", detail || "Bitte prüfen Sie die Telemetrie- und Sicherheitsmeldungen.");
+        } else if (kind === "empty") {
+          renderLogPlaceholder("empty", title || "Noch keine Session-Ereignisse", detail || "Nach Login, Telemetrie-Updates oder Fernsteueraktionen erscheinen hier gruppierte Timeline-Einträge.");
+        }
+      }
+
+      function clearSessionLog(kind = "empty") {
+        clearQueuedLogTimers();
+        sessionLogState.entries = [];
+        logEntrySequence = 0;
+        setSessionLogState(kind);
+      }
+
+      function renderSessionLog() {
+        if (sessionLogState.entries.length === 0) {
+          setSessionLogState("empty");
+          return;
+        }
+        sessionLogState.viewState = "ready";
+        log.className = "log";
+        log.setAttribute("aria-busy", "false");
+        clearSessionLog("empty");
+        const groups = new Map();
+        sessionLogState.entries.forEach((entry) => {
+          const groupLabel = formatLogGroup(entry.date);
+          if (!groups.has(groupLabel)) groups.set(groupLabel, []);
+          groups.get(groupLabel).push(entry);
+        });
+        groups.forEach((entries, groupLabel) => {
+          const section = document.createElement("section");
+          section.className = "log-group";
+          const header = document.createElement("div");
+          header.className = "log-group-header";
+          header.innerHTML = `<span class="log-group-title">${groupLabel}</span><span class="log-group-count">${entries.length}</span>`;
+          section.appendChild(header);
+          const timeline = document.createElement("div");
+          timeline.className = "log-timeline";
+          entries.forEach((entry) => {
+            const meta = LOG_TYPE_META[entry.type] || LOG_TYPE_META.info;
+            const article = document.createElement("article");
+            article.className = `log-entry log-entry--${meta.tone}`;
+            article.setAttribute("tabindex", "0");
+            article.setAttribute("aria-label", `${meta.badge} um ${entry.time}: ${entry.title}${entry.detail ? `. ${entry.detail}` : ""}`);
+            article.style.animationDelay = `${entry.animationDelay}s`;
+            article.innerHTML =
+              `<div class="log-entry-marker" aria-hidden="true">${meta.icon}</div>` +
+              `<div class="log-entry-body">` +
+                `<div class="log-entry-topline">` +
+                  `<div class="log-entry-heading">` +
+                    `<span class="log-entry-title">${entry.title}</span>` +
+                    `<span class="log-badge">${meta.badge}</span>` +
+                  `</div>` +
+                  `<time class="log-time" datetime="${entry.date.toISOString()}">${entry.time}</time>` +
+                `</div>` +
+                `<div class="log-message">${entry.detail || entry.title}</div>` +
+              `</div>`;
+            timeline.appendChild(article);
+          });
+          section.appendChild(timeline);
+          log.appendChild(section);
+        });
+        log.scrollTop = log.scrollHeight;
+        summarizeSessionLog();
+      }
+
+      function addLogEntry(text, type = inferLogType(text), delay = 0) {
+        const pushEntry = () => {
+          const date = new Date();
+          const { title, detail } = splitLogText(text);
+          sessionLogState.entries.push({
+            id: ++logEntrySequence,
+            text,
+            type,
+            title,
+            detail,
+            date,
+            time: formatTs(date),
+            animationDelay: Math.max(0, delay),
+          });
+          renderSessionLog();
+        };
+        if (delay > 0) {
+          const timerId = setTimeout(pushEntry, delay * 1000);
+          queuedLogTimers.push(timerId);
+          return;
+        }
+        pushEntry();
+      }
+
+      const ACTION_VARIANTS = {
+        align: [
+          { name: "radar-scan", weight: 4 },
+          { name: "signal-ripple", weight: 3 },
+          { name: "sweep", weight: 2 },
+        ],
+        recalibrate: [
+          { name: "bounce", weight: 3 },
+          { name: "radar-scan", weight: 2 },
+          { name: "pulse", weight: 2 },
+        ],
+        sync: [
+          { name: "signal-ripple", weight: 3 },
+          { name: "sweep", weight: 3 },
+          { name: "glitch-lite", weight: 1 },
+        ],
+        band: [
+          { name: "sweep", weight: 4 },
+          { name: "glitch-lite", weight: 2 },
+          { name: "pulse", weight: 2 },
+        ],
+        diagnostics: [
+          { name: "pulse", weight: 3 },
+          { name: "glitch-lite", weight: 2 },
+          { name: "radar-scan", weight: 2 },
+        ],
+        maintenance: [
+          { name: "pulse", weight: 2 },
+          { name: "bounce", weight: 2 },
+          { name: "signal-ripple", weight: 1 },
+        ],
+        restart: [
+          { name: "glitch-lite", weight: 3 },
+          { name: "bounce", weight: 2 },
+          { name: "radar-scan", weight: 1 },
+        ],
+      };
+      const actionVariantHistory = new Map();
+      const globalVariantQueue = [];
+
+      function pickActionVariant(actionKey) {
+        const variants = ACTION_VARIANTS[actionKey] || ACTION_VARIANTS.diagnostics;
+        const now = Date.now();
+        const actionHistory = actionVariantHistory.get(actionKey) || [];
+        const usable = variants.filter((variant) => {
+          const recentHit = actionHistory.find((item) => item.name === variant.name && now - item.at < 6000);
+          const globallyRecent = globalVariantQueue.some((item) => item.name === variant.name && now - item.at < 1800);
+          return !recentHit && !globallyRecent;
+        });
+        const pool = usable.length > 0 ? usable : variants;
+        const total = pool.reduce((sum, item) => sum + item.weight, 0);
+        let target = Math.random() * total;
+        let selected = pool[0];
+        for (const item of pool) {
+          target -= item.weight;
+          if (target <= 0) {
+            selected = item;
+            break;
+          }
+        }
+        const nextHistory = [...actionHistory.filter((item) => now - item.at < 6000), { name: selected.name, at: now }].slice(-3);
+        actionVariantHistory.set(actionKey, nextHistory);
+        globalVariantQueue.push({ name: selected.name, at: now });
+        while (globalVariantQueue.length > 10) globalVariantQueue.shift();
+        return selected.name;
+      }
+
+      function triggerActionVariant(button) {
+        if (!button || reducedMotionQuery.matches) return;
+        const actionKey = button.dataset.actionKey || "diagnostics";
+        const variant = pickActionVariant(actionKey);
+        button.classList.remove(
+          "action-anim--pulse",
+          "action-anim--sweep",
+          "action-anim--bounce",
+          "action-anim--glitch-lite",
+          "action-anim--radar-scan",
+          "action-anim--signal-ripple",
+          "action-anim-active",
         );
-        if (!user) {
-          incidentReport.classList.remove("hidden");
-          incidentText.textContent = "Benutzer oder Passwort ungültig.";
-          logIncident(`Anmeldeversuch mit unbekanntem Benutzer: ${username}`);
-          return;
-        }
-
-        if (user.employeeNumber !== employeeNumber) {
-          incidentReport.classList.remove("hidden");
-          incidentText.textContent = "Mitarbeiter-ID ungültig.";
-          logIncident(
-            `Anmeldeversuch mit falscher Mitarbeiter-ID für ${username}: ${employeeNumber}`,
-          );
-          return;
-        }
-
-        if (user.password !== password) {
-          incidentReport.classList.remove("hidden");
-          incidentText.textContent = "Benutzer oder Passwort ungültig.";
-          logIncident(`Anmeldeversuch mit falschem Passwort für ${username}.`);
-          return;
-        }
-
-        if (user.expectedTokenSerial !== certificateData.serial) {
-          incidentReport.classList.remove("hidden");
-          incidentText.textContent = "USB-Token nicht autorisiert.";
-          logIncident(
-            `Anmeldeversuch mit falschem Token für ${username}. Erwartet: ${user.expectedTokenSerial}, erhalten: ${certificateData.serial}`,
-          );
-          return;
-        }
-
-        viewLogin.classList.add("hidden");
-        viewMast.classList.remove("hidden");
-        isLoggedIn = true;
-        sessionStartTime = Date.now();
-
-        userInfo.innerHTML = `
-            <span class="user-name">Servicetechniker</span>
-            <span class="user-role">Betriebsführung / Netzwerkbetrieb</span>
-        `;
-
-        initializeMastDashboard();
-
-        const lines = [
-          "Session gestartet: Dienst‑Token akzeptiert.",
-          chkOverride.checked
-            ? "Hinweis: Bestehende Token‑Session wurde überschrieben (Override aktiviert)."
-            : "Hinweis: Session wurde zusätzlich zu bestehender Anmeldung geöffnet.",
-          "Standort geladen: QK‑17 / Quickborn – Telekom‑Gebäude.",
-          "Mast‑ID T‑QK‑417‑B: Betriebsstatus abgefragt.",
-          "Signalqualität ermittelt: " + signalText.textContent + " (Uplink stabil).",
-          "Richtfunk‑Schüssel: aktuelle Ausrichtung im grünen Bereich.",
-          "Remote‑Aktionen für diese Session freigeschaltet.",
-        ];
-
-        log.innerHTML = "";
-        lines.forEach((line, idx) => addLogEntry(line, inferLogType(line), 0.12 * idx));
-      });
-
-      function logIncident(message) {
-        addLogEntry(`Sicherheitsmeldung: ${message}`, "error");
-        console.warn(message);
+        void button.offsetWidth;
+        button.classList.add(`action-anim--${variant}`, "action-anim-active");
+        clearTimeout(button._animTimer);
+        button._animTimer = setTimeout(() => {
+          button.classList.remove("action-anim-active");
+        }, 1700);
       }
 
       // ===== MAST ANIMATION ENGINE =====
       const MAST_STATES = ["idle","scanning","calibrating","synchronizing","success","warning","error"];
       const STATE_LABELS = {
-        idle: "Bereit", scanning: "Suche läuft", calibrating: "Kalibrierung",
-        synchronizing: "Synchronisierung", success: "Link gesichert",
-        warning: "Wartungsmodus", error: "Störung erkannt"
+        idle: "Bereit",
+        scanning: "Suche läuft",
+        calibrating: "Kalibrierung",
+        synchronizing: "Synchronisierung",
+        success: "Link gesichert",
+        warning: "Warnung / Wartung",
+        error: "Störung erkannt",
       };
       const STATE_CHIPS = {
         idle:          { text: "BEREIT",         cls: "" },
@@ -1421,40 +1676,78 @@
         calibrating:   { text: "KALIBRIERUNG",   cls: "chip-calibrating" },
         synchronizing: { text: "SYNC",           cls: "chip-synchronizing" },
         success:       { text: "LINK LOCK",      cls: "chip-success" },
-        warning:       { text: "WARTUNG",        cls: "chip-warning" },
-        error:         { text: "STÖRUNG",        cls: "chip-error" }
+        warning:       { text: "WARNUNG",        cls: "chip-warning" },
+        error:         { text: "STÖRUNG",        cls: "chip-error" },
       };
 
       let currentMastState = "idle";
+      let currentTelemetry = {
+        signal: 0,
+        latency: 0,
+        lock: 0,
+        azimuth: 0,
+        band: "Ku-Band",
+        uplink: 0,
+        downlink: 0,
+        syncLag: 0,
+        packetLoss: 0,
+        temperature: 33,
+      };
       let opTimeoutIds = [];
+      let mastTransitionTimer = null;
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function applyTelemetrySceneState() {
+        const signal = Number(currentTelemetry.signal) || 0;
+        const uplink = Number(currentTelemetry.uplink) || 0;
+        const downlink = Number(currentTelemetry.downlink) || 0;
+        const syncLag = Number(currentTelemetry.syncLag) || 0;
+        const packetLoss = Number(currentTelemetry.packetLoss) || 0;
+        const throughput = clamp((uplink + downlink) / 140, 0.2, 1.25);
+        const intensity = clamp(signal / 100, 0.18, 1);
+        mastScene.style.setProperty("--scene-signal-intensity", intensity.toFixed(3));
+        mastScene.style.setProperty("--scene-throughput-intensity", throughput.toFixed(3));
+        mastScene.style.setProperty("--scene-sync-lag", clamp(syncLag / 120, 0, 1).toFixed(3));
+        mastScene.style.setProperty("--scene-packet-loss", clamp(packetLoss / 2, 0, 1).toFixed(3));
+        mastScene.style.setProperty("--scene-temp-stress", clamp((Number(currentTelemetry.temperature || 0) - 28) / 18, 0, 1).toFixed(3));
+        mastScene.classList.toggle("mast-scene--uplink-active", signal > 0 && currentMastState !== "warning" && currentMastState !== "error");
+        mastScene.classList.toggle("mast-scene--degraded", signal < 78 || packetLoss > 0.25 || syncLag > 45);
+        mastScene.classList.toggle("mast-scene--lagging", syncLag > 35);
+      }
 
       function setMastState(state) {
-        MAST_STATES.forEach(s => {
-          mastScene.classList.remove("mast-scene--" + s);
-          mastOpState.classList.remove("state-" + s);
+        MAST_STATES.forEach((name) => {
+          mastScene.classList.remove("mast-scene--" + name);
+          mastOpState.classList.remove("state-" + name);
         });
-        mastScene.classList.add("mast-scene--" + state);
+        mastScene.classList.add("mast-scene--" + state, "mast-scene--transitioning");
         mastOpState.classList.add("state-" + state);
         currentMastState = state;
-
         mastOpLabel.textContent = STATE_LABELS[state] || state;
-
         const chip = STATE_CHIPS[state] || { text: state.toUpperCase(), cls: "" };
         animStateChip.textContent = chip.text;
         animStateChip.className = "anim-state-chip" + (chip.cls ? " " + chip.cls : "");
-
-        // Toggle overlays via opacity (CSS state classes also control via !important)
-        if (scanOverlay)  scanOverlay.style.opacity  = state === "scanning"      ? "1" : "0";
-        if (calibOverlay) calibOverlay.style.opacity = state === "calibrating"   ? "1" : "0";
-        if (lockOverlay)  lockOverlay.style.opacity  = state === "success"       ? "1" : "0";
-        if (errorOverlay) errorOverlay.style.opacity = (state === "warning" || state === "error") ? "1" : "0";
+        if (scanOverlay) scanOverlay.style.opacity = state === "scanning" ? "1" : "0";
+        if (calibOverlay) calibOverlay.style.opacity = state === "calibrating" ? "1" : "0";
+        if (lockOverlay) lockOverlay.style.opacity = state === "success" ? "1" : "0";
+        if (errorOverlay) errorOverlay.style.opacity = state === "warning" || state === "error" ? "1" : "0";
+        mastScene.classList.toggle("mast-scene--alerting", state === "warning");
+        mastScene.classList.toggle("mast-scene--interference-active", state === "error");
         if (bandOverlay && state !== "synchronizing" && state !== "calibrating") {
           mastScene.classList.remove("mast-scene--band-transition");
         }
+        clearTimeout(mastTransitionTimer);
+        mastTransitionTimer = setTimeout(() => {
+          mastScene.classList.remove("mast-scene--transitioning");
+        }, 420);
+        applyTelemetrySceneState();
       }
 
       function clearOpTimeouts() {
-        opTimeoutIds.forEach(id => clearTimeout(id));
+        opTimeoutIds.forEach((id) => clearTimeout(id));
         opTimeoutIds = [];
       }
 
@@ -1462,29 +1755,47 @@
         if (!opTimeline || !opTlEntries) return;
         opTimeline.classList.remove("hidden");
         const dotCls = { info: "op-tl-dot--info", run: "op-tl-dot--run", ok: "op-tl-dot--ok", warn: "op-tl-dot--warn" }[type] || "op-tl-dot--info";
-        const ts = new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+        const ts = formatTs(new Date());
         const entry = document.createElement("div");
         entry.className = "op-tl-entry";
-        entry.innerHTML =
-          `<span class="op-tl-time">${ts}</span>` +
-          `<span class="op-tl-dot ${dotCls}"></span>` +
-          `<span class="op-tl-text">${text}</span>`;
+        entry.innerHTML = `<span class="op-tl-time">${ts}</span><span class="op-tl-dot ${dotCls}"></span><span class="op-tl-text">${text}</span>`;
         opTlEntries.appendChild(entry);
         opTlEntries.scrollTop = opTlEntries.scrollHeight;
       }
 
-      function updateMetrics({ signal, latency, lock, azimuth, band } = {}) {
-        if (signal  !== undefined && metSignal)  metSignal.textContent  = signal  + (signal  === "–" ? "" : " %");
-        if (latency !== undefined && metLatency) metLatency.textContent = latency + (latency === "–" ? "" : " ms");
-        if (lock    !== undefined && metLock)    metLock.textContent    = lock    + (lock    === "–" ? "" : " %");
-        if (azimuth !== undefined && metAzimuth) metAzimuth.textContent = azimuth + (azimuth === "–" ? "" : "°");
-        if (band    !== undefined && metBand)    metBand.textContent    = band;
+      function updateMetrics({ signal, latency, lock, azimuth, band, uplink, downlink, syncLag, packetLoss, temperature } = {}) {
+        if (signal !== undefined) {
+          currentTelemetry.signal = signal;
+          if (metSignal) metSignal.textContent = signal + (signal === "–" ? "" : " %");
+        }
+        if (latency !== undefined) {
+          currentTelemetry.latency = latency;
+          if (metLatency) metLatency.textContent = latency + (latency === "–" ? "" : " ms");
+        }
+        if (lock !== undefined) {
+          currentTelemetry.lock = lock;
+          if (metLock) metLock.textContent = lock + (lock === "–" ? "" : " %");
+        }
+        if (azimuth !== undefined) {
+          currentTelemetry.azimuth = azimuth;
+          if (metAzimuth) metAzimuth.textContent = azimuth + (azimuth === "–" ? "" : "°");
+        }
+        if (band !== undefined) {
+          currentTelemetry.band = band;
+          if (metBand) metBand.textContent = band;
+        }
+        if (uplink !== undefined) currentTelemetry.uplink = uplink;
+        if (downlink !== undefined) currentTelemetry.downlink = downlink;
+        if (syncLag !== undefined) currentTelemetry.syncLag = syncLag;
+        if (packetLoss !== undefined) currentTelemetry.packetLoss = packetLoss;
+        if (temperature !== undefined) currentTelemetry.temperature = temperature;
+        applyTelemetrySceneState();
       }
 
       function clearOpTimeline() {
         if (opTlEntries) opTlEntries.innerHTML = "";
-        if (opTimeline)  opTimeline.classList.add("hidden");
-        if (opTlStatus)  opTlStatus.textContent = "–";
+        if (opTimeline) opTimeline.classList.add("hidden");
+        if (opTlStatus) opTlStatus.textContent = "–";
       }
 
       function setAbtnStatus(id, text, stCls) {
@@ -1506,30 +1817,25 @@
         return [btnAlign, btnRecalibrate, btnSyncLink, btnBandSwitch, btnMaint, btnDiagnostics, btnRestart];
       }
 
-      function disableRemoteActions() { allRemoteBtns().forEach(b => { if (b) b.disabled = true; }); }
-      function enableRemoteActions()  { allRemoteBtns().forEach(b => { if (b) b.disabled = false; }); }
+      function disableRemoteActions() { allRemoteBtns().forEach((button) => { if (button) button.disabled = true; }); }
+      function enableRemoteActions() { allRemoteBtns().forEach((button) => { if (button) button.disabled = false; }); }
 
-      /* runOperation – drives a deterministic multi-stage animation sequence.
-       * stages: [{state, duration, metrics, tlText, tlType}]
-       * onComplete: called when all stages finish */
-      function runOperation(opName, stages, onComplete) {
+      function runOperation(opName, stages, onComplete, button) {
         clearOpTimeouts();
         clearOpTimeline();
         disableRemoteActions();
+        if (button) triggerActionVariant(button);
         if (opTlStatus) opTlStatus.textContent = opName;
         addOpEntry(opName + " – gestartet", "run");
-
         let elapsed = 0;
-        stages.forEach(stage => {
+        stages.forEach((stage) => {
           opTimeoutIds.push(setTimeout(() => {
             setMastState(stage.state);
-            if (stage.metrics)  updateMetrics(stage.metrics);
-            if (stage.tlText)   addOpEntry(stage.tlText, stage.tlType || "info");
+            if (stage.metrics) updateMetrics(stage.metrics);
+            if (stage.tlText) addOpEntry(stage.tlText, stage.tlType || "info");
           }, elapsed));
           elapsed += stage.duration;
         });
-
-        // Restore idle + enable buttons after all stages
         opTimeoutIds.push(setTimeout(() => {
           setMastState("idle");
           enableRemoteActions();
@@ -1537,96 +1843,140 @@
         }, elapsed));
       }
 
-      // ===== REMOTE ACTIONS =====
-      function inferLogType(text) {
-        if (text.startsWith("Aktion:")) return "action";
-        if (text.startsWith("Session")) return "session";
-        if (text.startsWith("Hinweis:")) return "hint";
-        if (text.startsWith("Telemetrie")) return "telemetry";
-        if (text.startsWith("Sicherheitsmeldung:") || text.includes("Zugriff verweigert") || text.includes("Störung")) return "error";
-        if (text.includes("Neustart") || text.includes("Wartungsmodus")) return "maintenance";
-        return "info";
+      function buildSessionEntries(user, scenarioName) {
+        const scenario = getScenarioConfig(scenarioName);
+        const baseEvents = Array.isArray(scenario?.sessionEvents) ? scenario.sessionEvents : [];
+        if (baseEvents.length > 0) {
+          return baseEvents.map((event) => ({ text: event.message, type: inferLogType(event.message), delay: event.delay || 0 }));
+        }
+        return [
+          { text: `Session gestartet: Dienst-Token akzeptiert für ${user?.displayName || "Servicetechniker"}.`, type: "session", delay: 0 },
+          { text: chkOverride.checked ? "Hinweis: Bestehende Token-Session wurde überschrieben (Override aktiviert)." : "Hinweis: Session wurde zusätzlich zu bestehender Anmeldung geöffnet.", type: "hint", delay: 0.12 },
+          { text: `Signalqualität ermittelt: ${signalText.textContent} (Uplink stabil).`, type: "telemetry", delay: 0.24 },
+          { text: "Remote-Aktionen für diese Session freigeschaltet.", type: "session", delay: 0.36 },
+        ];
       }
 
-      function addLogEntry(text, type = inferLogType(text), delay = 0) {
-        const div = document.createElement("div");
-        div.className = `log-line log-line--${type}`;
-        div.style.animationDelay = `${delay}s`;
-        const ts = new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-        const badge = {
-          action: "AKTION",
-          session: "SESSION",
-          hint: "HINWEIS",
-          telemetry: "TELEMETRIE",
-          maintenance: "BETRIEB",
-          error: "ALARM",
-          info: "INFO",
-        }[type] || "INFO";
-        const time = document.createElement("span");
-        time.className = "log-time";
-        time.textContent = ts;
-        const tag = document.createElement("span");
-        tag.className = "log-badge";
-        tag.textContent = badge;
-        const msg = document.createElement("span");
-        msg.className = "log-message";
-        msg.textContent = text;
-        div.append(time, tag, msg);
-        log.appendChild(div);
-        log.scrollTop = log.scrollHeight;
+      function logIncident(message) {
+        addLogEntry(`Sicherheitsmeldung: ${message}`, "error");
+        if (sessionLogState.entries.length === 0) {
+          setSessionLogState("error", "Sicherheitsmeldung ohne aktive Session", message);
+        }
+        console.warn(message);
       }
+
+      btnLogin.addEventListener("click", () => {
+        const fieldsComplete = fieldUser.value.trim() !== "" && fieldPassword.value.trim() !== "" && fieldEmployeeNumber.value.trim() !== "";
+        if (!fieldsComplete) {
+          incidentReport.classList.remove("hidden");
+          incidentText.textContent = "Benutzerangaben unvollständig oder ungültig. Zugriff verweigert.";
+          logIncident("Ungültiger Login-Versuch wegen unvollständiger Anmeldedaten.");
+          return;
+        }
+        if (!tokenReadSuccessfully || !certificateData || !adDirectoryData) {
+          incidentReport.classList.remove("hidden");
+          incidentText.textContent = "Es wurde kein gültiger USB-Token-Scan durchgeführt. Zugriff verweigert.";
+          logIncident("Versuch eines Logins ohne vorherigen Token-Scan.");
+          return;
+        }
+        const username = fieldUser.value.trim();
+        const password = fieldPassword.value;
+        const employeeNumber = fieldEmployeeNumber.value.trim();
+        const user = adDirectoryData.users.find((entry) => entry.username.toLowerCase() === username.toLowerCase());
+        if (!user) {
+          incidentReport.classList.remove("hidden");
+          incidentText.textContent = "Benutzer oder Passwort ungültig.";
+          logIncident(`Anmeldeversuch mit unbekanntem Benutzer: ${username}`);
+          return;
+        }
+        if (user.employeeNumber !== employeeNumber) {
+          incidentReport.classList.remove("hidden");
+          incidentText.textContent = "Mitarbeiter-ID ungültig.";
+          logIncident(`Anmeldeversuch mit falscher Mitarbeiter-ID für ${username}: ${employeeNumber}`);
+          return;
+        }
+        if (user.password !== password) {
+          incidentReport.classList.remove("hidden");
+          incidentText.textContent = "Benutzer oder Passwort ungültig.";
+          logIncident(`Anmeldeversuch mit falschem Passwort für ${username}.`);
+          return;
+        }
+        if (user.expectedTokenSerial !== certificateData.serial) {
+          incidentReport.classList.remove("hidden");
+          incidentText.textContent = "USB-Token nicht autorisiert.";
+          logIncident(`Anmeldeversuch mit falschem Token für ${username}. Erwartet: ${user.expectedTokenSerial}, erhalten: ${certificateData.serial}`);
+          return;
+        }
+        const activeScenario = chkOverride.checked ? "recovery" : (adDirectoryData.activeScenario || "normal");
+        const scenario = getScenarioConfig(activeScenario);
+        const site = getDemoSite();
+        viewLogin.classList.add("hidden");
+        viewMast.classList.remove("hidden");
+        isLoggedIn = true;
+        sessionStartTime = Date.now();
+        userInfo.innerHTML = `<span class="user-name">${user.displayName || user.username}</span><span class="user-role">${user.role || "Betriebsführung / Netzwerkbetrieb"}</span>`;
+        clearSessionLog("loading");
+        if (site) logHealthChip.textContent = `${site.cluster} · ${scenario?.label || "Normalbetrieb"}`;
+        initializeMastDashboard(user, activeScenario);
+        buildSessionEntries(user, activeScenario).forEach((entry) => addLogEntry(entry.text, entry.type, entry.delay || 0));
+      });
 
       btnAlign.addEventListener("click", () => {
-        addLogEntry("Aktion: Richtfunk‑Schüssel neu ausgerichtet – Korridor QK‑17 aktualisiert.");
+        triggerActionVariant(btnAlign);
+        addLogEntry("Aktion: Richtfunk-Schüssel neu ausgerichtet – Korridor QK-17 wird priorisiert.");
         setAbtnStatus("abs-align", "läuft …", "st-run");
         runOperation("Richtfunk ausrichten", [
-          { state:"scanning",      duration:1400, tlText:"Scan: Zielrichtung ermitteln",               tlType:"run",  metrics:{ signal:67, latency:42, lock:12, azimuth:142 } },
-          { state:"calibrating",   duration:2600, tlText:"Kalibrierung: Azimut-Feineinstellung",       tlType:"run",  metrics:{ signal:78, latency:36, lock:44, azimuth:151 } },
-          { state:"synchronizing", duration:1200, tlText:"Synchronisierung: Link stabilisieren",       tlType:"run",  metrics:{ signal:88, latency:28, lock:72, azimuth:158 } },
-          { state:"success",       duration:3000, tlText:"Ausrichtung abgeschlossen – Link gesichert", tlType:"ok",   metrics:{ signal:94, latency:24, lock:98, azimuth:158 } }
+          { state:"scanning", duration:1400, tlText:"Scan: Zielrichtung ermitteln", tlType:"run", metrics:{ signal:67, latency:42, lock:12, azimuth:142, uplink:34, downlink:61, syncLag:54, packetLoss:0.62 } },
+          { state:"calibrating", duration:2600, tlText:"Kalibrierung: Azimut-Feineinstellung", tlType:"run", metrics:{ signal:78, latency:36, lock:44, azimuth:151, uplink:40, downlink:66, syncLag:32, packetLoss:0.24 } },
+          { state:"synchronizing", duration:1200, tlText:"Synchronisierung: Link stabilisieren", tlType:"run", metrics:{ signal:88, latency:28, lock:72, azimuth:158, uplink:47, downlink:72, syncLag:18, packetLoss:0.08 } },
+          { state:"success", duration:3000, tlText:"Ausrichtung abgeschlossen – Link gesichert", tlType:"ok", metrics:{ signal:94, latency:24, lock:98, azimuth:158, uplink:52, downlink:77, syncLag:11, packetLoss:0.02 } },
         ], () => {
           setAbtnStatus("abs-align", "✓ OK", "st-ok");
-          simulateLinkUpdate({ signalQuality:94, azimuth:158, elevation:20, uplink:52, downlink:77 });
-          addLogEntry("Telemetrie: Ausrichtung gespeichert. Azimut 158°, Elevation 20°.");
+          simulateLinkUpdate({ signalQuality:94, azimuth:158, elevation:20, uplink:52, downlink:77, latency:24, lock:98, syncLag:11, packetLoss:0.02 });
+          addLogEntry("Telemetrie: Ausrichtung gespeichert. Azimut 158°, Elevation 20°.", "telemetry");
           setTimeout(() => setAbtnStatus("abs-align", ""), 4000);
-        });
+        }, btnAlign);
       });
 
       btnRecalibrate.addEventListener("click", () => {
-        addLogEntry("Aktion: Systemkalibrierung eingeleitet – Motortest und Signalmessung läuft.");
+        triggerActionVariant(btnRecalibrate);
+        addLogEntry("Aktion: Systemkalibrierung eingeleitet – Motortest und Signalmessung laufen.");
         setAbtnStatus("abs-recal", "läuft …", "st-run");
         runOperation("Systemkalibrierung", [
-          { state:"scanning",    duration:1000, tlText:"Motortest gestartet",             tlType:"run",  metrics:{ signal:70, latency:38, lock:20, azimuth:142 } },
-          { state:"calibrating", duration:2800, tlText:"Azimut- und Elevationsmessung",   tlType:"run",  metrics:{ signal:84, latency:32, lock:60, azimuth:144 } },
-          { state:"success",     duration:2500, tlText:"Kalibrierung erfolgreich",        tlType:"ok",   metrics:{ signal:92, latency:26, lock:96, azimuth:142 } }
+          { state:"scanning", duration:1000, tlText:"Motortest gestartet", tlType:"run", metrics:{ signal:70, latency:38, lock:20, azimuth:142, uplink:38, downlink:59, syncLag:36, packetLoss:0.21 } },
+          { state:"calibrating", duration:2800, tlText:"Azimut- und Elevationsmessung", tlType:"run", metrics:{ signal:84, latency:32, lock:60, azimuth:144, uplink:45, downlink:69, syncLag:22, packetLoss:0.09 } },
+          { state:"success", duration:2500, tlText:"Kalibrierung erfolgreich", tlType:"ok", metrics:{ signal:92, latency:26, lock:96, azimuth:142, uplink:49, downlink:72, syncLag:12, packetLoss:0.03 } },
         ], () => {
           setAbtnStatus("abs-recal", "✓ OK", "st-ok");
-          simulateLinkUpdate({ signalQuality:92, azimuth:142, elevation:18, uplink:49, downlink:72 });
+          simulateLinkUpdate({ signalQuality:92, azimuth:142, elevation:18, uplink:49, downlink:72, latency:26, lock:96, syncLag:12, packetLoss:0.03 });
           addLogEntry("Diagnose abgeschlossen: Systemintegrität 98 % – Sensoren grün.");
           batteryValue.textContent = "95";
           tempValue.textContent = "31";
+          updateMetrics({ temperature: 31 });
           setTimeout(() => setAbtnStatus("abs-recal", ""), 4000);
-        });
+        }, btnRecalibrate);
       });
 
       btnSyncLink.addEventListener("click", () => {
+        triggerActionVariant(btnSyncLink);
         addLogEntry("Aktion: Satellitenlink wird synchronisiert – Verbindung wird neu aufgebaut.");
         setAbtnStatus("abs-sync", "läuft …", "st-run");
         satelliteStatus.textContent = "Synchronisiere …";
         runOperation("Satellitenlink sync", [
-          { state:"scanning",      duration:1200, tlText:"Satellit wird gesucht",                     tlType:"run",  metrics:{ signal:62, latency:55, lock:15, azimuth:145 } },
-          { state:"synchronizing", duration:3000, tlText:"Synchronisierung – Pakete werden gesendet", tlType:"run",  metrics:{ signal:80, latency:34, lock:58, azimuth:145 } },
-          { state:"success",       duration:2500, tlText:"Link gesichert – Relay-Verbindung stabil",  tlType:"ok",   metrics:{ signal:91, latency:24, lock:98, azimuth:145 } }
+          { state:"scanning", duration:1200, tlText:"Satellit wird gesucht", tlType:"run", metrics:{ signal:62, latency:55, lock:15, azimuth:145, uplink:29, downlink:52, syncLag:68, packetLoss:0.81 } },
+          { state:"synchronizing", duration:3000, tlText:"Synchronisierung – Pakete werden gesendet", tlType:"run", metrics:{ signal:80, latency:34, lock:58, azimuth:145, uplink:42, downlink:68, syncLag:24, packetLoss:0.12 } },
+          { state:"success", duration:2500, tlText:"Link gesichert – Relay-Verbindung stabil", tlType:"ok", metrics:{ signal:91, latency:24, lock:98, azimuth:145, uplink:50, downlink:74, syncLag:12, packetLoss:0.03 } },
         ], () => {
           setAbtnStatus("abs-sync", "✓ OK", "st-ok");
           satelliteStatus.textContent = "Sicher verbunden";
-          simulateLinkUpdate({ signalQuality:91, azimuth:145, elevation:19, uplink:50, downlink:74 });
+          simulateLinkUpdate({ signalQuality:91, azimuth:145, elevation:19, uplink:50, downlink:74, latency:24, lock:98, syncLag:12, packetLoss:0.03 });
           addLogEntry("Satellitenlink synchronisiert – Relay-Verbindung stabil.");
           setTimeout(() => setAbtnStatus("abs-sync", ""), 4000);
-        });
+        }, btnSyncLink);
       });
 
       btnBandSwitch.addEventListener("click", () => {
+        triggerActionVariant(btnBandSwitch);
         currentBand = currentBand === "Ku-Band" ? "Ka-Band" : "Ku-Band";
         if (currentBandLabel) currentBandLabel.textContent = currentBand;
         addLogEntry(`Aktion: Frequenzbandwechsel auf ${currentBand} gestartet – adaptive Linkoptimierung läuft.`, "action");
@@ -1638,15 +1988,12 @@
           metBand.classList.add("scene-metric--band-switch");
         }
         const nm = currentBand === "Ka-Band"
-          ? { signalQuality:95, azimuth:150, elevation:21, uplink:56, downlink:82 }
-          : { signalQuality:90, azimuth:143, elevation:18, uplink:48, downlink:73 };
+          ? { signalQuality:95, azimuth:150, elevation:21, uplink:56, downlink:82, latency:22, lock:98, syncLag:9, packetLoss:0.01 }
+          : { signalQuality:90, azimuth:143, elevation:18, uplink:48, downlink:73, latency:26, lock:95, syncLag:14, packetLoss:0.04 };
         runOperation("Frequenzband wechseln", [
-          { state:"calibrating",   duration:1200, tlText:`Bandwechsel auf ${currentBand} eingeleitet`, tlType:"run",
-            metrics:{ signal:72, latency:38, lock:30, azimuth:nm.azimuth, band:currentBand } },
-          { state:"synchronizing", duration:1800, tlText:"Neue Frequenzparameter werden synchronisiert", tlType:"run",
-            metrics:{ signal:86, latency:30, lock:65, azimuth:nm.azimuth } },
-          { state:"success",       duration:2500, tlText:`${currentBand} aktiv – Link stabilisiert`, tlType:"ok",
-            metrics:{ signal:nm.signalQuality, latency:22, lock:98, azimuth:nm.azimuth } }
+          { state:"calibrating", duration:1200, tlText:`Bandwechsel auf ${currentBand} eingeleitet`, tlType:"run", metrics:{ signal:72, latency:38, lock:30, azimuth:nm.azimuth, band:currentBand, uplink:36, downlink:58, syncLag:30, packetLoss:0.22 } },
+          { state:"synchronizing", duration:1800, tlText:"Neue Frequenzparameter werden synchronisiert", tlType:"run", metrics:{ signal:86, latency:30, lock:65, azimuth:nm.azimuth, uplink:46, downlink:69, syncLag:16, packetLoss:0.08 } },
+          { state:"success", duration:2500, tlText:`${currentBand} aktiv – Link stabilisiert`, tlType:"ok", metrics:{ signal:nm.signalQuality, latency:nm.latency, lock:nm.lock, azimuth:nm.azimuth, band:currentBand, uplink:nm.uplink, downlink:nm.downlink, syncLag:nm.syncLag, packetLoss:nm.packetLoss } },
         ], () => {
           setAbtnStatus("abs-band", "✓ OK", "st-ok");
           simulateLinkUpdate(nm);
@@ -1654,10 +2001,11 @@
           setTimeout(() => mastScene.classList.remove("mast-scene--band-transition"), 700);
           setTimeout(() => metBand && metBand.classList.remove("scene-metric--band-switch"), 1300);
           setTimeout(() => setAbtnStatus("abs-band", ""), 4000);
-        });
+        }, btnBandSwitch);
       });
 
       btnMaint.addEventListener("click", () => {
+        triggerActionVariant(btnMaint);
         maintenanceModeActive = !maintenanceModeActive;
         clearOpTimeouts();
         clearOpTimeline();
@@ -1667,11 +2015,12 @@
           setMastState("warning");
           if (opTlStatus) opTlStatus.textContent = "Wartungsmodus";
           addOpEntry("Wartungsmodus aktiviert – Dienste eingeschränkt", "warn");
-          updateMetrics({ signal:"–", latency:"–", lock:"–" });
+          updateMetrics({ signal:"–", latency:"–", lock:"–", syncLag:64, packetLoss:0.6 });
           satelliteStatus.textContent = "Im Wartungsfenster";
           linkStatus.textContent = "Wartung";
           setAbtnStatus("abs-maint", "aktiv", "st-warn");
           btnMaint.classList.add("is-active-mode");
+          logHealthChip.textContent = "Wartungsfenster";
         } else {
           addLogEntry("Aktion: Wartungsmodus beendet – regulärer Betrieb wiederhergestellt.", "maintenance");
           setMastState("idle");
@@ -1681,25 +2030,27 @@
           linkStatus.textContent = "Stabil";
           setAbtnStatus("abs-maint", "", "");
           btnMaint.classList.remove("is-active-mode");
+          simulateLinkUpdate({ signalQuality:91, azimuth:145, elevation:19, uplink:50, downlink:74, latency:24, lock:98, syncLag:12, packetLoss:0.03 });
         }
-        // Keep all buttons enabled in maintenance mode
         enableRemoteActions();
       });
 
       btnDiagnostics.addEventListener("click", () => {
+        triggerActionVariant(btnDiagnostics);
         addLogEntry("Aktion: Systemdiagnose gestartet – Motortest am Signalmast und Signalprüfung laufen.", "action");
         setAbtnStatus("abs-diag", "läuft …", "st-run");
         runOperation("Systemdiagnose", [
-          { state:"scanning",    duration:1500, tlText:"Motordiagnose läuft",                   tlType:"run",  metrics:{ signal:75, latency:40, lock:30, azimuth:142 } },
-          { state:"calibrating", duration:1500, tlText:"Signalpfadmessung und Sensorprüfung",   tlType:"run",  metrics:{ signal:82, latency:34, lock:55, azimuth:142 } },
-          { state:"success",     duration:2000, tlText:"Diagnose abgeschlossen – alle Systeme OK", tlType:"ok", metrics:{ signal:93, latency:26, lock:97, azimuth:142 } }
+          { state:"scanning", duration:1500, tlText:"Motordiagnose läuft", tlType:"run", metrics:{ signal:75, latency:40, lock:30, azimuth:142, uplink:39, downlink:61, syncLag:29, packetLoss:0.19 } },
+          { state:"calibrating", duration:1500, tlText:"Signalpfadmessung und Sensorprüfung", tlType:"run", metrics:{ signal:82, latency:34, lock:55, azimuth:142, uplink:44, downlink:67, syncLag:18, packetLoss:0.08 } },
+          { state:"success", duration:2000, tlText:"Diagnose abgeschlossen – alle Systeme OK", tlType:"ok", metrics:{ signal:93, latency:26, lock:97, azimuth:142, uplink:49, downlink:73, syncLag:10, packetLoss:0.02 } },
         ], () => {
           setAbtnStatus("abs-diag", "✓ OK", "st-ok");
           batteryValue.textContent = "95";
           tempValue.textContent = "31";
+          updateMetrics({ temperature: 31 });
           addLogEntry("Diagnose: Systemintegrität 98 % – alle Sensoren im grünen Bereich.");
           setTimeout(() => setAbtnStatus("abs-diag", ""), 4000);
-        });
+        }, btnDiagnostics);
       });
 
       btnRestart.addEventListener("click", () => {
@@ -1707,20 +2058,13 @@
           addLogEntry("Neustart bereits im Gange. Bitte warten...");
           return;
         }
+        triggerActionVariant(btnRestart);
         openRestartDialog();
       });
 
-      function openRestartDialog() {
-        restartDialog.classList.remove("hidden");
-      }
-
-      function closeRestartDialog() {
-        restartDialog.classList.add("hidden");
-      }
-
-      btnRestartCancel.addEventListener("click", () => {
-        closeRestartDialog();
-      });
+      function openRestartDialog() { restartDialog.classList.remove("hidden"); }
+      function closeRestartDialog() { restartDialog.classList.add("hidden"); }
+      btnRestartCancel.addEventListener("click", () => { closeRestartDialog(); });
 
       btnRestartNow.addEventListener("click", () => {
         const delay = Number(restartDelay.value);
@@ -1736,7 +2080,6 @@
           closeRestartDialog();
           return;
         }
-
         restartState.planned_restart.enabled = false;
         restartState.planned_restart.start_in_minutes = 0;
         restartState.planned_restart.status = "running";
@@ -1755,40 +2098,34 @@
         setAbtnStatus("abs-restart", "läuft …", "st-run");
         const buttonsToDisable = [btnAlign, btnRecalibrate, btnSyncLink, btnBandSwitch, btnMaint, btnDiagnostics, btnRestart];
         buttonsToDisable.forEach((button) => (button.disabled = true));
-
-        // Drive animation through restart phases
         setMastState("scanning");
         clearOpTimeline();
         if (opTlStatus) opTlStatus.textContent = "Soft-Restart";
         opTimeline.classList.remove("hidden");
         addOpEntry("Soft-Restart eingeleitet – Verbindung wird getrennt", "run");
-
+        addLogEntry("Neustart gestartet – Verbindung wird kurzzeitig unterbrochen.");
         restartState.planned_restart.timer_id = setInterval(() => {
           restartState.planned_restart.remaining_seconds -= 1;
           const elapsed = restartState.planned_restart.max_outage_seconds - restartState.planned_restart.remaining_seconds;
           const percent = Math.round((elapsed / restartState.planned_restart.max_outage_seconds) * 100);
           restartProgressFill.style.width = `${percent}%`;
-
           if (restartState.planned_restart.remaining_seconds > 40) {
             setRestartPhase("Verbindung wird getrennt…", 1);
             setMastState("scanning");
+            updateMetrics({ signal:55, latency:66, lock:10, uplink:15, downlink:24, syncLag:84, packetLoss:1.2 });
           } else if (restartState.planned_restart.remaining_seconds > 20) {
             setRestartPhase("Module starten neu…", 2);
             setMastState("calibrating");
+            updateMetrics({ signal:49, latency:78, lock:6, uplink:10, downlink:16, syncLag:95, packetLoss:1.6 });
           } else if (restartState.planned_restart.remaining_seconds > 0) {
             setRestartPhase("Link synchronisiert sich neu…", 3);
             setMastState("synchronizing");
+            updateMetrics({ signal:71, latency:39, lock:46, uplink:31, downlink:48, syncLag:36, packetLoss:0.24 });
           }
-
           restartStatusText.textContent = `${restartState.planned_restart.current_phase} Verbleibende Zeit: ${restartState.planned_restart.remaining_seconds} s`;
           addRestartLogEntry(`Status: ${restartState.planned_restart.current_phase}`);
-
-          if (restartState.planned_restart.remaining_seconds <= 0) {
-            finishRestart(buttonsToDisable);
-          }
+          if (restartState.planned_restart.remaining_seconds <= 0) finishRestart(buttonsToDisable);
         }, 1000);
-
-        addLogEntry("Neustart gestartet – Verbindung wird kurzzeitig unterbrochen.");
       }
 
       function setRestartPhase(text, phase) {
@@ -1801,7 +2138,7 @@
         restartState.planned_restart.status = "completed";
         mastRestartInProgress = false;
         buttonsToEnable.forEach((button) => (button.disabled = false));
-        simulateLinkUpdate({ signalQuality:91, azimuth:145, elevation:19, uplink:50, downlink:74 });
+        simulateLinkUpdate({ signalQuality:91, azimuth:145, elevation:19, uplink:50, downlink:74, latency:24, lock:98, syncLag:12, packetLoss:0.03 });
         linkStatus.textContent = "Stabil";
         restartStatusLabel.textContent = "Neustart abgeschlossen";
         restartStatusText.textContent = `Standort wieder betriebsbereit – letzte Unterbrechung: ${restartState.planned_restart.max_outage_seconds} s`;
@@ -1813,6 +2150,57 @@
           setMastState("idle");
           setAbtnStatus("abs-restart", "");
         }, 3500);
+      }
+
+      function simulateLinkUpdate({ signalQuality, azimuth, elevation, uplink, downlink, latency = 24, lock = signalQuality, syncLag = 12, packetLoss = 0.03 }) {
+        signalFill.style.width = `${signalQuality}%`;
+        signalFill.setAttribute("aria-valuenow", String(signalQuality));
+        signalText.textContent = `${signalQuality}%`;
+        linkStatus.textContent = signalQuality > 90 ? "Stabil" : signalQuality > 76 ? "Überwacht" : "Degradiert";
+        antennaAzimuth.textContent = `${azimuth}°`;
+        antennaElevation.textContent = `${elevation}°`;
+        uplinkRate.textContent = uplink;
+        downlinkRate.textContent = downlink;
+        updateMetrics({ signal: signalQuality, latency, lock, azimuth, band: currentBand, uplink, downlink, syncLag, packetLoss, temperature: Number(tempValue.textContent || currentTelemetry.temperature) });
+        if (currentMastState === "idle" || currentMastState === "warning") {
+          setMastState(signalQuality < 76 || packetLoss > 0.25 ? "warning" : "idle");
+        }
+        addLogEntry(`Telemetrie aktualisiert: Richtfunk QK-17, Azimut ${azimuth}°, Elevation ${elevation}°.`, "telemetry");
+      }
+
+      function initializeMastDashboard(user, scenarioName) {
+        const site = getDemoSite();
+        const scenario = getScenarioConfig(scenarioName) || {};
+        const telemetry = scenario.telemetry || {};
+        const baselineQuality = telemetry.signalQuality || (92 + Math.round(Math.random() * 4));
+        currentBand = telemetry.band || "Ku-Band";
+        if (currentBandLabel) currentBandLabel.textContent = currentBand;
+        if (metBand) metBand.textContent = currentBand;
+        maintenanceModeActive = false;
+        if (btnMaint) btnMaint.classList.remove("is-active-mode");
+        batteryValue.textContent = telemetry.battery ?? 96;
+        tempValue.textContent = telemetry.temperature ?? 33;
+        satelliteStatus.textContent = telemetry.satelliteStatus || "Sicher verbunden";
+        linkStatus.textContent = telemetry.linkStatus || "Stabil";
+        simulateLinkUpdate({
+          signalQuality: baselineQuality,
+          azimuth: telemetry.azimuth ?? 142,
+          elevation: telemetry.elevation ?? 18,
+          uplink: telemetry.uplink ?? 48,
+          downlink: telemetry.downlink ?? 73,
+          latency: telemetry.latency ?? 24,
+          lock: telemetry.lock ?? 98,
+          syncLag: telemetry.syncLag ?? 12,
+          packetLoss: telemetry.packetLoss ?? 0.03,
+        });
+        updateMetrics({ temperature: telemetry.temperature ?? 33 });
+        setMastState(telemetry.signalQuality < 76 ? "warning" : "idle");
+        clearOpTimeline();
+        if (site) {
+          addLogEntry(`Mastübersicht geladen: ${site.cluster} / ${site.region} · ${scenario.label || "Normalbetrieb"}.`, "session");
+        } else {
+          addLogEntry("Mastübersicht geladen: Netzperformance und Antennenstatus sind aktuell.", "session");
+        }
       }
 
       // ===== LOGOUT =====
@@ -1845,7 +2233,7 @@
             <span class="user-role">Standortverwaltung</span>
         `;
 
-        log.innerHTML = "";
+        clearSessionLog("empty");
       });
 
       // ===== BACK LINK =====
@@ -1854,46 +2242,8 @@
         viewLogin.classList.remove("hidden");
         isLoggedIn = false;
         hideValidationPanel();
+        clearSessionLog("empty");
       });
-
-      function simulateLinkUpdate({ signalQuality, azimuth, elevation, uplink, downlink }) {
-        signalFill.style.width = `${signalQuality}%`;
-        signalText.textContent = `${signalQuality}%`;
-        linkStatus.textContent = signalQuality > 90 ? "Stabil" : "Überwacht";
-        antennaAzimuth.textContent = `${azimuth}°`;
-        antennaElevation.textContent = `${elevation}°`;
-        uplinkRate.textContent = uplink;
-        downlinkRate.textContent = downlink;
-        // Sync metrics bar with telemetry
-        updateMetrics({ signal:signalQuality, azimuth });
-        addLogEntry(
-          `Telemetrie aktualisiert: Richtfunk QK-17, Azimut ${azimuth}°, Elevation ${elevation}°.`,
-        );
-      }
-
-      function initializeMastDashboard() {
-        const baselineQuality = 92 + Math.round(Math.random() * 4);
-        simulateLinkUpdate({
-          signalQuality: baselineQuality,
-          azimuth: 142,
-          elevation: 18,
-          uplink: 48,
-          downlink: 73,
-        });
-        linkStatus.textContent = "Stabil";
-        satelliteStatus.textContent = "Sicher verbunden";
-        batteryValue.textContent = 96;
-        tempValue.textContent = 33;
-        currentBand = "Ku-Band";
-        if (currentBandLabel) currentBandLabel.textContent = currentBand;
-        if (metBand) metBand.textContent = currentBand;
-        maintenanceModeActive = false;
-        if (btnMaint) btnMaint.classList.remove("is-active-mode");
-        updateMetrics({ signal: baselineQuality, latency: 24, lock: 98, azimuth: 142, band: "Ku-Band" });
-        setMastState("idle");
-        clearOpTimeline();
-        addLogEntry("Mastübersicht geladen: Netzperformance und Antennenstatus sind aktuell.", "session");
-      }
 
       // ===== CLOCK & UPTIME =====
       function updateTime() {
