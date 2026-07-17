@@ -247,7 +247,7 @@
 
           <!-- LEFT: Telemetry -->
           <div class="panel panel--telemetry">
-            <div class="panel-section-label">Systemübersicht</div>
+            <div class="panel-section-label">System Übersicht</div>
 
             <div class="mast-meta">
               <div class="mast-meta-row">
@@ -285,7 +285,7 @@
                 <div class="status-card-meta">Up / Down</div>
               </div>
               <div class="status-card">
-                <div class="status-card-title">Strom &amp; Klima</div>
+                <div class="status-card-title">Strom und Klima</div>
                 <div class="status-card-value"><span id="battery-value">96</span>%</div>
                 <div class="status-card-meta"><span id="temp-value">33</span>°C</div>
               </div>
@@ -303,7 +303,7 @@
 
             <div class="divider divider--spaced"></div>
 
-            <div class="panel-section-label">Session‑Protokoll</div>
+            <div class="panel-section-label">Session-Protokoll</div>
             <div class="log" id="log" role="log" aria-label="Session-Protokoll" aria-live="polite"></div>
           </div>
 
@@ -348,7 +348,7 @@
                 <rect width="580" height="400" fill="url(#ms-sky-g)"/>
 
                 <!-- Stars -->
-                <g aria-hidden="true">
+                <g id="ms-stars" aria-hidden="true">
                   <circle cx="44"  cy="26" r="0.9" fill="white" opacity="0.65"/>
                   <circle cx="115" cy="13" r="1.1" fill="white" opacity="0.5"/>
                   <circle cx="158" cy="45" r="0.7" fill="white" opacity="0.55"/>
@@ -361,6 +361,12 @@
                   <circle cx="570" cy="12" r="0.9" fill="white" opacity="0.6"/>
                   <circle cx="380" cy="32" r="0.8" fill="white" opacity="0.45"/>
                   <circle cx="88"  cy="38" r="0.7" fill="white" opacity="0.4"/>
+                </g>
+
+                <!-- Ambient waves -->
+                <g id="ms-air-waves" aria-hidden="true">
+                  <path d="M 112 350 Q 142 338 172 350 T 232 350" fill="none" stroke="#45658a" stroke-width="0.8" opacity="0.3" stroke-dasharray="4 6"/>
+                  <path d="M 312 354 Q 340 344 368 354 T 424 354" fill="none" stroke="#45658a" stroke-width="0.8" opacity="0.22" stroke-dasharray="3 7"/>
                 </g>
 
                 <!-- Ground -->
@@ -396,6 +402,7 @@
                   <line x1="238" y1="78" x2="222" y2="78" stroke="#8aaac0" stroke-width="1.8"/>
                   <circle cx="222" cy="78" r="4.5" fill="#e20074" filter="url(#ms-glow)" opacity="0.9"/>
                   <circle cx="222" cy="78" r="2"   fill="#fff" opacity="0.6"/>
+                  <circle id="ms-feed-pulse" cx="222" cy="78" r="6" fill="none" stroke="#ff6abf" stroke-width="0.9" opacity="0"/>
                 </g>
 
                 <!-- SIGNAL RINGS at dish mouth (260, 78) -->
@@ -464,6 +471,13 @@
                   <line x1="213" y1="121" x2="225" y2="121" stroke="#5a6e88" stroke-width="0.5"/>
                 </g>
 
+                <!-- Tower indicators -->
+                <g id="ms-status-lights" aria-hidden="true">
+                  <circle class="ms-tower-light" cx="190" cy="150" r="1.6" fill="#ff5c7a"/>
+                  <circle class="ms-tower-light" cx="210" cy="240" r="1.6" fill="#6cf7a8"/>
+                  <circle class="ms-tower-light" cx="196" cy="330" r="1.6" fill="#7cc8ff"/>
+                </g>
+
                 <!-- Beacon light -->
                 <circle id="ms-beacon" cx="200" cy="32" r="3.5" fill="#ff2020" filter="url(#ms-glow)" aria-hidden="true"/>
 
@@ -521,6 +535,12 @@
                   <rect id="ms-err-flash" width="580" height="400" fill="#ff1010" opacity="0"/>
                 </g>
 
+                <!-- Band switch overlay -->
+                <g id="ms-band-overlay" opacity="0" aria-hidden="true">
+                  <circle cx="262" cy="80" r="60" fill="none" stroke="#7cc8ff" stroke-width="1.4" stroke-dasharray="9 7" opacity="0.65"/>
+                  <circle cx="262" cy="80" r="78" fill="none" stroke="#ff8bc4" stroke-width="1.1" stroke-dasharray="4 10" opacity="0.45"/>
+                </g>
+
               </svg>
             </div><!-- .anim-canvas-wrap -->
 
@@ -569,7 +589,7 @@
             <div class="action-group">
               <div class="action-group-hdr">Antennensteuerung</div>
 
-              <button class="action-btn" id="btn-align" aria-label="Richtfunk-Schüssel neu ausrichten">
+              <button class="action-btn action-btn--align" id="btn-align" aria-label="Richtfunk-Schüssel neu ausrichten">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="1.4"/>
@@ -584,7 +604,7 @@
                 <span class="action-btn-status" id="abs-align" aria-live="polite"></span>
               </button>
 
-              <button class="action-btn" id="btn-recalibrate" aria-label="Systemkalibrierung durchführen">
+              <button class="action-btn action-btn--recal" id="btn-recalibrate" aria-label="Systemkalibrierung durchführen">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <rect x="4" y="4" width="7" height="7" stroke="currentColor" stroke-width="1.4" rx="1"/>
@@ -601,7 +621,7 @@
                 <span class="action-btn-status" id="abs-recal" aria-live="polite"></span>
               </button>
 
-              <button class="action-btn" id="btn-sync-link" aria-label="Satellitenlink synchronisieren">
+              <button class="action-btn action-btn--sync" id="btn-sync-link" aria-label="Satellitenlink synchronisieren">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <path d="M 2 7.5 C 2 4.5 4.5 2 7.5 2 C 9.3 2 10.9 2.9 11.9 4.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
@@ -622,7 +642,7 @@
             <div class="action-group">
               <div class="action-group-hdr">Übertragung</div>
 
-              <button class="action-btn" id="btn-band-switch" aria-label="Frequenzband wechseln">
+              <button class="action-btn action-btn--band" id="btn-band-switch" aria-label="Frequenzband wechseln">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <path d="M 1 7.5 Q 3.5 4 7.5 7.5 Q 11.5 11 14 7.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/>
@@ -641,7 +661,7 @@
             <div class="action-group">
               <div class="action-group-hdr">Systemverwaltung</div>
 
-              <button class="action-btn" id="btn-diagnostics" aria-label="Systemdiagnose starten">
+              <button class="action-btn action-btn--diag" id="btn-diagnostics" aria-label="Systemdiagnose starten">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <path d="M 1 7.5 L 3 7.5 L 4.5 3.5 L 7 11.5 L 8.5 5.5 L 10.5 9.5 L 12 7.5 L 14 7.5"
@@ -650,12 +670,12 @@
                 </div>
                 <div class="action-btn-body">
                   <span class="action-btn-title">Systemdiagnose</span>
-                  <span class="action-btn-desc">Antennenmotor, Signalpfad, Sensor</span>
+                  <span class="action-btn-desc">Antennenmotor, Signalmast, Sensorik</span>
                 </div>
                 <span class="action-btn-status" id="abs-diag" aria-live="polite"></span>
               </button>
 
-              <button class="action-btn action-btn--warn" id="btn-maint" aria-label="Standort in Wartungsmodus setzen">
+              <button class="action-btn action-btn--warn action-btn--maint" id="btn-maint" aria-label="Standort in Wartungsmodus setzen">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <path d="M 7.5 1 L 13.5 12 L 1.5 12 Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
@@ -670,7 +690,7 @@
                 <span class="action-btn-status" id="abs-maint" aria-live="polite"></span>
               </button>
 
-              <button class="action-btn action-btn--crit" id="btn-restart" aria-label="Mast neu starten (Soft-Restart)">
+              <button class="action-btn action-btn--crit action-btn--restart" id="btn-restart" aria-label="Mast neu starten (Soft-Restart)">
                 <div class="action-btn-ico" aria-hidden="true">
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                     <path d="M 3 7.5 C 3 5 5 3 7.5 3 C 9.3 3 10.8 4 11.6 5.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
@@ -800,6 +820,7 @@
       const calibOverlay    = document.getElementById("ms-calib-overlay");
       const lockOverlay     = document.getElementById("ms-lock-overlay");
       const errorOverlay    = document.getElementById("ms-error-overlay");
+      const bandOverlay     = document.getElementById("ms-band-overlay");
       const opTimeline      = document.getElementById("op-timeline");
       const opTlEntries     = document.getElementById("op-tl-entries");
       const opTlStatus      = document.getElementById("op-tl-status");
@@ -817,6 +838,7 @@
       let certificateData = null;
       let adDirectoryData = null;
       let currentBand = "Ku-Band";
+      let maintenanceModeActive = false;
       let mastRestartInProgress = false;
       let restartState = {
         planned_restart: {
@@ -1378,20 +1400,11 @@
         ];
 
         log.innerHTML = "";
-        lines.forEach((line, idx) => {
-          const div = document.createElement("div");
-          div.className = "log-line";
-          div.style.animationDelay = 0.15 * idx + "s";
-          div.textContent = line;
-          log.appendChild(div);
-        });
+        lines.forEach((line, idx) => addLogEntry(line, inferLogType(line), 0.12 * idx));
       });
 
       function logIncident(message) {
-        const entry = document.createElement("div");
-        entry.className = "log-line";
-        entry.textContent = `Sicherheitsmeldung: ${message}`;
-        log.appendChild(entry);
+        addLogEntry(`Sicherheitsmeldung: ${message}`, "error");
         console.warn(message);
       }
 
@@ -1435,6 +1448,9 @@
         if (calibOverlay) calibOverlay.style.opacity = state === "calibrating"   ? "1" : "0";
         if (lockOverlay)  lockOverlay.style.opacity  = state === "success"       ? "1" : "0";
         if (errorOverlay) errorOverlay.style.opacity = (state === "warning" || state === "error") ? "1" : "0";
+        if (bandOverlay && state !== "synchronizing" && state !== "calibrating") {
+          mastScene.classList.remove("mast-scene--band-transition");
+        }
       }
 
       function clearOpTimeouts() {
@@ -1476,6 +1492,14 @@
         if (!el) return;
         el.textContent = text;
         el.className = "action-btn-status" + (stCls ? " " + stCls : "");
+        const button = el.closest(".action-btn");
+        if (!button) return;
+        button.classList.remove("is-running", "is-success", "is-warning", "is-error");
+        if (!stCls || !text) return;
+        if (stCls === "st-run") button.classList.add("is-running");
+        if (stCls === "st-ok") button.classList.add("is-success");
+        if (stCls === "st-warn") button.classList.add("is-warning");
+        if (stCls === "st-err") button.classList.add("is-error");
       }
 
       function allRemoteBtns() {
@@ -1514,11 +1538,40 @@
       }
 
       // ===== REMOTE ACTIONS =====
-      function addLogEntry(text) {
+      function inferLogType(text) {
+        if (text.startsWith("Aktion:")) return "action";
+        if (text.startsWith("Session")) return "session";
+        if (text.startsWith("Hinweis:")) return "hint";
+        if (text.startsWith("Telemetrie")) return "telemetry";
+        if (text.startsWith("Sicherheitsmeldung:") || text.includes("Zugriff verweigert") || text.includes("Störung")) return "error";
+        if (text.includes("Neustart") || text.includes("Wartungsmodus")) return "maintenance";
+        return "info";
+      }
+
+      function addLogEntry(text, type = inferLogType(text), delay = 0) {
         const div = document.createElement("div");
-        div.className = "log-line";
-        div.style.animationDelay = "0s";
-        div.textContent = text;
+        div.className = `log-line log-line--${type}`;
+        div.style.animationDelay = `${delay}s`;
+        const ts = new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+        const badge = {
+          action: "AKTION",
+          session: "SESSION",
+          hint: "HINWEIS",
+          telemetry: "TELEMETRIE",
+          maintenance: "BETRIEB",
+          error: "ALARM",
+          info: "INFO",
+        }[type] || "INFO";
+        const time = document.createElement("span");
+        time.className = "log-time";
+        time.textContent = ts;
+        const tag = document.createElement("span");
+        tag.className = "log-badge";
+        tag.textContent = badge;
+        const msg = document.createElement("span");
+        msg.className = "log-message";
+        msg.textContent = text;
+        div.append(time, tag, msg);
         log.appendChild(div);
         log.scrollTop = log.scrollHeight;
       }
@@ -1576,48 +1629,70 @@
       btnBandSwitch.addEventListener("click", () => {
         currentBand = currentBand === "Ku-Band" ? "Ka-Band" : "Ku-Band";
         if (currentBandLabel) currentBandLabel.textContent = currentBand;
-        addLogEntry(`Aktion: Frequenzband gewechselt auf ${currentBand} – adaptive Linkoptimierung aktiv.`);
-        setAbtnStatus("abs-band", "läuft …", "st-run");
+        addLogEntry(`Aktion: Frequenzbandwechsel auf ${currentBand} gestartet – adaptive Linkoptimierung läuft.`, "action");
+        setAbtnStatus("abs-band", "wechselt …", "st-run");
+        mastScene.classList.add("mast-scene--band-transition");
+        if (metBand) {
+          metBand.classList.remove("scene-metric--band-switch");
+          void metBand.offsetWidth;
+          metBand.classList.add("scene-metric--band-switch");
+        }
         const nm = currentBand === "Ka-Band"
           ? { signalQuality:95, azimuth:150, elevation:21, uplink:56, downlink:82 }
           : { signalQuality:90, azimuth:143, elevation:18, uplink:48, downlink:73 };
         runOperation("Frequenzband wechseln", [
-          { state:"calibrating",   duration:1200, tlText:`Wechsel auf ${currentBand} eingeleitet`, tlType:"run",
+          { state:"calibrating",   duration:1200, tlText:`Bandwechsel auf ${currentBand} eingeleitet`, tlType:"run",
             metrics:{ signal:72, latency:38, lock:30, azimuth:nm.azimuth, band:currentBand } },
-          { state:"synchronizing", duration:1800, tlText:"Neue Parameter synchronisieren",         tlType:"run",
+          { state:"synchronizing", duration:1800, tlText:"Neue Frequenzparameter werden synchronisiert", tlType:"run",
             metrics:{ signal:86, latency:30, lock:65, azimuth:nm.azimuth } },
-          { state:"success",       duration:2500, tlText:`${currentBand} aktiv – Link stabil`,     tlType:"ok",
+          { state:"success",       duration:2500, tlText:`${currentBand} aktiv – Link stabilisiert`, tlType:"ok",
             metrics:{ signal:nm.signalQuality, latency:22, lock:98, azimuth:nm.azimuth } }
         ], () => {
           setAbtnStatus("abs-band", "✓ OK", "st-ok");
           simulateLinkUpdate(nm);
+          addLogEntry(`Frequenzband ${currentBand} aktiv – Übertragungsprofil erfolgreich übernommen.`, "telemetry");
+          setTimeout(() => mastScene.classList.remove("mast-scene--band-transition"), 700);
+          setTimeout(() => metBand && metBand.classList.remove("scene-metric--band-switch"), 1300);
           setTimeout(() => setAbtnStatus("abs-band", ""), 4000);
         });
       });
 
       btnMaint.addEventListener("click", () => {
-        addLogEntry("Aktion: Standort in Wartungsmodus gesetzt – bestimmte Dienste temporär eingeschränkt.");
+        maintenanceModeActive = !maintenanceModeActive;
         clearOpTimeouts();
         clearOpTimeline();
-        setMastState("warning");
-        if (opTlStatus) opTlStatus.textContent = "Wartungsmodus";
         opTimeline.classList.remove("hidden");
-        addOpEntry("Wartungsmodus aktiviert – Dienste eingeschränkt", "warn");
-        updateMetrics({ signal:"–", latency:"–", lock:"–" });
-        satelliteStatus.textContent = "Im Wartungsfenster";
-        linkStatus.textContent = "Wartung";
-        setAbtnStatus("abs-maint", "aktiv", "st-warn");
+        if (maintenanceModeActive) {
+          addLogEntry("Aktion: Wartungsmodus aktiviert – Dienste werden kontrolliert eingeschränkt.", "maintenance");
+          setMastState("warning");
+          if (opTlStatus) opTlStatus.textContent = "Wartungsmodus";
+          addOpEntry("Wartungsmodus aktiviert – Dienste eingeschränkt", "warn");
+          updateMetrics({ signal:"–", latency:"–", lock:"–" });
+          satelliteStatus.textContent = "Im Wartungsfenster";
+          linkStatus.textContent = "Wartung";
+          setAbtnStatus("abs-maint", "aktiv", "st-warn");
+          btnMaint.classList.add("is-active-mode");
+        } else {
+          addLogEntry("Aktion: Wartungsmodus beendet – regulärer Betrieb wiederhergestellt.", "maintenance");
+          setMastState("idle");
+          if (opTlStatus) opTlStatus.textContent = "Regelbetrieb";
+          addOpEntry("Wartungsmodus beendet – System im Normalbetrieb", "ok");
+          satelliteStatus.textContent = "Sicher verbunden";
+          linkStatus.textContent = "Stabil";
+          setAbtnStatus("abs-maint", "", "");
+          btnMaint.classList.remove("is-active-mode");
+        }
         // Keep all buttons enabled in maintenance mode
         enableRemoteActions();
       });
 
       btnDiagnostics.addEventListener("click", () => {
-        addLogEntry("Aktion: Systemdiagnose gestartet – Motordiagnose und Signalprüfung läuft.");
+        addLogEntry("Aktion: Systemdiagnose gestartet – Motortest am Signalmast und Signalprüfung laufen.", "action");
         setAbtnStatus("abs-diag", "läuft …", "st-run");
         runOperation("Systemdiagnose", [
           { state:"scanning",    duration:1500, tlText:"Motordiagnose läuft",                   tlType:"run",  metrics:{ signal:75, latency:40, lock:30, azimuth:142 } },
           { state:"calibrating", duration:1500, tlText:"Signalpfadmessung und Sensorprüfung",   tlType:"run",  metrics:{ signal:82, latency:34, lock:55, azimuth:142 } },
-          { state:"success",     duration:2000, tlText:"Diagnose abgeschlossen – Alle OK",      tlType:"ok",   metrics:{ signal:93, latency:26, lock:97, azimuth:142 } }
+          { state:"success",     duration:2000, tlText:"Diagnose abgeschlossen – alle Systeme OK", tlType:"ok", metrics:{ signal:93, latency:26, lock:97, azimuth:142 } }
         ], () => {
           setAbtnStatus("abs-diag", "✓ OK", "st-ok");
           batteryValue.textContent = "95";
@@ -1812,10 +1887,12 @@
         currentBand = "Ku-Band";
         if (currentBandLabel) currentBandLabel.textContent = currentBand;
         if (metBand) metBand.textContent = currentBand;
+        maintenanceModeActive = false;
+        if (btnMaint) btnMaint.classList.remove("is-active-mode");
         updateMetrics({ signal: baselineQuality, latency: 24, lock: 98, azimuth: 142, band: "Ku-Band" });
         setMastState("idle");
         clearOpTimeline();
-        addLogEntry("Mastübersicht geladen: Netzperformance und Antennenstatus aktuell.");
+        addLogEntry("Mastübersicht geladen: Netzperformance und Antennenstatus sind aktuell.", "session");
       }
 
       // ===== CLOCK & UPTIME =====

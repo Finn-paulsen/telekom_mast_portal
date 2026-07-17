@@ -738,6 +738,9 @@ main {
 .mast-meta-row {
     display: flex;
     justify-content: space-between;
+    gap: 8px;
+    align-items: flex-start;
+    flex-wrap: wrap;
     margin-bottom: 8px;
     padding: 6px 0;
     border-bottom: 1px solid #edf0f7;
@@ -789,10 +792,11 @@ main {
 }
 
 .status-card-value {
-    font-size: 22px;
+    font-size: clamp(18px, 2vw, 22px);
     font-weight: 700;
     color: var(--text);
     margin-bottom: 6px;
+    overflow-wrap: anywhere;
 }
 
 .status-card-meta {
@@ -831,11 +835,51 @@ main {
 }
 
 .log-line {
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    display: grid;
+    grid-template-columns: 58px 66px minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: #ffffff;
+    border: 1px solid #e7ebf4;
     opacity: 0;
     transform: translateY(2px);
     animation: logLine 0.3s ease forwards;
 }
+
+.log-time {
+    color: #6b7280;
+    font-family: monospace;
+    font-size: 10px;
+}
+
+.log-badge {
+    display: inline-flex;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 2px 6px;
+    border-radius: 999px;
+    color: #475569;
+    background: #eef2f7;
+    border: 1px solid #dbe3ef;
+}
+
+.log-message {
+    color: #334155;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.log-line--action .log-badge { background: rgba(226,0,116,0.12); border-color: rgba(226,0,116,0.2); color: #a40058; }
+.log-line--session .log-badge { background: rgba(0,90,168,0.12); border-color: rgba(0,90,168,0.2); color: #0050a0; }
+.log-line--hint .log-badge { background: rgba(112,144,184,0.12); border-color: rgba(112,144,184,0.22); color: #47688d; }
+.log-line--telemetry .log-badge { background: rgba(0,138,0,0.12); border-color: rgba(0,138,0,0.2); color: #0d6a0d; }
+.log-line--maintenance .log-badge { background: rgba(240,160,18,0.14); border-color: rgba(240,160,18,0.24); color: #815100; }
+.log-line--error .log-badge { background: rgba(192,0,0,0.12); border-color: rgba(192,0,0,0.22); color: #8d1212; }
 
 @keyframes logLine {
     to {
@@ -1051,7 +1095,7 @@ main {
         grid-column: 1 / -1;
     }
     .status-cards-grid {
-        grid-template-columns: repeat(4, 1fr) !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -1060,6 +1104,20 @@ main {
         grid-template-columns: 1fr;
     }
     .panel--telemetry { grid-column: auto; }
+    .status-cards-grid {
+        grid-template-columns: 1fr;
+    }
+    .log-line {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+    .log-badge {
+        justify-self: start;
+    }
+    .action-btn-status {
+        align-self: center;
+        min-width: 52px;
+    }
 }
 
 .panel-section-label {
@@ -1073,9 +1131,14 @@ main {
 
 .status-cards-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
     margin: 12px 0;
+}
+
+.panel--telemetry {
+    min-width: 0;
+    overflow: hidden;
 }
 
 .spaced-section {
@@ -1135,6 +1198,58 @@ main {
     width: 100%;
     height: auto;
     display: block;
+}
+
+#ms-stars circle {
+    animation: ms-star-twinkle 4.8s ease-in-out infinite;
+}
+#ms-stars circle:nth-child(2n) {
+    animation-duration: 6.2s;
+}
+#ms-stars circle:nth-child(3n) {
+    animation-duration: 7s;
+}
+@keyframes ms-star-twinkle {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.9; }
+}
+
+#ms-air-waves path {
+    animation: ms-air-wave 4.2s linear infinite;
+}
+#ms-air-waves path:nth-child(2) {
+    animation-delay: 0.8s;
+}
+@keyframes ms-air-wave {
+    to { stroke-dashoffset: -40; }
+}
+
+#ms-mast-tower {
+    transform-origin: 200px 370px;
+    animation: ms-mast-sway 5.4s ease-in-out infinite;
+}
+@keyframes ms-mast-sway {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(0.55deg); }
+}
+
+#ms-feed-pulse {
+    animation: ms-feed-pulse 2.2s ease-out infinite;
+}
+@keyframes ms-feed-pulse {
+    0% { transform: scale(0.2); opacity: 0.8; }
+    70% { transform: scale(1); opacity: 0.06; }
+    100% { opacity: 0; }
+}
+
+.ms-tower-light {
+    animation: ms-light-blink 1.8s step-end infinite;
+}
+.ms-tower-light:nth-child(2) { animation-delay: 0.45s; }
+.ms-tower-light:nth-child(3) { animation-delay: 0.9s; }
+@keyframes ms-light-blink {
+    0%, 100% { opacity: 0.95; }
+    50% { opacity: 0.18; }
 }
 
 /* ===== SVG ANIMATION STATES ===== */
@@ -1328,6 +1443,23 @@ main {
 .mast-scene--error #ms-signal-beam { opacity: 0.06; }
 .mast-scene--error #ms-link-beam   { opacity: 0.2; }
 
+.mast-scene--band-transition #ms-band-overlay {
+    opacity: 1 !important;
+    animation: ms-band-overlay 1.2s ease-in-out infinite;
+}
+.mast-scene--band-transition #ms-signal-beam {
+    animation: ms-band-beam 0.95s ease-in-out infinite;
+}
+@keyframes ms-band-overlay {
+    0% { transform: scale(0.9); opacity: 0.25; }
+    60% { transform: scale(1.02); opacity: 0.8; }
+    100% { transform: scale(1.06); opacity: 0; }
+}
+@keyframes ms-band-beam {
+    0%, 100% { opacity: 0.22; }
+    50% { opacity: 0.72; }
+}
+
 /* ===== SCENE METRICS BAR ===== */
 .scene-metrics {
     display: flex;
@@ -1361,6 +1493,16 @@ main {
     color: var(--text);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
+}
+
+.scene-metric--band-switch {
+    color: #0058a8;
+    animation: bandMetricFlash 1.1s ease-out 1;
+}
+@keyframes bandMetricFlash {
+    0% { text-shadow: 0 0 0 rgba(0, 170, 255, 0); transform: scale(1); }
+    45% { text-shadow: 0 0 10px rgba(0, 170, 255, 0.45); transform: scale(1.08); }
+    100% { text-shadow: 0 0 0 rgba(0, 170, 255, 0); transform: scale(1); }
 }
 
 /* ===== OPERATION TIMELINE ===== */
@@ -1458,7 +1600,7 @@ main {
 
 .action-btn {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 9px;
     width: 100%;
     padding: 10px 11px;
@@ -1470,9 +1612,9 @@ main {
     font-size: 12px;
     color: var(--text);
     text-align: left;
-    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
     margin-bottom: 6px;
-    line-height: 1;
+    line-height: 1.2;
 }
 .action-btn:last-child { margin-bottom: 0; }
 
@@ -1489,6 +1631,7 @@ main {
 
 .action-btn:active:not(:disabled) {
     background: rgba(226,0,116,0.04);
+    transform: translateY(1px) scale(0.995);
 }
 
 .action-btn:disabled {
@@ -1532,15 +1675,17 @@ main {
     font-size: 12px;
     color: var(--text);
     margin-bottom: 1px;
+    overflow-wrap: anywhere;
 }
 
 .action-btn-desc {
     display: block;
     font-size: 10px;
     color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
 }
 
 .action-btn-status {
@@ -1557,6 +1702,43 @@ main {
 .action-btn-status.st-warn { color: #b08010; }
 .action-btn-status.st-err  { color: var(--accent-warn); }
 
+.action-btn--align:hover:not(:disabled) .action-btn-ico { animation: btnAlignIcon 0.8s ease-in-out; }
+.action-btn--recal:hover:not(:disabled) .action-btn-ico { animation: btnRecalIcon 1s linear; }
+.action-btn--sync:hover:not(:disabled) .action-btn-ico { animation: btnSyncIcon 0.9s ease; }
+.action-btn--band:hover:not(:disabled) .action-btn-ico { animation: btnBandIcon 1s ease-in-out; }
+.action-btn--diag:hover:not(:disabled) .action-btn-ico { animation: btnDiagIcon 0.85s ease; }
+.action-btn--maint:hover:not(:disabled) .action-btn-ico { animation: btnMaintIcon 0.7s ease; }
+.action-btn--restart:hover:not(:disabled) .action-btn-ico { animation: btnRestartIcon 0.75s ease; }
+
+@keyframes btnAlignIcon { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+@keyframes btnRecalIcon { to { transform: rotate(180deg); } }
+@keyframes btnSyncIcon { 0% { transform: translateX(-2px); } 50% { transform: translateX(2px); } 100% { transform: translateX(0); } }
+@keyframes btnBandIcon { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+@keyframes btnDiagIcon { 0%,100% { transform: scaleX(1); } 50% { transform: scaleX(1.15); } }
+@keyframes btnMaintIcon { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-8deg); } }
+@keyframes btnRestartIcon { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+.action-btn.is-running { box-shadow: 0 0 0 2px rgba(226, 0, 116, 0.12); }
+.action-btn--align.is-running { animation: actionTrack 1.3s ease-in-out infinite; }
+.action-btn--recal.is-running { animation: actionCalibrate 1.5s ease-in-out infinite; }
+.action-btn--sync.is-running { animation: actionSync 1s linear infinite; }
+.action-btn--band.is-running { animation: actionBand 0.95s ease-in-out infinite; }
+.action-btn--diag.is-running { animation: actionDiag 1.35s ease-in-out infinite; }
+.action-btn--restart.is-running .action-btn-ico { animation: actionRestart 0.9s linear infinite; }
+.action-btn--maint.is-active-mode { animation: actionMaint 1.8s ease-in-out infinite; }
+
+@keyframes actionTrack { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-1px); } }
+@keyframes actionCalibrate { 0%,100% { border-color: #d4d7e5; } 50% { border-color: #f0a012; } }
+@keyframes actionSync { 0% { box-shadow: inset 0 0 0 0 rgba(0,170,255,0.14); } 100% { box-shadow: inset 0 0 0 9px rgba(0,170,255,0); } }
+@keyframes actionBand { 0%,100% { background: #fff; } 50% { background: rgba(0,170,255,0.08); } }
+@keyframes actionDiag { 0%,100% { transform: translateX(0); } 33% { transform: translateX(1px); } 66% { transform: translateX(-1px); } }
+@keyframes actionRestart { to { transform: rotate(1turn); } }
+@keyframes actionMaint { 0%,100% { box-shadow: 0 0 0 0 rgba(240,160,18,0.24); } 50% { box-shadow: 0 0 0 3px rgba(240,160,18,0.08); } }
+
+.action-btn.is-success { border-color: #9cd9b5; background: #f2faf4; }
+.action-btn.is-error { border-color: #f2b4b4; background: #fff5f5; }
+.action-btn.is-warning { border-color: #efcf86; background: #fff9eb; }
+
 /* ===== REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce) {
     .mast-scene *, .mast-scene *::before, .mast-scene *::after {
@@ -1566,6 +1748,10 @@ main {
     }
     #ms-beacon   { animation: none !important; opacity: 1; }
     #ms-satellite { animation: none !important; }
+    .action-btn, .action-btn-ico, .log-line, .sm-value {
+        animation: none !important;
+        transition: none !important;
+    }
 }
 
 .small-link {
