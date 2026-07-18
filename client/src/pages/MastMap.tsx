@@ -26,8 +26,13 @@ const STATE_META: Record<
   restarting: { label: "Neustart", color: "#3fd0e8", ring: "rgba(63,208,232,0.35)", icon: RotateCcw },
 };
 
+/** Safe lookup: unknown/missing states (e.g. from a user-edited ad-demo.json) fall back to "active". */
+function stateMeta(state: MastSite["state"]) {
+  return STATE_META[state] ?? STATE_META.active;
+}
+
 function markerHtml(site: MastSite): HTMLElement {
-  const meta = STATE_META[site.state];
+  const meta = stateMeta(site.state);
   const el = document.createElement("div");
   el.style.cssText = "position:relative;cursor:pointer;transform:translateY(4px);";
   el.innerHTML = `
@@ -56,10 +61,16 @@ export default function MastMap() {
   const [selected, setSelected] = useState<string | null>(null);
   const [clock, setClock] = useState(() => new Date());
 
-  const sites = useMemo(
-    () => session.directory?.sites ?? DEMO_DIRECTORY.sites,
-    [session.directory],
-  );
+  const sites = useMemo(() => {
+    const raw = session.directory?.sites ?? DEMO_DIRECTORY.sites;
+    // Guard against malformed entries from a user-provided ad-demo.json
+    return raw.filter(
+      (s): s is MastSite =>
+        Boolean(s && s.siteId && s.coordinates) &&
+        Number.isFinite(s.coordinates.lat) &&
+        Number.isFinite(s.coordinates.lng),
+    );
+  }, [session.directory]);
   const user = session.user;
 
   useEffect(() => {
@@ -149,7 +160,7 @@ export default function MastMap() {
 
           <div className="space-y-2.5">
             {sites.map(site => {
-              const meta = STATE_META[site.state];
+              const meta = stateMeta(site.state);
               const Icon = meta.icon;
               const isSel = selected === site.siteId;
               return (

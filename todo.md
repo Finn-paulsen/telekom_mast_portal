@@ -53,4 +53,7 @@
 ## Tests & Auslieferung
 - [x] Vitest-Tests für Kernlogik (Token-Validierung, Login, Zertifikat, Demo-Daten) – 20 Tests grün
 - [x] Visuelle Verifikation per Screenshots + Browser-E2E (Scan → Login → Karte → Konsole → Aktionen)
-- [ ] Checkpoint + Übergabe
+- [x] Checkpoint + Übergabe
+
+## Bugfixes (Nutzer-Meldung)
+- [x] /karte: TypeError "Cannot read properties of undefined (reading 'icon')" in MastMap beheben (STATE_META-Zugriff mit unbekanntem state absichern)
