@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { defineConfig } from "drizzle-kit";
 
 const connectionString = process.env.DATABASE_URL;

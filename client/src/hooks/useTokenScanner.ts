@@ -69,8 +69,7 @@ async function collectFilesFromHandle(
 ): Promise<File[]> {
   const files: File[] = [];
   if (depth > 3) return files;
-  // @ts-expect-error async iterator on directory handle
-  for await (const entry of dirHandle.values()) {
+  for await (const entry of dirHandle.values() as AsyncIterable<FileSystemHandle>) {
     if (entry.kind === "file") {
       files.push(await (entry as FileSystemFileHandle).getFile());
     } else if (entry.kind === "directory" && depth < 3) {
