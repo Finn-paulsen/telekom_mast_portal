@@ -1,0 +1,30 @@
+-----BEGIN CERTIFICATE-----
+MIIBrjCCAVSgAwIBAgIUAo3C7JwXn8A5h9HDj3bW1YID6rkwDQYJKoZIhvcNAQEL
+BQAwFjEUMBIGA1UEAwwLVEVMTU9LIERFTU8gQ0EwHhcNMjYwMTA5MDAwMDAwWhcN
+MjcwMTA5MDAwMDAwWjAaMRgwFgYDVQQDDA9TZXJ2aWNldGVjaG5pa2VyIEh5ZHJh
+MFkwEwYHKoZIhvcj0CAQYIKoZIhvcNAQEBBQADSwAwSAJBAJQ8m3p4k5EwhkGf1S1z
+Vn2f2O6sKsxvQdW1zP5Jm5jV8cYI0mW3Ww2XcY9U9C9pxP3fGg1YhJ0ZQ0uPqE6l7WkC
+AwEAAaNTMFEwHQYDVR0OBBYEFHkzQ5s8B6jiGafW4J8bYo5uKQ19MB8GA1UdIwQYMBaA
+FG5kWZ4sutaW01zOw7D6iQlEBtMMBAGA1UdEQQJMAeCC3NlcnZpY2UuY2VydDAKBggq
+hkjOPQQDAgNHADBEAiAyuNnv2bWb7xIGxTaKxV7nfF6t1xPbHQGaRtuYAUx0gwIgVh4U
+ibnpT7a0Ik6RoPJd5zkrw3oK5eQwA3zF+v9Qdo=
+-----END CERTIFICATE-----
+Serial=34F7A1B2C3D4E5F6
+CN=Servicetechniker Hydra
+Issuer=CN=Telekom Demo Root CA,O=Deutsche Telekom AG,OU=Demo Trust Services,L=Bonn,C=DE
+Subject=CN=Servicetechniker Hydra,O=Deutsche Telekom AG,OU=Field Service Demo,L=Quickborn,C=DE
+Valid-From=2026-01-09T00:00:00Z
+Valid-To=2027-01-09T00:00:00Z
+OU=Field Service Demo / Richtfunk Nord
+SAN=hydra.service.telekom.demo,token.qk17.telekom.demo
+Serial-Profile=Demo Field Service Token
+Fingerprint-SHA256=4D:72:19:0B:AF:13:27:1E:65:8B:63:4B:2A:93:13:B0:11:18:8F:A9:8D:55:7E:98:37:8D:10:1D:A1:31:77:4E
+Key-Algorithm=ECDSA-P256
+Policies=1.3.6.1.4.1.21928.11.4 (FieldServiceDemo), 2.16.840.1.113733.1.7.23.6 (ClientAuth)
+OCSP=https://ocsp.demo.telekom.net/field-service
+CRL=https://pki.demo.telekom.net/crl/field-service-demo.crl
+AIA=https://pki.demo.telekom.net/aia/telekom-demo-root-ca.pem
+Demo-Profile=Telekom Mast Portal Demo
+Asset-Region=Nord / Quickborn Cluster QK-17
+Token-Hardware=SafeNet eToken 5110 CC (Demo)
+Notice=Demo certificate metadata for UX showcase only - not for productive trust decisions.

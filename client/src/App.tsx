@@ -4,35 +4,41 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
+import { PortalSessionProvider } from "./contexts/PortalSession";
+import Login from "./pages/Login";
+import MastMap from "./pages/MastMap";
+import MastConsole from "./pages/MastConsole";
 
 function Router() {
-  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
+      <Route path={"/"} component={Login} />
+      <Route path={"/karte"} component={MastMap} />
+      <Route path={"/mast/:siteId"} component={MastConsole} />
       <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
-
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        // switchable
-      >
+      <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
-          <Toaster />
-          <Router />
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: "hsl(222 44% 9%)",
+                border: "1px solid hsl(222 30% 22%)",
+                color: "hsl(216 30% 92%)",
+              },
+            }}
+          />
+          <PortalSessionProvider>
+            <Router />
+          </PortalSessionProvider>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

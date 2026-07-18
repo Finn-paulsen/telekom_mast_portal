@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "mysql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1784396728139,
+      "tag": "0000_ambiguous_warpath",
+      "breakpoints": true
+    }
+  ]
 }

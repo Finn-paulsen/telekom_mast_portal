@@ -1,0 +1,124 @@
+import type { AdDirectory } from "@shared/masts";
+
+/**
+ * Built-in fallback copy of the demo directory. The authoritative source is
+ * the `ad-demo.json` on the PKI USB token — this constant is only used to
+ * render the map preview marker positions before login and as a reference of
+ * the expected schema.
+ */
+export const DEMO_DIRECTORY: AdDirectory = {
+  meta: {
+    dataset: "Telekom Mast Portal Demo",
+    version: "3.0",
+    generatedAt: "2026-07-18T12:00:00Z",
+    schemaVersion: "telekom-demo-site.v3",
+  },
+  users: [
+    {
+      username: "MZimmermann",
+      password: "T3l3k0m!",
+      employeeNumber: "MZ204",
+      displayName: "Marlene Zimmermann",
+      role: "Betriebsführung / Richtfunk-Service",
+      expectedTokenSerial: "34F7A1B2C3D4E5F6",
+      siteAccess: ["QK-17", "HH-NORD-05", "KI-OST-11", "HB-WEST-03", "FL-SUED-08"],
+    },
+  ],
+  sites: [
+    {
+      siteId: "QK-17",
+      mastId: "T-QK-417-B",
+      name: "Quickborn Telekom-Gebäude",
+      region: "Schleswig-Holstein / Quickborn",
+      cluster: "Nord-West Backbone Cluster 4",
+      coordinates: { lat: 53.7281, lng: 9.9024, altitudeM: 51 },
+      heightM: 47.3,
+      bnetzaId: "420186",
+      backhaulType: "Hybrid Richtfunk / Satelliten-Relay",
+      state: "active",
+      scenario: "normal",
+      telemetry: {
+        signalQuality: 93, azimuth: 142, elevation: 18, uplink: 48, downlink: 73,
+        latency: 24, lock: 98, syncLag: 12, packetLoss: 0.03, temperature: 33,
+        battery: 96, band: "Ku-Band", satelliteStatus: "Sicher verbunden", linkStatus: "Stabil",
+      },
+      weather: { condition: "leichter Dunst", windKph: 18, humidityPct: 64, temperatureC: 33 },
+    },
+    {
+      siteId: "HH-NORD-05",
+      mastId: "T-HH-509-A",
+      name: "Hamburg-Langenhorn Relaisstation",
+      region: "Hamburg / Langenhorn",
+      cluster: "Nord-West Backbone Cluster 4",
+      coordinates: { lat: 53.6647, lng: 10.0113, altitudeM: 28 },
+      heightM: 62.8,
+      bnetzaId: "417233",
+      backhaulType: "Glasfaser / Richtfunk-Fallback",
+      state: "active",
+      scenario: "high-load",
+      telemetry: {
+        signalQuality: 88, azimuth: 305, elevation: 12, uplink: 56, downlink: 84,
+        latency: 31, lock: 93, syncLag: 24, packetLoss: 0.12, temperature: 35,
+        battery: 94, band: "Ka-Band", satelliteStatus: "Überwacht", linkStatus: "Spitzenlast",
+      },
+      weather: { condition: "klar", windKph: 12, humidityPct: 55, temperatureC: 31 },
+    },
+    {
+      siteId: "KI-OST-11",
+      mastId: "T-KI-118-C",
+      name: "Kiel-Elmschenhagen Funkturm",
+      region: "Schleswig-Holstein / Kiel",
+      cluster: "Ostsee-Küsten-Cluster 2",
+      coordinates: { lat: 54.2932, lng: 10.1839, altitudeM: 42 },
+      heightM: 84.1,
+      bnetzaId: "398471",
+      backhaulType: "Richtfunk-Kette Küste Nord",
+      state: "maintenance",
+      scenario: "maintenance",
+      telemetry: {
+        signalQuality: 64, azimuth: 78, elevation: 22, uplink: 18, downlink: 30,
+        latency: 48, lock: 71, syncLag: 45, packetLoss: 0.4, temperature: 29,
+        battery: 91, band: "Ku-Band", satelliteStatus: "Im Wartungsfenster", linkStatus: "Wartung",
+      },
+      weather: { condition: "böiger Wind", windKph: 34, humidityPct: 72, temperatureC: 27 },
+    },
+    {
+      siteId: "HB-WEST-03",
+      mastId: "T-HB-307-D",
+      name: "Bremen-Gröpelingen Sendestandort",
+      region: "Bremen / Gröpelingen",
+      cluster: "Weser-Cluster 1",
+      coordinates: { lat: 53.1153, lng: 8.7546, altitudeM: 8 },
+      heightM: 51.6,
+      bnetzaId: "441092",
+      backhaulType: "Hybrid Richtfunk / Satelliten-Relay",
+      state: "fault",
+      scenario: "degraded",
+      telemetry: {
+        signalQuality: 41, azimuth: 194, elevation: 15, uplink: 9, downlink: 17,
+        latency: 96, lock: 38, syncLag: 118, packetLoss: 2.4, temperature: 39,
+        battery: 88, band: "Ku-Band", satelliteStatus: "Instabil", linkStatus: "Gestört",
+      },
+      weather: { condition: "Starkregenzelle", windKph: 46, humidityPct: 93, temperatureC: 24 },
+    },
+    {
+      siteId: "FL-SUED-08",
+      mastId: "T-FL-812-E",
+      name: "Flensburg-Weiche Grenzrelais",
+      region: "Schleswig-Holstein / Flensburg",
+      cluster: "Grenz-Cluster DK 1",
+      coordinates: { lat: 54.7743, lng: 9.4126, altitudeM: 37 },
+      heightM: 58.9,
+      bnetzaId: "402518",
+      backhaulType: "Richtfunk Grenzkorridor",
+      state: "restarting",
+      scenario: "restart-pending",
+      telemetry: {
+        signalQuality: 12, azimuth: 12, elevation: 8, uplink: 0, downlink: 0,
+        latency: 0, lock: 0, syncLag: 0, packetLoss: 0, temperature: 26,
+        battery: 97, band: "Ku-Band", satelliteStatus: "Neustart geplant", linkStatus: "Offline",
+      },
+      weather: { condition: "bedeckt", windKph: 22, humidityPct: 68, temperatureC: 25 },
+    },
+  ],
+};
