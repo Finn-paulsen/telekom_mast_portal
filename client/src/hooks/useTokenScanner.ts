@@ -69,7 +69,31 @@ async function collectFilesFromHandle(
 ): Promise<File[]> {
   const files: File[] = [];
   if (depth > 3) return files;
-  for await (const entry of dirHandle.values() as AsyncIterable<FileSystemHandle>) {
+
+  const anyHandle = dirHandle as unknown as {
+    values?: () => AsyncIterable<FileSystemHandle>;
+    entries?: () => AsyncIterable<[string, FileSystemHandle]>;
+    [Symbol.asyncIterator]?: () => AsyncIterable<FileSystemHandle>[typeof Symbol.asyncIterator];
+  };
+
+  const entries: FileSystemHandle[] = [];
+
+  if (typeof anyHandle.values === "function") {
+    for await (const entry of anyHandle.values()) {
+      entries.push(entry);
+    }
+  } else if (typeof anyHandle.entries === "function") {
+    for await (const [, entry] of anyHandle.entries()) {
+      entries.push(entry);
+    }
+  } else {
+    const iterable = dirHandle as unknown as AsyncIterable<FileSystemHandle>;
+    for await (const entry of iterable) {
+      entries.push(entry);
+    }
+  }
+
+  for (const entry of entries) {
     if (entry.kind === "file") {
       files.push(await (entry as FileSystemFileHandle).getFile());
     } else if (entry.kind === "directory" && depth < 3) {
