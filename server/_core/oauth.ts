@@ -1,17 +1,33 @@
 import { COOKIE_NAME, ONE_YEAR_MS, OAUTH_STATE_COOKIE, decodeOAuthState } from "@shared/const";
 import { parse as parseCookieHeader } from "cookie";
-import type { Express, Request, Response } from "express";
 import * as db from "../db";
 import { getSessionCookieOptions } from "./cookies";
 import { sdk } from "./sdk";
 
-function getQueryParam(req: Request, key: string): string | undefined {
-  const value = req.query[key];
+type RequestLike = {
+  query?: Record<string, unknown>;
+  headers?: Record<string, string | string[] | undefined>;
+};
+
+type ResponseLike = {
+  status: (code: number) => ResponseLike;
+  json: (body: unknown) => void;
+  clearCookie: (name: string, options?: Record<string, unknown>) => void;
+  cookie: (name: string, value: string, options?: Record<string, unknown>) => void;
+  redirect: (statusOrPath: number | string, path?: string) => void;
+};
+
+type AppLike = {
+  get: (path: string, handler: (req: RequestLike, res: ResponseLike) => Promise<void>) => void;
+};
+
+function getQueryParam(req: RequestLike, key: string): string | undefined {
+  const value = req.query?.[key];
   return typeof value === "string" ? value : undefined;
 }
 
-export function registerOAuthRoutes(app: Express) {
-  app.get("/api/oauth/callback", async (req: Request, res: Response) => {
+export function registerOAuthRoutes(app: AppLike) {
+  app.get("/api/oauth/callback", async (req: RequestLike, res: ResponseLike) => {
     const code = getQueryParam(req, "code");
     const state = getQueryParam(req, "state");
 
@@ -24,7 +40,11 @@ export function registerOAuthRoutes(app: Express) {
     // startLogin set in the browser that began this login. An attacker can
     // forge `state`, but cannot plant this cookie in the victim's browser.
     const { nonce } = decodeOAuthState(state);
-    const expectedNonce = parseCookieHeader(req.headers.cookie ?? "")[OAUTH_STATE_COOKIE];
+    const rawCookieHeader = req.headers?.cookie;
+    const cookieHeader = Array.isArray(rawCookieHeader)
+      ? rawCookieHeader.join(";")
+      : (rawCookieHeader ?? "");
+    const expectedNonce = parseCookieHeader(cookieHeader)[OAUTH_STATE_COOKIE];
     if (!nonce || nonce !== expectedNonce) {
       res.status(403).json({ error: "invalid oauth state" });
       return;

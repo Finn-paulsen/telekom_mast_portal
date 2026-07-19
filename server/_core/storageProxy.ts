@@ -1,9 +1,23 @@
-import type { Express, Request, Response } from "express";
 import { ENV } from "./env";
 
-export function registerStorageProxy(app: Express) {
-  const handler = async (req: Request, res: Response) => {
-    const key = (req.params as Record<string, string>)[0];
+type RequestLike = {
+  params?: Record<string, string>;
+};
+
+type ResponseLike = {
+  status: (code: number) => ResponseLike;
+  send: (body: string) => void;
+  set: (name: string, value: string) => void;
+  redirect: (status: number, path: string) => void;
+};
+
+type AppLike = {
+  get: (path: string, handler: (req: RequestLike, res: ResponseLike) => Promise<void>) => void;
+};
+
+export function registerStorageProxy(app: AppLike) {
+  const handler = async (req: RequestLike, res: ResponseLike) => {
+    const key = req.params?.[0];
     if (!key) {
       res.status(400).send("Missing storage key");
       return;
